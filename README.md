@@ -1,5 +1,5 @@
-# Ragnarok
-This is the repo for the Ragnarok Video Game.
+# The Wolf Game
+This is the repo for the Wolf Game Video Game.
 
 
 Potentially Useful Resources:
