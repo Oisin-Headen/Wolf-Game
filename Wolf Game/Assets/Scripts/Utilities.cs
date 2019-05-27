@@ -1,7 +1,7 @@
 ﻿public class Utilities
 {
-    public const int MAP_HEIGHT = 120;
-    public const int MAP_WIDTH = 120;
+    public const int MAP_HEIGHT = 54;
+    public const int MAP_WIDTH = 80;
     public const float HEX_SIZE = 0.69f;
 
     public const int CAMERA_SPEED = 10;
