@@ -5,17 +5,20 @@ public class SpaceModel
     public int cube_x, cube_y, cube_z;
     public SpaceController controller;
 
+    private DoubledCoords doubledCoords;
+
     public SpaceModel(int row, int col, GameController gameController)
     {
         cube_x = (col - row) / 2;
         cube_z = row;
         cube_y = -cube_x-cube_z;
+        doubledCoords = new DoubledCoords(cube_x, cube_y, cube_z);
         controller = gameController.AddSpace(this);
     }
 
     public DoubledCoords GetDoubledCoords()
     {
-        return new DoubledCoords(cube_x, cube_y, cube_z);
+        return doubledCoords;
     }
 
     public float DistCenter()
@@ -29,22 +32,30 @@ public class SpaceModel
         // const int center_y = -center_x-center_z;
 
         // int spacesCenter = Math.Max(Math.Max(Math.Abs(cube_x - centerX), Math.Abs(cube_y - center_y)), Math.Abs(cube_z - center_z));\\
-        DoubledCoords coords = GetDoubledCoords();
-        var dx = Math.Abs(coords.col - centerX);
-        var dy = Math.Abs(coords.row - centerY);
+
+        var dx = Math.Abs(doubledCoords.col - centerX);
+        var dy = Math.Abs(doubledCoords.row - centerY);
 
         float distance = dy + Math.Max(0, (dx-dy)/2f);
 
-        if(Math.Abs(Utilities.MAP_WIDTH/2-coords.col/2) > Utilities.MAP_WIDTH/2 - 4)
-        {
-            return 10f;
-        }
-        if(Math.Abs(Utilities.MAP_HEIGHT/2-coords.row) > Utilities.MAP_HEIGHT/2 - 4)
-        {
-            return 10f;
-        }
 
-        return 0;
+        float distSideEdge, distTopEdge;
+
+        distSideEdge = Math.Abs(Math.Abs(Utilities.MAP_WIDTH/2-doubledCoords.col/2));
+        distTopEdge = Math.Abs(Math.Abs(Utilities.MAP_HEIGHT/2-doubledCoords.row));
+
+        // if(distSideEdge > Utilities.MAP_WIDTH/2 - 4)
+        // {
+        //     return 10f;
+        // }
+        // if(distTopEdge > Utilities.MAP_HEIGHT/2 - 4)
+        // {
+        //     return 10f;
+        // }
+
+        return Math.Max(distSideEdge/(Utilities.MAP_WIDTH/2), distTopEdge/(Utilities.MAP_HEIGHT/2));
+
+        // return 0;
         // return distance/80f;
     }
 }
