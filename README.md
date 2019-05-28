@@ -1,6 +1,8 @@
 # The Wolf Game
 This is the repo for the Wolf Game Video Game.
 
+Code is in <a href="https://github.com/Oisin-Headen/Wolf-Game/tree/master/Wolf%20Game/Assets/Scripts">Wolf Game/Assets/Scripts</a>
+
 
 Potentially Useful Resources:
 
