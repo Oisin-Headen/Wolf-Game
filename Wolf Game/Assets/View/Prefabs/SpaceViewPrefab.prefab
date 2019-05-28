@@ -9,9 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1247711935971728161}
-  - component: {fileID: 1247711935971728166}
-  - component: {fileID: 1247711935971728167}
   - component: {fileID: -4509379217524159373}
+  - component: {fileID: 462262962369140065}
   m_Layer: 0
   m_Name: SpaceViewPrefab
   m_TagString: Untagged
@@ -34,16 +33,62 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1247711935971728166
-MeshFilter:
+--- !u!114 &-4509379217524159373
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1247711935971728164}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &1247711935971728167
-MeshRenderer:
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7e8dfab8f205449a8946b66a6e804b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MountainFrost: {fileID: 3286163911610860551, guid: 59fed9ed431b54a778dc96cd9ca8f835,
+    type: 3}
+  Mountain: {fileID: 3286163911610860551, guid: 288963d3a8333480e9a9eb3594e9b18c,
+    type: 3}
+  Desert: {fileID: 3286163911610860551, guid: bf946c1a2b75a43609c17af80572bc26, type: 3}
+  DesertHills: {fileID: 3286163911610860551, guid: 43849bcc7d2bf4152bb3bae3f4e304ad,
+    type: 3}
+  Grass: {fileID: 3286163911610860551, guid: 5cb36e35f23cf47c1b7c34ccaad97493, type: 3}
+  GrassDeepForest: {fileID: 3286163911610860551, guid: bc93f2038a0b348d1ad2b9cde1d52ba9,
+    type: 3}
+  GrassForest: {fileID: 3286163911610860551, guid: cc4fa18b29653480ab03ef477fccfee1,
+    type: 3}
+  GrassHill: {fileID: 3286163911610860551, guid: 78309936902884d66a9c640f289ab32c,
+    type: 3}
+  GrassHillDeepForest: {fileID: 3286163911610860551, guid: 82cd30f53963b490998a090dba2bd217,
+    type: 3}
+  GrassHillForest: {fileID: 3286163911610860551, guid: 936c0369622874f088b02736cfc7d6d6,
+    type: 3}
+  Plains: {fileID: 3286163911610860551, guid: 4622e3a898809435993184da0aba7618, type: 3}
+  PlainsDeepForest: {fileID: 3286163911610860551, guid: 24d09c9e40ef94630bc9ff4d876aa90f,
+    type: 3}
+  PlainsForest: {fileID: 3286163911610860551, guid: 1dbdb30fdf2704dc791b86f396aff04b,
+    type: 3}
+  PlainsHill: {fileID: 3286163911610860551, guid: f2f9554e36f3b405f928de6aa096f497,
+    type: 3}
+  PlainsHillDeepForest: {fileID: 3286163911610860551, guid: 4e9c99ff8e41d4972b75bf477a49ebb4,
+    type: 3}
+  PlainsHillForest: {fileID: 3286163911610860551, guid: e680ba39d11a74ee5810d4519adae601,
+    type: 3}
+  Snow: {fileID: 3286163911610860551, guid: 94fb5e289105345108ba78506ce6b3b9, type: 3}
+  SnowHills: {fileID: 3286163911610860551, guid: 6e7aa109ced1c49b5b40f5ecc9600f62,
+    type: 3}
+  Tundra: {fileID: 3286163911610860551, guid: 784c70f41406c49afa7bde312b52da1a, type: 3}
+  TundraForest: {fileID: 3286163911610860551, guid: 11a79648a15404fc5855f230c473da9e,
+    type: 3}
+  TundraHill: {fileID: 3286163911610860551, guid: ba79c9a8850f94a5fbd558bf7c1f9691,
+    type: 3}
+  TundraHillForest: {fileID: 3286163911610860551, guid: 3d8c43a845c194537b484883ed433992,
+    type: 3}
+  Water: {fileID: 3286163911610860551, guid: e6ba1fe1897e04f7892fd6ea5c5b0262, type: 3}
+  WaterIceberg: {fileID: 3286163911610860551, guid: 10730c0e96f9d4d768a0d2c2bf5a3541,
+    type: 3}
+--- !u!212 &462262962369140065
+SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -59,7 +104,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3abad1e41d93242d1b38442e54054d70, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -71,7 +116,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -79,19 +124,18 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &-4509379217524159373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247711935971728164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7e8dfab8f205449a8946b66a6e804b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpaceView: {fileID: 0}
+  m_Sprite: {fileID: 3286163911610860551, guid: 24d09c9e40ef94630bc9ff4d876aa90f,
+    type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.86602235, y: 1.0000174}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &5640023559013437925
 GameObject:
   m_ObjectHideFlags: 0
