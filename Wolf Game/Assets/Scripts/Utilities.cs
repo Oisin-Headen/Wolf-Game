@@ -3,7 +3,7 @@
     // Huge Size: 128*80
     public const int MAP_WIDTH = 128;
     public const int MAP_HEIGHT = 80;
-    public const float HEX_SIZE = 0.52f;
+    public const float HEX_SIZE = 0.65f;
 
     public const int CAMERA_SPEED = 10;
     public const int CAMERA_ZOOM_SPEED = 15;

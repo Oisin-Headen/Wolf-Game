@@ -3,7 +3,31 @@ guid: a7e8dfab8f205449a8946b66a6e804b7
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - MountainFrost: {fileID: 21300000, guid: d10111ce4e9484d47a863a7a673e97ea, type: 3}
+  - Mountain: {fileID: 21300000, guid: 735442d07948440c692c78003c747e09, type: 3}
+  - Desert: {instanceID: 0}
+  - DesertHills: {instanceID: 0}
+  - Grass: {instanceID: 0}
+  - GrassDeepForest: {instanceID: 0}
+  - GrassForest: {instanceID: 0}
+  - GrassHill: {instanceID: 0}
+  - GrassHillDeepForest: {instanceID: 0}
+  - GrassHillForest: {instanceID: 0}
+  - Plains: {instanceID: 0}
+  - PlainsDeepForest: {instanceID: 0}
+  - PlainsForest: {instanceID: 0}
+  - PlainsHill: {instanceID: 0}
+  - PlainsHillDeepForest: {instanceID: 0}
+  - PlainsHillForest: {instanceID: 0}
+  - Snow: {instanceID: 0}
+  - SnowHills: {instanceID: 0}
+  - Tundra: {instanceID: 0}
+  - TundraForest: {instanceID: 0}
+  - TundraHill: {instanceID: 0}
+  - TundraHillForest: {instanceID: 0}
+  - Water: {fileID: 21300000, guid: e81c2dfc6fe6d446cab351f1c19538e4, type: 3}
+  - WaterIceberg: {fileID: 21300000, guid: 0b2eee65669ac46d3851c5d53c8373f6, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

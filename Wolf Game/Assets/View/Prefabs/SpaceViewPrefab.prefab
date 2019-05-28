@@ -28,8 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 671231375507334545}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -45,48 +44,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7e8dfab8f205449a8946b66a6e804b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MountainFrost: {fileID: 3286163911610860551, guid: 59fed9ed431b54a778dc96cd9ca8f835,
+  MountainFrost: {fileID: 21300000, guid: d10111ce4e9484d47a863a7a673e97ea, type: 3}
+  Mountain: {fileID: 21300000, guid: 735442d07948440c692c78003c747e09, type: 3}
+  Desert: {fileID: 21300000, guid: 9b55d1854ca8d49a9b934a87cb8fb02c, type: 3}
+  DesertHills: {fileID: 21300000, guid: cba5f0ab58a6a4aa7a5d305b91b24d50, type: 3}
+  Grass: {fileID: 21300000, guid: 45cb9ecd82f6f4cd28bc732517458dac, type: 3}
+  GrassDeepForest: {fileID: 21300000, guid: cb390030a233e410ca0e38325b24b1ba, type: 3}
+  GrassForest: {fileID: 21300000, guid: 338548a55342e4fa7b68e9b7005bb015, type: 3}
+  GrassHill: {fileID: 21300000, guid: 187471df19c6341498f167460702ed4d, type: 3}
+  GrassHillDeepForest: {fileID: 21300000, guid: f3086511bd6a94dada73ef5e1695e669,
     type: 3}
-  Mountain: {fileID: 3286163911610860551, guid: 288963d3a8333480e9a9eb3594e9b18c,
+  GrassHillForest: {fileID: 21300000, guid: ce85a2b40523e497884d07f9181b9074, type: 3}
+  Plains: {fileID: 21300000, guid: 12c30755295d24a10ba881b4b15df32c, type: 3}
+  PlainsDeepForest: {fileID: 21300000, guid: 51ca5c907497d4349ad6793719b3069d, type: 3}
+  PlainsForest: {fileID: 21300000, guid: c32b6fd24518f4fb5945661943d04537, type: 3}
+  PlainsHill: {fileID: 21300000, guid: 46b1d01805e174cfc8ee74858155de40, type: 3}
+  PlainsHillDeepForest: {fileID: 21300000, guid: 69a459e14c0e84dd197ee0296b3cdc4e,
     type: 3}
-  Desert: {fileID: 3286163911610860551, guid: bf946c1a2b75a43609c17af80572bc26, type: 3}
-  DesertHills: {fileID: 3286163911610860551, guid: 43849bcc7d2bf4152bb3bae3f4e304ad,
-    type: 3}
-  Grass: {fileID: 3286163911610860551, guid: 5cb36e35f23cf47c1b7c34ccaad97493, type: 3}
-  GrassDeepForest: {fileID: 3286163911610860551, guid: bc93f2038a0b348d1ad2b9cde1d52ba9,
-    type: 3}
-  GrassForest: {fileID: 3286163911610860551, guid: cc4fa18b29653480ab03ef477fccfee1,
-    type: 3}
-  GrassHill: {fileID: 3286163911610860551, guid: 78309936902884d66a9c640f289ab32c,
-    type: 3}
-  GrassHillDeepForest: {fileID: 3286163911610860551, guid: 82cd30f53963b490998a090dba2bd217,
-    type: 3}
-  GrassHillForest: {fileID: 3286163911610860551, guid: 936c0369622874f088b02736cfc7d6d6,
-    type: 3}
-  Plains: {fileID: 3286163911610860551, guid: 4622e3a898809435993184da0aba7618, type: 3}
-  PlainsDeepForest: {fileID: 3286163911610860551, guid: 24d09c9e40ef94630bc9ff4d876aa90f,
-    type: 3}
-  PlainsForest: {fileID: 3286163911610860551, guid: 1dbdb30fdf2704dc791b86f396aff04b,
-    type: 3}
-  PlainsHill: {fileID: 3286163911610860551, guid: f2f9554e36f3b405f928de6aa096f497,
-    type: 3}
-  PlainsHillDeepForest: {fileID: 3286163911610860551, guid: 4e9c99ff8e41d4972b75bf477a49ebb4,
-    type: 3}
-  PlainsHillForest: {fileID: 3286163911610860551, guid: e680ba39d11a74ee5810d4519adae601,
-    type: 3}
-  Snow: {fileID: 3286163911610860551, guid: 94fb5e289105345108ba78506ce6b3b9, type: 3}
-  SnowHills: {fileID: 3286163911610860551, guid: 6e7aa109ced1c49b5b40f5ecc9600f62,
-    type: 3}
-  Tundra: {fileID: 3286163911610860551, guid: 784c70f41406c49afa7bde312b52da1a, type: 3}
-  TundraForest: {fileID: 3286163911610860551, guid: 11a79648a15404fc5855f230c473da9e,
-    type: 3}
-  TundraHill: {fileID: 3286163911610860551, guid: ba79c9a8850f94a5fbd558bf7c1f9691,
-    type: 3}
-  TundraHillForest: {fileID: 3286163911610860551, guid: 3d8c43a845c194537b484883ed433992,
-    type: 3}
-  Water: {fileID: 3286163911610860551, guid: e6ba1fe1897e04f7892fd6ea5c5b0262, type: 3}
-  WaterIceberg: {fileID: 3286163911610860551, guid: 10730c0e96f9d4d768a0d2c2bf5a3541,
-    type: 3}
+  PlainsHillForest: {fileID: 21300000, guid: d6fe560ac750145b1bbe61a307675c0c, type: 3}
+  Snow: {fileID: 21300000, guid: 78703dba731244eeea13821c12399378, type: 3}
+  SnowHills: {fileID: 21300000, guid: 9549c411f5f0f4724b927f2408913c4a, type: 3}
+  Tundra: {fileID: 21300000, guid: 03b8c597ff84f4ab9ac19afc02f4f04f, type: 3}
+  TundraForest: {fileID: 21300000, guid: 916f33cf06ffd4ffaab825a9a794b4a0, type: 3}
+  TundraHill: {fileID: 21300000, guid: c881a881f070f4d05a7d69c001d1ad7f, type: 3}
+  TundraHillForest: {fileID: 21300000, guid: f19c1665f2cf64bf99e8749bbcc6d6da, type: 3}
+  Water: {fileID: 21300000, guid: e81c2dfc6fe6d446cab351f1c19538e4, type: 3}
+  WaterIceberg: {fileID: 21300000, guid: 0b2eee65669ac46d3851c5d53c8373f6, type: 3}
+  spriteMat: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!212 &462262962369140065
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -104,7 +88,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -124,106 +108,14 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3286163911610860551, guid: 24d09c9e40ef94630bc9ff4d876aa90f,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 51ca5c907497d4349ad6793719b3069d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.86602235, y: 1.0000174}
+  m_Size: {x: 4.47, y: 5.15}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &5640023559013437925
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 671231375507334545}
-  - component: {fileID: 6199839612467325402}
-  - component: {fileID: 708714076268490164}
-  m_Layer: 0
-  m_Name: Text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &671231375507334545
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640023559013437925}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1247711935971728161}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &6199839612467325402
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640023559013437925}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!102 &708714076268490164
-TextMesh:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640023559013437925}
-  m_Text: 
-  m_OffsetZ: 0
-  m_CharacterSize: 0.45
-  m_LineSpacing: 1
-  m_Anchor: 4
-  m_Alignment: 0
-  m_TabSize: 4
-  m_FontSize: 0
-  m_FontStyle: 0
-  m_RichText: 1
-  m_Font: {fileID: 0}
-  m_Color:
-    serializedVersion: 2
-    rgba: 4294967295

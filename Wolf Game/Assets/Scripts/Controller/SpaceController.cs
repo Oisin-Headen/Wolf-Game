@@ -32,6 +32,8 @@ public class SpaceController : MonoBehaviour
     public Sprite WaterIceberg;
 
 
+    // public Material spriteMat;
+
     public void SetSpaceView(SpaceModel model, GameObject SpaceView, RandomSeeds seeds)
     {
         this.model = model;
@@ -39,14 +41,14 @@ public class SpaceController : MonoBehaviour
 
         var doubled = model.GetDoubledCoords();
 
-        Color color = new Color(0,0,0);
+        // Color color = new Color(0,0,0);
 
         var distEdge = model.DistCenter();
         var worldTemp = model.WorldTemp();
 
         var elevationPerlin = Mathf.PerlinNoise((seeds.elevation + doubled.row)*0.2f, (seeds.elevation + doubled.col/2f)*0.2f);
         var temperaturePerlin = Mathf.PerlinNoise((seeds.baseTerrain + doubled.row)*0.4f, (seeds.baseTerrain + doubled.col/2f)*0.4f);
-        var moisturePerlin = Mathf.PerlinNoise((seeds.feature + doubled.row)*0.5f, (seeds.feature + doubled.col/2f)*0.5f);
+        var moisturePerlin = Mathf.PerlinNoise((seeds.feature + doubled.row)*0.3f, (seeds.feature + doubled.col/2f)*0.3f);
 
         var elevation =(1 + elevationPerlin - distEdge) / 2; //  elevationPerlin - dist;
         // var elevation = dist + elevationPerlin * (0.5 - dist);
@@ -55,10 +57,12 @@ public class SpaceController : MonoBehaviour
 
         // SpaceView.GetComponentInChildren<TextMesh>().text = (Mathf.Round(elevationPerlin*100)).ToString();
 
+        // gameObject.GetComponent<SpriteRenderer>().material = spriteMat;
+
         // Ocean --------------------------------------------------------------------------
         if(elevation < 0.4f)
         {
-            if(temperature < 0.1)
+            if(temperature < 0.2)
             {
                 // Iceberg
                 SpaceView.GetComponent<SpriteRenderer>().sprite = WaterIceberg;
@@ -73,7 +77,7 @@ public class SpaceController : MonoBehaviour
         else if (elevation < 0.7f)
         {
             // Flat
-            if(temperature < 0.1f)
+            if(temperature < 0.2f)
             {
                 // Cold
                 if(moisturePerlin < 0.5f)
@@ -86,14 +90,14 @@ public class SpaceController : MonoBehaviour
                     SpaceView.GetComponent<SpriteRenderer>().sprite = Snow;
                 }
             }
-            else if(temperature < 0.3)
+            else if(temperature < 0.4)
             {
                 // Cool
-                if(moisturePerlin < 0.1f)
+                if(moisturePerlin < 0.3f)
                 {
-                    SpaceView.GetComponent<SpriteRenderer>().sprite = Desert;
+                    SpaceView.GetComponent<SpriteRenderer>().sprite = Tundra;
                 }
-                else if(moisturePerlin < 0.4f)
+                else if(moisturePerlin < 0.5f)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = Plains;
                 }
@@ -102,13 +106,18 @@ public class SpaceController : MonoBehaviour
                     SpaceView.GetComponent<SpriteRenderer>().sprite = TundraForest;
                 }
             }
-            else if(temperature < 0.9)
+            else if(temperature < 0.8)
             {
                 // Warm
                 if(moisturePerlin < 0.5f)
                 {
                     // Plains
                     SpaceView.GetComponent<SpriteRenderer>().sprite = Plains;
+                }
+                else if(moisturePerlin < 0.6f)
+                {
+                    // Plains
+                    SpaceView.GetComponent<SpriteRenderer>().sprite = PlainsForest;
                 }
                 else
                 {
@@ -118,15 +127,15 @@ public class SpaceController : MonoBehaviour
             else
             {
                 // Hot
-                if(moisturePerlin < 0.1f)
+                if(moisturePerlin < 0.35f)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = Desert;
                 }
-                else if(moisturePerlin < 0.4f)
+                else if(moisturePerlin < 0.5f)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = Grass;
                 }
-                else if(moisturePerlin < 0.8f)
+                else if(moisturePerlin < 0.65f)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = GrassForest;
                 }
@@ -157,7 +166,7 @@ public class SpaceController : MonoBehaviour
                 // Cool
                 if(moisturePerlin < 0.1f)
                 {
-                    SpaceView.GetComponent<SpriteRenderer>().sprite = DesertHills;
+                    SpaceView.GetComponent<SpriteRenderer>().sprite = TundraHill;
                 }
                 else if(moisturePerlin < 0.4f)
                 {
@@ -168,13 +177,18 @@ public class SpaceController : MonoBehaviour
                     SpaceView.GetComponent<SpriteRenderer>().sprite = TundraHillForest;
                 }
             }
-            else if(temperature < 0.9)
+            else if(temperature < 0.8)
             {
                 // Warm
                 if(moisturePerlin < 0.5f)
                 {
                     // Plains
                     SpaceView.GetComponent<SpriteRenderer>().sprite = PlainsHill;
+                }
+                else if(moisturePerlin < 0.5f)
+                {
+                    // Plains
+                    SpaceView.GetComponent<SpriteRenderer>().sprite = PlainsHillForest;
                 }
                 else
                 {
@@ -184,7 +198,7 @@ public class SpaceController : MonoBehaviour
             else
             {
                 // Hot
-                if(moisturePerlin < 0.1f)
+                if(moisturePerlin < 0.35f)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = DesertHills;
                 }
@@ -205,7 +219,7 @@ public class SpaceController : MonoBehaviour
         // Mountain --------------------------------------------------------------------------
         else //if (elevation < 1f)
         {
-            if(temperature < 0.1f)
+            if(temperature < 0.6f)
             {
                 SpaceView.GetComponent<SpriteRenderer>().sprite = MountainFrost;
             }
@@ -215,6 +229,23 @@ public class SpaceController : MonoBehaviour
             }
         }
 
-        SpaceView.GetComponent<Renderer>().materials[0].SetColor("_Color", color);
+        // SpaceView.GetComponent<Renderer>().materials[0].SetColor("_Color", color);
+
+        // if(temperature < 0.25f)
+        // {
+        //     SpaceView.GetComponent<Renderer>().materials[0].SetColor("_Color", Color.black);
+        // }
+        // else if(temperature < 0.5f)
+        // {
+        //    SpaceView.GetComponent<Renderer>().materials[0].SetColor("_Color", Color.red);
+        // }
+        // else if(temperature < 0.75f)
+        // {
+        //    SpaceView.GetComponent<Renderer>().materials[0].SetColor("_Color", Color.green);
+        // }
+        // else
+        // {
+        //    SpaceView.GetComponent<Renderer>().materials[0].SetColor("_Color", Color.blue);
+        // }
     }
 }
