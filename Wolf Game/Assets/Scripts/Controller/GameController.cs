@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour
 {
     // Inserted in unity editor
     public Transform mapContainer;
     public GameObject spaceViewPrefab;
-    public RandomSeeds seeds;
+    public Assets assets;    
+    private RandomSeeds seeds;
 
     // Our Reference to the Map
-    MapModel map;
+    private MapModel map;
 
     // Start is called before the first frame update
     void Start()
@@ -25,18 +27,7 @@ public class GameController : MonoBehaviour
         var y = Utilities.HEX_SIZE * 3/2f * coords.row;
 
         GameObject SpaceView = UnityEngine.Object.Instantiate(spaceViewPrefab, new Vector2(x, y), Quaternion.identity, mapContainer);
-        SpaceView.GetComponent<SpaceController>().SetSpaceView(spaceModel, SpaceView, seeds);
+        SpaceView.GetComponent<SpaceController>().SetSpaceView(spaceModel, SpaceView, seeds, this);
         return SpaceView.GetComponent<SpaceController>();
-    }
-}
-
-public class RandomSeeds
-{
-    public float elevation, baseTerrain, feature;
-    public RandomSeeds()
-    {
-        elevation = UnityEngine.Random.value * 1000;
-        baseTerrain = UnityEngine.Random.value * 1000;
-        feature = UnityEngine.Random.value * 1000;
     }
 }

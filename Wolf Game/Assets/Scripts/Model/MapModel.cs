@@ -17,37 +17,83 @@ public class MapModel
             }
             for(; col < Utilities.MAP_WIDTH * 2; col += 2)
             {
-                map[row][col] = new SpaceModel(row, col, gameController);
+                map[row][col] = new SpaceModel(row, col, gameController, this);
+            }
+        }
+
+        foreach (var row in map)
+        {
+            foreach (var space in row)
+            {
+                if(space != null)
+                {
+                    space.SetAdjacentSpaces();
+                }
             }
         }
     }
-}
 
-
-public enum SpaceElevation
-{
-    Water, Flat, Hill, Mountain
-}
-public enum SpaceBaseTerrain
-{
-    Grassland, Plain, Desert, Tundra
-
-}
-public enum SpaceFeature
-{
-    None, Forest, Deep_Forest
-}
-
-public class SpaceTerrain
-{
-    public SpaceElevation elevation;
-    public SpaceBaseTerrain baseTerrain;
-    public SpaceFeature feature;
-
-    public SpaceTerrain(SpaceElevation elevation, SpaceBaseTerrain baseTerrain, SpaceFeature feature)
+        // Movement Methods. Only used in Space generation.
+    public SpaceModel GetNE(DoubledCoords coords)
     {
-        this.elevation = elevation;
-        this.baseTerrain = baseTerrain;
-        this.feature = feature;
+        int newSpaceRow = coords.row - 1;
+        int newSpaceColumn = coords.col + 1;
+        if(newSpaceRow < 0 || newSpaceColumn >= Utilities.MAP_WIDTH*2)
+        {
+            return null;
+        }
+        return map[newSpaceRow][newSpaceColumn];
+    }
+
+    public SpaceModel GetE(DoubledCoords coords)
+    {
+        int newSpaceRow = coords.row;
+        int newSpaceColumn = coords.col + 2;
+        if (newSpaceColumn >= Utilities.MAP_WIDTH*2)
+        {
+            return null;
+        }
+        return map[newSpaceRow][newSpaceColumn];
+    }
+
+    public SpaceModel GetSE(DoubledCoords coords)
+    {
+        int newSpaceRow = coords.row + 1;
+        int newSpaceColumn = coords.col + 1;
+        if (newSpaceRow >= Utilities.MAP_HEIGHT  || newSpaceColumn >= Utilities.MAP_WIDTH*2)
+        {
+            return null;
+        }
+        return map[newSpaceRow][newSpaceColumn];
+    }
+    public SpaceModel GetSW(DoubledCoords coords)
+    {
+        int newSpaceRow = coords.row + 1;
+        int newSpaceColumn = coords.col - 1;
+        if (newSpaceRow >= Utilities.MAP_HEIGHT || newSpaceColumn < 0)
+        {
+            return null;
+        }
+        return map[newSpaceRow][newSpaceColumn];
+    }
+    public SpaceModel GetW(DoubledCoords coords)
+    {
+        int newSpaceRow = coords.row;
+        int newSpaceColumn = coords.col - 2;
+        if (newSpaceColumn < 0)
+        {
+            return null;
+        }
+        return map[newSpaceRow][newSpaceColumn];
+    }
+    public SpaceModel GetNW(DoubledCoords coords)
+    {
+        int newSpaceRow = coords.row - 1;
+        int newSpaceColumn = coords.col - 1;
+        if (newSpaceRow < 0 || newSpaceColumn < 0)
+        {
+            return null;
+        }
+        return map[newSpaceRow][newSpaceColumn];
     }
 }
