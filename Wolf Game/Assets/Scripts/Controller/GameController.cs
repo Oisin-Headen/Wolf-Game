@@ -6,8 +6,10 @@ public class GameController : MonoBehaviour
     // Inserted in unity editor
     public Transform mapContainer;
     public GameObject spaceViewPrefab;
-    public Assets assets;    
-    private RandomSeeds seeds;
+    public Assets assets;
+    public GameObject mouseOverText;
+
+    public RandomSeeds seeds;
 
     // Our Reference to the Map
     private MapModel map;
@@ -27,7 +29,7 @@ public class GameController : MonoBehaviour
         var y = Utilities.HEX_SIZE * 3/2f * coords.row;
 
         GameObject SpaceView = UnityEngine.Object.Instantiate(spaceViewPrefab, new Vector2(x, y), Quaternion.identity, mapContainer);
-        SpaceView.GetComponent<SpaceController>().SetSpaceView(spaceModel, SpaceView, seeds, this);
+        SpaceView.GetComponent<SpaceController>().SetSpaceView(spaceModel, SpaceView, this);
         return SpaceView.GetComponent<SpaceController>();
     }
 }

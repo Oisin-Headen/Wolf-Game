@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class MapModel
 {
@@ -95,5 +96,10 @@ public class MapModel
             return null;
         }
         return map[newSpaceRow][newSpaceColumn];
+    }
+
+    public SpaceModel GetSpace(DoubledCoords normalCoord)
+    {
+        return map[normalCoord.row][normalCoord.col];
     }
 }

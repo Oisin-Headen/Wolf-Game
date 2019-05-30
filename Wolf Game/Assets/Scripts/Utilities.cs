@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-public class Utilities
+﻿using System;
+using UnityEngine;
+
+public static class Utilities
 {
     // Huge Size: 128*80
     public const int MAP_WIDTH = 128;
@@ -99,10 +101,16 @@ public class Utilities
             else if(temperature < 0.8)
             {
                 // Warm
-                if(moisturePerlin < 0.5f)
+                if(moisturePerlin < 0.4f)
                 {
                     // Plains
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Plain;
+                }
+                else if (moisturePerlin < 0.5f)
+                {
+                    // Plains forest
+                    spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Plain;
+                    spaceFeature = SpaceTerrain.SpaceFeature.Forest;
                 }
                 else if(moisturePerlin < 0.6f)
                 {
@@ -143,18 +151,40 @@ public class Utilities
     }
 }
 
+public class DoubledCoords
+{
+    public int row, col;
+
+    public DoubledCoords(int row, int col)
+    {
+        this.col = col;
+        this.row = row;
+    }
+}
+
+public class CubeCoords
+{
+    public float x, y, z;
+
+    public CubeCoords(float x, float y, float z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+}
 
 public class RandomSeeds
 {
     public float elevation, temperature, moisture;
     public RandomSeeds()
     {
-        elevation = UnityEngine.Random.value * 1000;
-        temperature = UnityEngine.Random.value * 1000;
-        moisture = UnityEngine.Random.value * 1000;
+        System.Random random = new System.Random();
+        elevation = random.Next(1000);
+        temperature = random.Next(1000);
+        moisture = random.Next(1000);
     }
 }
-
 
 public class SpaceTerrain
 {

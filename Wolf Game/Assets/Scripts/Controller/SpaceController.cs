@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 
 public class SpaceController : MonoBehaviour
@@ -6,34 +8,44 @@ public class SpaceController : MonoBehaviour
     private GameObject SpaceView;
     private GameController gameController;
     public SpaceModel model;
+    
+    
 
-    // public Material spriteMat;
-
-    
-    
-    
-    
-    
     
     // Setup this Controller
-    public void SetSpaceView(SpaceModel model, GameObject SpaceView, RandomSeeds seeds, GameController gameController)
+    public void SetSpaceView(SpaceModel model, GameObject SpaceView, GameController gameController)
     {
         this.gameController = gameController;
         this.model = model;
         this.SpaceView = SpaceView;
 
-        var terrain = Utilities.GetTerrainForSpace(model, seeds);
+        var terrain = model.GenerateTerrain();
 
-        model.SetTerrain(terrain);
 
         // SpaceView.GetComponent<SpriteRenderer>().material.color = terrain.color;
 
         // Set the View to the Correct Tile Type
+        SetTerrain(terrain);
+    
+    }
+
+    // If the user mouses over this hex, display properties
+    private void OnMouseOver()
+    {
+        string text = model.GetDescription();
+        gameController.mouseOverText.GetComponent<Text>().text = text;
+    }
+
+
+
+    // This Method Sets the hex view to the correct terrain
+    public void SetTerrain(SpaceTerrain terrain)
+    {
         switch (terrain.elevation)
         {
             // An Ocean Tile
             case SpaceTerrain.SpaceElevation.Water:
-                if(terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
+                if (terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.WaterIceberg;
                 }
@@ -42,7 +54,7 @@ public class SpaceController : MonoBehaviour
                     SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Water;
                 }
                 break;
-            
+
             // A Flat Tile
             case SpaceTerrain.SpaceElevation.Flat:
                 switch (terrain.baseTerrain)
@@ -52,11 +64,11 @@ public class SpaceController : MonoBehaviour
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Grassland:
-                        if(terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+                        if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassForest;
                         }
-                        else if(terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                        else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassDeepForest;
                         }
@@ -67,11 +79,11 @@ public class SpaceController : MonoBehaviour
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Plain:
-                        if(terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+                        if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsForest;
                         }
-                        else if(terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                        else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsDeepForest;
                         }
@@ -86,7 +98,7 @@ public class SpaceController : MonoBehaviour
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Tundra:
-                        if(terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+                        if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.TundraForest;
                         }
@@ -111,11 +123,11 @@ public class SpaceController : MonoBehaviour
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Grassland:
-                        if(terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+                        if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassHillForest;
                         }
-                        else if(terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                        else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassHillDeepForest;
                         }
@@ -126,11 +138,11 @@ public class SpaceController : MonoBehaviour
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Plain:
-                        if(terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+                        if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsHillForest;
                         }
-                        else if(terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                        else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsHillDeepForest;
                         }
@@ -145,7 +157,7 @@ public class SpaceController : MonoBehaviour
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Tundra:
-                        if(terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+                        if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.TundraHillForest;
                         }
@@ -163,7 +175,7 @@ public class SpaceController : MonoBehaviour
 
             // A Mountain Tile
             case SpaceTerrain.SpaceElevation.Mountain:
-                if(terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
+                if (terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
                 {
                     SpaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.MountainFrost;
                 }
@@ -173,6 +185,5 @@ public class SpaceController : MonoBehaviour
                 }
                 break;
         }
-    
     }
 }

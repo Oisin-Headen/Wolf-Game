@@ -2,11 +2,13 @@
 
 public class SpaceModel
 {
-    public int cube_x, cube_y, cube_z;
     public SpaceController controller;
-    private MapModel map;
+    private readonly GameController gameController;
+    private readonly MapModel map;
 
-    private DoubledCoords doubledCoords;
+    private readonly DoubledCoords doubledCoords;
+    private readonly CubeCoords cubeCoords;
+
     private SpaceTerrain terrain;
     private SpaceModel[] adjacentSpaces;
     private PathfindingNode pathfindingNode;
@@ -14,10 +16,12 @@ public class SpaceModel
     public SpaceModel(int row, int col, GameController gameController, MapModel map)
     {
         this.map = map;
-        cube_x = (col - row) / 2;
-        cube_z = row;
-        cube_y = -cube_x-cube_z;
-        doubledCoords = new DoubledCoords(cube_x, cube_y, cube_z);
+        float cube_x = (col - row) / 2;
+        float cube_z = row;
+        float cube_y = -cube_x-cube_z;
+        cubeCoords = new CubeCoords(cube_x, cube_y, cube_z);
+        doubledCoords = new DoubledCoords(row, col);
+        this.gameController = gameController;
         controller = gameController.AddSpace(this);
     }
 
@@ -26,11 +30,76 @@ public class SpaceModel
         return doubledCoords;
     }
 
+    public string GetDescription()
+    {
+        string desc = "";
+        switch(terrain.elevation)
+        {
+            case SpaceTerrain.SpaceElevation.Water:
+                desc = "Ocean";
+                if(terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
+                { desc = "Iceberg"; }
+                break;
+            case SpaceTerrain.SpaceElevation.Mountain:
+                desc = "Mountain";
+                if (terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
+                { desc = "Frosted Mountain"; }
+                break;
+            default:
+                string hill = "";
+                if(terrain.elevation == SpaceTerrain.SpaceElevation.Hill)
+                { hill = " Hill"; }
+                string baseTerrain = "Error", feature = "";
+                switch(terrain.baseTerrain)
+                {
+                    case SpaceTerrain.SpaceBaseTerrain.Desert:
+                        baseTerrain = "Desert";
+                        break;
+                    case SpaceTerrain.SpaceBaseTerrain.Snow:
+                        baseTerrain = "Snow";
+                        break;
+                    case SpaceTerrain.SpaceBaseTerrain.Tundra:
+                        baseTerrain = "Tundra";
+                        break;
+                    case SpaceTerrain.SpaceBaseTerrain.Plain:
+                        baseTerrain = "Plains";
+                        break;
+                    case SpaceTerrain.SpaceBaseTerrain.Grassland:
+                        baseTerrain = "Grassland";
+                        break;
+                }
+                switch (terrain.feature)
+                {
+                    case SpaceTerrain.SpaceFeature.Forest:
+                        feature = " Forest";
+                        break;
+                    case SpaceTerrain.SpaceFeature.Deep_Forest:
+                        feature = " Deep Forest";
+                        break;
+                    case SpaceTerrain.SpaceFeature.None:
+                        break;
+                    default:
+                        feature = " Error";
+                        break;
+                }
+                desc = baseTerrain + feature + hill;
+                break;
+        }
+
+        return desc;
+    }
+
+    public CubeCoords GetCubeCoords()
+    {
+        return cubeCoords;
+    }
+
 
     public SpaceModel[] GetAdjacentSpaces()
     {
         return adjacentSpaces;
     }
+
     public int GetMovementCost()
     {
         if(terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
@@ -46,6 +115,7 @@ public class SpaceModel
         }
         return 1;
     }
+
     public void SetAdjacentSpaces()
     {
         adjacentSpaces = new SpaceModel[6];
@@ -66,9 +136,10 @@ public class SpaceModel
         pathfindingNode = node;
     }
 
-    public void SetTerrain(SpaceTerrain terrain)
+    public SpaceTerrain GenerateTerrain()
     {
-        this.terrain = terrain;
+        terrain = Utilities.GetTerrainForSpace(this, gameController.seeds);
+        return terrain;
     }
 
     public float DistCenter()
@@ -91,16 +162,10 @@ public class SpaceModel
 
         return distTopBottomEdge/(Utilities.MAP_HEIGHT/2);
     }
-}
 
-
-public class DoubledCoords
-{
-    public int row, col;
-
-    public DoubledCoords(int x, int y, int z)
+    public bool Occupied()
     {
-        col = 2 * x + z;
-        row = z;
+        // TODO Is there a Unit here?
+        throw new NotImplementedException();
     }
 }
