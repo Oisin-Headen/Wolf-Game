@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MapModel
 {
-    SpaceModel[][] map;
+    readonly SpaceModel[][] map;
     public MapModel(GameController gameController)
     {
         map = new SpaceModel[Utilities.MAP_HEIGHT][];

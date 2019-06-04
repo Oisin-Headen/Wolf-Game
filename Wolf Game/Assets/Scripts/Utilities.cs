@@ -6,7 +6,7 @@ public static class Utilities
     // Huge Size: 128*80
     public const int MAP_WIDTH = 128;
     public const int MAP_HEIGHT = 80;
-    public const float HEX_SIZE = 0.65f;
+    public const float HEX_SIZE = 0.643f;
 
     public const int CAMERA_SPEED = 10;
     public const int CAMERA_ZOOM_SPEED = 15;
@@ -223,4 +223,9 @@ public class SpaceTerrain
     //     this.feature = feature;
     //     this.color = color;
     // }
+}
+
+public enum Player
+{
+    Wolves, Alliance //, Necromancer, Goblins, Artificer, Wizards
 }

@@ -29,11 +29,16 @@ public class SpaceController : MonoBehaviour
     
     }
 
+    public Vector2 GetPosition()
+    {
+        return SpaceView.transform.position;
+    }
+
     // If the user mouses over this hex, display properties
     private void OnMouseOver()
     {
         string text = model.GetDescription();
-        gameController.mouseOverText.GetComponent<Text>().text = text;
+        gameController.mouseOverText.text = text;
     }
 
 
