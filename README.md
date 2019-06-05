@@ -20,6 +20,12 @@ Useful for everything:
 https://www.redblobgames.com
 
 
-When doing Networking:
+# When doing Networking:
 
 https://gamedevelopment.tutsplus.com/tutorials/building-a-peer-to-peer-multiplayer-networked-game--gamedev-10074
+
+Network Sockets
+
+https://www.infoworld.com/article/3016922/how-to-work-with-sockets-in-c.html
+
+https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.socket?view=netframework-4.8
