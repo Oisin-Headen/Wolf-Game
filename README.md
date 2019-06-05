@@ -18,3 +18,7 @@ https://catlikecoding.com/unity/tutorials/hex-map/part-1/
 Useful for everything:
 
 https://www.redblobgames.com
+
+
+When doing Networking:
+  https://gamedevelopment.tutsplus.com/tutorials/building-a-peer-to-peer-multiplayer-networked-game--gamedev-10074
