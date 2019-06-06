@@ -144,7 +144,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16247222}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -71.10006}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -973,6 +973,11 @@ MonoBehaviour:
   TundraHillForest: {fileID: 21300000, guid: f19c1665f2cf64bf99e8749bbcc6d6da, type: 3}
   Water: {fileID: 21300000, guid: e81c2dfc6fe6d446cab351f1c19538e4, type: 3}
   WaterIceberg: {fileID: 21300000, guid: 0b2eee65669ac46d3851c5d53c8373f6, type: 3}
+  SelectedColor: {r: 0.7830189, g: 0.7309407, b: 0.22530258, a: 1}
+  MoveableColor: {r: 0, g: 0.4509804, b: 1, a: 1}
+  AttackableColor: {r: 1, g: 0, b: 0, a: 1}
+  MoveableHighlightedColor: {r: 0, g: 0.88235295, b: 1, a: 1}
+  AttackableHighlightedColor: {r: 1, g: 0.48584908, b: 0.48584908, a: 1}
 --- !u!4 &1221659571
 Transform:
   m_ObjectHideFlags: 0
@@ -981,7 +986,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221659569}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 63.14316, y: 37.370354, z: -1350.1677}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1193,7 +1198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737592353}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -71.10006}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1215,6 +1220,8 @@ MonoBehaviour:
   spaceViewPrefab: {fileID: 1247711935971728164, guid: 417d042131bc54cc183d8a14679f4499,
     type: 3}
   unitPrefab: {fileID: 3298462571472770953, guid: f41449b26b90d4cda875057da18644c8,
+    type: 3}
+  tileSelectorPrefab: {fileID: 6077356037929531278, guid: 71ce2bebf2331410f842f9384c53981b,
     type: 3}
   assets: {fileID: 1221659570}
   mouseOverText: {fileID: 1178051379}

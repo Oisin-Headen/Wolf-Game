@@ -5,14 +5,14 @@ public abstract class AbstractPlayer
 {
     public List<UnitModel> units;
     public readonly Player thisplayer;
-    protected GameController gameController;
+    protected GameModel gameModel;
 
-    protected AbstractPlayer(Player newplayer, GameController gameController)
+    protected AbstractPlayer(Player newplayer, GameModel gameModel)
     {
-        this.gameController = gameController;
+        this.gameModel = gameModel;
         thisplayer = newplayer;
         units = new List<UnitModel>();
     }
-    public abstract void EndTurn();
+    //public abstract void EndTurn();
     public abstract void StartTurn();
 }

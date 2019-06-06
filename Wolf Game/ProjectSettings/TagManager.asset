@@ -14,9 +14,9 @@ TagManager:
   - 
   - 
   - Tiles
+  - TileSelector
+  - 
   - Units
-  - 
-  - 
   - 
   - 
   - 
@@ -43,6 +43,12 @@ TagManager:
     locked: 0
   - name: Tiles
     uniqueID: 2109191509
+    locked: 0
+  - name: Structure
+    uniqueID: 2015679483
+    locked: 0
+  - name: TileSelector
+    uniqueID: 3290372447
     locked: 0
   - name: Units
     uniqueID: 706148409

@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 1247711935971728161}
   - component: {fileID: -4509379217524159373}
   - component: {fileID: 462262962369140065}
-  - component: {fileID: 9195166935741248858}
+  - component: {fileID: 7571765363210939476}
   m_Layer: 8
   m_Name: SpaceViewPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1247711935971728161
 Transform:
@@ -93,16 +93,34 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!65 &9195166935741248858
-BoxCollider:
+--- !u!60 &7571765363210939476
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1247711935971728164}
+  m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.115, y: 1.2875, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.115, y: 1.2875}
+    newSize: {x: 4.47, y: 5.15}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.554003, y: 0.3245293}
+      - {x: -0.55678886, y: -0.31246334}
+      - {x: -0.0014296472, y: -0.64524037}
+      - {x: 0.5547546, y: -0.3204082}
+      - {x: 0.554891, y: 0.32429013}
+      - {x: 0.0020349352, y: 0.6473759}

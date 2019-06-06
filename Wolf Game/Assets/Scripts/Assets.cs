@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Assets : MonoBehaviour
 {
+    // Sprites for tiles
     public Sprite MountainFrost;
     public Sprite Mountain;
     public Sprite Desert;
@@ -29,4 +30,10 @@ public class Assets : MonoBehaviour
     public Sprite Water;
     public Sprite WaterIceberg;
 
+    // Colors for tile selectors;
+    public Color SelectedColor;
+    public Color MoveableColor;
+    public Color AttackableColor;
+    public Color MoveableHighlightedColor;
+    public Color AttackableHighlightedColor;
 }

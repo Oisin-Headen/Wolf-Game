@@ -4,7 +4,7 @@ using UnityEngine;
 public class MapModel
 {
     readonly SpaceModel[][] map;
-    public MapModel(GameController gameController)
+    public MapModel(GameModel gameModel)
     {
         map = new SpaceModel[Utilities.MAP_HEIGHT][];
         for(int row = 0; row < Utilities.MAP_HEIGHT; ++row)
@@ -18,7 +18,7 @@ public class MapModel
             }
             for(; col < Utilities.MAP_WIDTH * 2; col += 2)
             {
-                map[row][col] = new SpaceModel(row, col, gameController, this);
+                map[row][col] = new SpaceModel(row, col, gameModel, this);
             }
         }
 

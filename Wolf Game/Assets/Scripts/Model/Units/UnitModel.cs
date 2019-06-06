@@ -29,7 +29,7 @@ public class UnitModel
     public SpaceModel Space { get; private set; }
 
     public UnitModel(int attack, int defence, int maxHP, int movement, int healAmount, int visionRange,
-        SpaceModel space, AbstractPlayer player, GameController gameController)
+        SpaceModel space, AbstractPlayer player, GameModel gameModel)
     {
         Attack = attack;
         Defence = defence;
@@ -42,8 +42,9 @@ public class UnitModel
         CurrentMovement = movement;
 
         Space = space;
+        space.OccupingUnit = this;
         this.player = player;
-        controller = gameController.AddUnit(this);
+        controller = gameModel.AddUnit(this);
     }
 
     public void StartTurn()
@@ -54,5 +55,23 @@ public class UnitModel
             CurrentHP = Math.Min(CurrentHP + HealAmount, MaxHP);
         }
         CurrentMovement = Movement;
+    }
+
+    public Player GetPlayer()
+    {
+        return player.thisplayer;
+    }
+
+    public void Move()
+    {
+        var movementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(
+            Space, CurrentMovement);
+
+        Debug.Log(CurrentMovement);
+
+        foreach(var node in movementSpaces)
+        {
+            node.GetSpace().Moveable();
+        }
     }
 }

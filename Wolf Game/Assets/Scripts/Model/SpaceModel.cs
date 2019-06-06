@@ -3,7 +3,7 @@
 public class SpaceModel
 {
     public SpaceController controller;
-    private readonly GameController gameController;
+    private readonly GameModel gameModel;
     private readonly MapModel map;
 
     private readonly DoubledCoords doubledCoords;
@@ -12,8 +12,10 @@ public class SpaceModel
     private SpaceTerrain terrain;
     private SpaceModel[] adjacentSpaces;
     private PathfindingNode pathfindingNode;
+    
+    public UnitModel OccupingUnit { get; set; }
 
-    public SpaceModel(int row, int col, GameController gameController, MapModel map)
+    public SpaceModel(int row, int col, GameModel gameModel, MapModel map)
     {
         this.map = map;
         float cube_x = (col - row) / 2;
@@ -21,8 +23,8 @@ public class SpaceModel
         float cube_y = -cube_x-cube_z;
         cubeCoords = new CubeCoords(cube_x, cube_y, cube_z);
         doubledCoords = new DoubledCoords(row, col);
-        this.gameController = gameController;
-        controller = gameController.AddSpace(this);
+        this.gameModel = gameModel;
+        controller = gameModel.AddSpace(this);
     }
 
     public DoubledCoords GetDoubledCoords()
@@ -30,6 +32,7 @@ public class SpaceModel
         return doubledCoords;
     }
 
+    // Get a Description for this space.
     public string GetDescription()
     {
         string desc = "";
@@ -89,6 +92,24 @@ public class SpaceModel
         return desc;
     }
 
+    public void Moveable()
+    {
+        controller.SetMoveable();
+    }
+
+
+    // When this space is clicked, this method is called.
+    public void Clicked()
+    {
+        gameModel.SetSelectedSpace(this);
+        controller.SetSelected();
+    }
+
+    public void Deselect()
+    {
+        controller.Deselect();
+    }
+
     public CubeCoords GetCubeCoords()
     {
         return cubeCoords;
@@ -106,6 +127,7 @@ public class SpaceModel
            terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
         {
             // TODO Impassable
+            return 999;
         }
         if(terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
            terrain.feature == SpaceTerrain.SpaceFeature.Forest ||
@@ -138,7 +160,7 @@ public class SpaceModel
 
     public SpaceTerrain GenerateTerrain()
     {
-        terrain = Utilities.GetTerrainForSpace(this, gameController.seeds);
+        terrain = Utilities.GetTerrainForSpace(this, gameModel.seeds);
         return terrain;
     }
 
@@ -165,7 +187,6 @@ public class SpaceModel
 
     public bool Occupied()
     {
-        // TODO Is there a Unit here?
-        throw new NotImplementedException();
+        return OccupingUnit == null;
     }
 }

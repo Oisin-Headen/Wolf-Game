@@ -10,7 +10,7 @@ public static class Utilities
 
     public const int CAMERA_SPEED = 10;
     public const int CAMERA_ZOOM_SPEED = 15;
-    public const float MAX_CAMERA_SIZE = 20.0f;
+    public const float MAX_CAMERA_SIZE = 5.0f;
     public const float MIN_CAMERA_SIZE = 2.0f;
 
     public const int MIN_CAMERA_X = 0;
@@ -151,6 +151,8 @@ public static class Utilities
     }
 }
 
+
+
 public class DoubledCoords
 {
     public int row, col;
@@ -173,6 +175,7 @@ public class CubeCoords
         this.z = z;
     }
 }
+
 
 public class RandomSeeds
 {

@@ -7,7 +7,8 @@ using System;
 public static class PathfindingDijkstras
 {
     // this uses Dijkstra's Algorithm to get all the spaces a player can visit.
-    public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost, bool ignoreTerrain)
+    public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost, 
+        bool ignoreTerrain)
     {
         List<PathfindingNode> allNodes = new List<PathfindingNode>();
         //List<SpaceModel> shortestPath = new List<SpaceModel>
@@ -23,25 +24,29 @@ public static class PathfindingDijkstras
         {
             foreach (SpaceModel adjacentSpace in currentnode.GetSpace().GetAdjacentSpaces())
             {
+                // If space exists
                 if (adjacentSpace != null)
                 {
                     PathfindingNode nextNode = adjacentSpace.GetNode();
                     if (nextNode != null)
                     {
-                        // not null
+                        // not null, there is already a node here
                         if (!nextNode.BeenSeen())
                         {
                             // Next node hasn't been visited yet
                             if (ignoreTerrain)
                             {
-                                nextNode.Update(currentnode.GetCost() + 1, currentnode.GetCost() + 1, currentnode);
+                                nextNode.Update(currentnode.GetCost() + 1, 
+                                    currentnode.GetCost() + 1, currentnode);
                             }
                             else
                             {
-                                int adjacentSpaceCost = currentnode.GetCost() + adjacentSpace.GetMovementCost();
+                                int adjacentSpaceCost = currentnode.GetCost() 
+                                    + adjacentSpace.GetMovementCost();
                                 double adjacentSpacePathfindingCost = adjacentSpaceCost;
 
-                                nextNode.Update(adjacentSpaceCost, adjacentSpacePathfindingCost, currentnode);
+                                nextNode.Update(adjacentSpaceCost, adjacentSpacePathfindingCost, 
+                                    currentnode);
                             }
                         }
                     }
@@ -66,10 +71,11 @@ public static class PathfindingDijkstras
                                 pathfindingCost += 100;
                             }
                         }
-
-                        if (newNodeCost <= maxCost)
+                        // Can move into a space when you don't have enough movement left,
+                        if (currentnode.GetCost() <= maxCost)
                         {
-                            PathfindingNode newNode = new PathfindingNode(adjacentSpace, currentnode, newNodeCost, pathfindingCost, false, null);
+                            PathfindingNode newNode = new PathfindingNode(adjacentSpace, 
+                                currentnode, newNodeCost, pathfindingCost, false, null);
                             allNodes.Add(newNode);
                             adjacentSpace.SetNode(newNode);
                         }
