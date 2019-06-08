@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MapModel
@@ -34,7 +35,26 @@ public class MapModel
         }
     }
 
-        // Movement Methods. Only used in Space generation.
+    public List<SpaceModel> GetDeepForests()
+    {
+        List<SpaceModel> deepforests = new List<SpaceModel>();
+        foreach(var row in map)
+        {
+            foreach(var space in row)
+            {
+                if(space != null)
+                {
+                    if(space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                    {
+                        deepforests.Add(space); 
+                    }
+                } 
+            }
+        }
+        return deepforests;
+    }
+
+    // Movement Methods. Only used in Space generation.
     public SpaceModel GetNE(DoubledCoords coords)
     {
         int newSpaceRow = coords.row - 1;
@@ -100,6 +120,18 @@ public class MapModel
 
     public SpaceModel GetSpace(DoubledCoords normalCoord)
     {
-        return map[normalCoord.row][normalCoord.col];
+        if(normalCoord == null)
+        {
+            return null;
+        }
+        try
+        {
+            return map[normalCoord.row][normalCoord.col];
+        }
+        catch(IndexOutOfRangeException e)
+        {
+            Debug.Log("{" + normalCoord.row + ", " + normalCoord.col + "]");
+            return null;
+        }
     }
 }

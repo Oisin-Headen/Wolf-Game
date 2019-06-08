@@ -23,6 +23,8 @@ public class PathfindingNode
         this.seen = seen;
         this.pathfindingCost = pathfindingCost;
 
+
+        space.SetNode(this);
         if (destination != null)
         {
             // Spaces Up/Down (UD) +
@@ -105,7 +107,7 @@ public class PathfindingNode
 
     internal void Update(int newCost, double newPathfindingCost, PathfindingNode newParent)
     {
-        if (newPathfindingCost < pathfindingCost)
+        if (newCost < cost)
         {
             cost = newCost;
             pathfindingCost = newPathfindingCost;

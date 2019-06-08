@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -86,5 +87,13 @@ public class CameraController : MonoBehaviour
         }
  
         dragging &= !Input.GetMouseButtonUp(0);
+    }
+
+    internal void SetPosition(Vector2 vector2)
+    {
+        Vector3 pos = vector2;
+        pos.z = -10;
+        mainCamera.transform.position = pos;
+        //mainCamera.orthographicSize = (Utilities.MAX_CAMERA_SIZE + Utilities.MIN_CAMERA_SIZE) / 2;
     }
 }

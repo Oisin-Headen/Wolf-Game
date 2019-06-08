@@ -6,8 +6,8 @@ public class AlliancePlayer : AbstractPlayer
     {
     }
 
-    public override void StartTurn()
-    {
-        throw new System.NotImplementedException();
-    }
+    //public override void StartTurn()
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }

@@ -1,12 +1,28 @@
-﻿using System;public class WolfPlayer : AbstractPlayer{    public WolfPlayer(GameModel gameModel) : base(Player.Wolves, gameModel)
-    {        // TODO Remove Test Unit        var space = gameModel.map.GetSpace(new DoubledCoords(40, 128));        units.Add(UnitFactory.CreateWolf(space, this, gameModel));
-    }
-    // At the start of the wolf player's turn.
-    public override void StartTurn()
+﻿using System.Collections.Generic;public class WolfPlayer : AbstractPlayer{    private List<SpaceModel> deepForests;    public WolfPlayer(GameModel gameModel, List<SpaceModel> deepForests) : base(Player.Wolves, gameModel)
     {
-        foreach(var unit in units)
+        this.deepForests = deepForests;        foreach(var deepforest in deepForests)
         {
-            unit.StartTurn();
+            deepforest.Explore();            foreach(var adjacentSpace in deepforest.GetAdjacentSpaces())
+            {                if(adjacentSpace != null)
+                {
+                    adjacentSpace.Explore();
+                }             }
+        }
+        // TODO Remove Test Unit        if(deepForests.Count > 3)
+        {
+            var space = deepForests[0];
+            units.Add(UnitFactory.CreateWolf(space, this, gameModel));            space = deepForests[1];            units.Add(UnitFactory.CreateWolf(space, this, gameModel));            space = deepForests[2];            units.Add(UnitFactory.CreateWolf(space, this, gameModel));            foreach (var unit in units)
+            {
+                unit.Explore();
+            }
         }
     }
+    //// At the start of the wolf player's turn.
+    //public override void StartTurn()
+    //{
+    //    foreach(var unit in units)
+    //    {
+    //        unit.StartTurn();
+    //    }
+    //}
 }

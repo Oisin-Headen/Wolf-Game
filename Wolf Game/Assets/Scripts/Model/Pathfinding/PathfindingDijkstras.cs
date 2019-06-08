@@ -24,6 +24,9 @@ public static class PathfindingDijkstras
         {
             foreach (SpaceModel adjacentSpace in currentnode.GetSpace().GetAdjacentSpaces())
             {
+                // todo for debuggin, leave commented.
+                //System.Threading.Thread.Sleep(1000);
+
                 // If space exists
                 if (adjacentSpace != null)
                 {
@@ -49,6 +52,11 @@ public static class PathfindingDijkstras
                                     currentnode);
                             }
                         }
+
+                        // todo remove
+                        //UnityToolbag.Dispatcher.InvokeAsync(() =>
+                            //nextNode.GetSpace().controller.SetText(nextNode.GetCost()));
+
                     }
                     else
                     {
@@ -60,6 +68,16 @@ public static class PathfindingDijkstras
                         {
                             newNodeCost = currentnode.GetCost() + 1;
                             pathfindingCost = newNodeCost;
+
+                            if (newNodeCost <= maxCost)
+                            {
+                                PathfindingNode newNode = new PathfindingNode(
+                                    adjacentSpace, currentnode, newNodeCost, pathfindingCost,
+                                    false, null
+                                );
+                                allNodes.Add(newNode);
+                                adjacentSpace.SetNode(newNode);
+                            }
                         }
                         else
                         {
@@ -68,16 +86,21 @@ public static class PathfindingDijkstras
                             if (adjacentSpace.Occupied())
                             {
                                 // TODO Freindly Units don't block movement
-                                pathfindingCost += 100;
+                                pathfindingCost = -1;
                             }
-                        }
-                        // Can move into a space when you don't have enough movement left,
-                        if (currentnode.GetCost() <= maxCost)
-                        {
-                            PathfindingNode newNode = new PathfindingNode(adjacentSpace, 
-                                currentnode, newNodeCost, pathfindingCost, false, null);
-                            allNodes.Add(newNode);
-                            adjacentSpace.SetNode(newNode);
+                            // Can move into a space when you don't have enough movement left,
+                            if (currentnode.GetCost() < maxCost &&
+                                adjacentSpace.GetMovementCost() != -1) // Can't move to impassable
+                            {
+                                PathfindingNode newNode = new PathfindingNode(adjacentSpace,
+                                    currentnode, newNodeCost, pathfindingCost, false, null);
+                                allNodes.Add(newNode);
+                                //adjacentSpace.SetNode(newNode);
+
+                                // todo remove after debug finished
+                                //UnityToolbag.Dispatcher.InvokeAsync(() =>
+                                //newNode.GetSpace().controller.SetText(newNode.GetCost()));
+                            }
                         }
                     }
                 }
@@ -107,6 +130,8 @@ public static class PathfindingDijkstras
             else
             {
                 lowestNode.Seen();
+                //UnityToolbag.Dispatcher.InvokeAsync(() =>
+                                //lowestNode.GetSpace().controller.SetAttackable());
                 currentnode = lowestNode;
             }
         }
@@ -125,27 +150,28 @@ public static class PathfindingDijkstras
 
 
     // TODO I Think I want to try a different FOV method
-    //public static List<PathfindingNode> GetFieldOfView(SpaceModel startSpace, int maxDist, MapModel map)
-    //{
-    //    List<PathfindingNode> nodes = Dijkstras(startSpace, maxDist, true);
-    //    List<PathfindingNode> results = new List<PathfindingNode>();
-    //    foreach (PathfindingNode node in nodes)
-    //    {
-    //        List<SpaceModel> line = MapLinedraw(startSpace, node.GetSpace(), map);
-    //        line.Remove(startSpace);
-    //        line.Remove(node.GetSpace());
-    //        bool blocked = false;
-    //        foreach (SpaceModel space in line)
-    //        {
-    //            blocked |= space.BlocksLOS();
-    //        }
-    //        if (!blocked)
-    //        {
-    //            results.Add(node);
-    //        }
-    //    }
-    //    return results;
-    //}
+    public static List<PathfindingNode> GetFieldOfView(SpaceModel startSpace, int maxDist, 
+        MapModel map, IBlockLOS blockLOS)
+    {
+        List<PathfindingNode> nodes = Dijkstras(startSpace, maxDist, true);
+        List<PathfindingNode> results = new List<PathfindingNode>();
+        foreach (PathfindingNode node in nodes)
+        {
+            List<SpaceModel> line = MapLinedraw(startSpace, node.GetSpace(), map);
+            line.Remove(startSpace);
+            line.Remove(node.GetSpace());
+            bool blocked = false;
+            foreach (SpaceModel space in line)
+            {
+                blocked |= blockLOS.BlocksLOS(startSpace.Terrain.elevation, space);
+            }
+            if (!blocked)
+            {
+                results.Add(node);
+            }
+        }
+        return results;
+    }
 
     // Helper algorithims
 
@@ -161,7 +187,11 @@ public static class PathfindingDijkstras
     {
         int col = (int)Math.Round(2 * coord.x + coord.z);
         int row = (int)Math.Round(coord.z);
-        return new DoubledCoords(col, row);
+        if((col+row)%2 == 1)
+        {
+            col--;
+        }
+        return new DoubledCoords(row, col);
     }
 
     private static CubeCoords RoundCubeCoords(CubeCoords cubeCoord)

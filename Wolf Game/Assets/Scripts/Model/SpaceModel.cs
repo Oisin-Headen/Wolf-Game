@@ -9,11 +9,19 @@ public class SpaceModel
     private readonly DoubledCoords doubledCoords;
     private readonly CubeCoords cubeCoords;
 
-    private SpaceTerrain terrain;
     private SpaceModel[] adjacentSpaces;
     private PathfindingNode pathfindingNode;
-    
+    private bool moving;
+
+
+
     public UnitModel OccupingUnit { get; set; }
+    public SpaceTerrain Terrain { get; private set; }
+
+    public void Explore()
+    {
+        controller.Show();
+    }
 
     public SpaceModel(int row, int col, GameModel gameModel, MapModel map)
     {
@@ -25,6 +33,8 @@ public class SpaceModel
         doubledCoords = new DoubledCoords(row, col);
         this.gameModel = gameModel;
         controller = gameModel.AddSpace(this);
+
+        //controller.SetText("[" + row + ", " + col + "]");
     }
 
     public DoubledCoords GetDoubledCoords()
@@ -36,24 +46,24 @@ public class SpaceModel
     public string GetDescription()
     {
         string desc = "";
-        switch(terrain.elevation)
+        switch(Terrain.elevation)
         {
             case SpaceTerrain.SpaceElevation.Water:
                 desc = "Ocean";
-                if(terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
+                if(Terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
                 { desc = "Iceberg"; }
                 break;
             case SpaceTerrain.SpaceElevation.Mountain:
                 desc = "Mountain";
-                if (terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
+                if (Terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
                 { desc = "Frosted Mountain"; }
                 break;
             default:
                 string hill = "";
-                if(terrain.elevation == SpaceTerrain.SpaceElevation.Hill)
+                if(Terrain.elevation == SpaceTerrain.SpaceElevation.Hill)
                 { hill = " Hill"; }
                 string baseTerrain = "Error", feature = "";
-                switch(terrain.baseTerrain)
+                switch(Terrain.baseTerrain)
                 {
                     case SpaceTerrain.SpaceBaseTerrain.Desert:
                         baseTerrain = "Desert";
@@ -71,7 +81,7 @@ public class SpaceModel
                         baseTerrain = "Grassland";
                         break;
                 }
-                switch (terrain.feature)
+                switch (Terrain.feature)
                 {
                     case SpaceTerrain.SpaceFeature.Forest:
                         feature = " Forest";
@@ -94,6 +104,7 @@ public class SpaceModel
 
     public void Moveable()
     {
+        moving = true;
         controller.SetMoveable();
     }
 
@@ -101,12 +112,24 @@ public class SpaceModel
     // When this space is clicked, this method is called.
     public void Clicked()
     {
-        gameModel.SetSelectedSpace(this);
-        controller.SetSelected();
+        if(moving)
+        {
+            gameModel.SelectedUnit.FinishMove(this);
+        }
+        else if(OccupingUnit != null)
+        {
+            gameModel.SetSelectedUnit(OccupingUnit);
+            controller.SetSelected();
+        }
     }
 
     public void Deselect()
     {
+        //if(OccupingUnit != null)
+        //{
+        //    OccupingUnit.Deselect();
+        //}
+        moving = false;
         controller.Deselect();
     }
 
@@ -123,15 +146,15 @@ public class SpaceModel
 
     public int GetMovementCost()
     {
-        if(terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
-           terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
+        if(Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
+           Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
         {
             // TODO Impassable
-            return 999;
+            return -1;
         }
-        if(terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
-           terrain.feature == SpaceTerrain.SpaceFeature.Forest ||
-           terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+        if(Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
+           Terrain.feature == SpaceTerrain.SpaceFeature.Forest ||
+           Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
         {
             return 2;
         }
@@ -160,8 +183,8 @@ public class SpaceModel
 
     public SpaceTerrain GenerateTerrain()
     {
-        terrain = Utilities.GetTerrainForSpace(this, gameModel.seeds);
-        return terrain;
+        Terrain = Utilities.GetTerrainForSpace(this, gameModel.seeds);
+        return Terrain;
     }
 
     public float DistCenter()

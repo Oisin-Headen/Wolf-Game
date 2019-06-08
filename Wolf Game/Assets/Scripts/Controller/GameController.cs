@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public GameObject tileSelectorPrefab;
     public Assets assets;
     public Text mouseOverText;
+    public CameraController cameraController;
 
     // TODO Won't need this eventually
     public Text currentPlayerText;
@@ -51,7 +52,7 @@ public class GameController : MonoBehaviour
 
     public void EndTurn()
     {
-        gameModel.EndTurn();
+        gameModel.EndTurnButtonPressed();
     }
 
     public void Move()

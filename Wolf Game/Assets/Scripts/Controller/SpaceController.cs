@@ -13,8 +13,7 @@ public class SpaceController : MonoBehaviour
     private GameObject currentTileSelector;
 
     private bool attackable, moveable;
-
-
+    
     // Setup this Controller
     public void Setup(SpaceModel model, GameObject spaceView, GameController gameController)
     {
@@ -40,8 +39,8 @@ public class SpaceController : MonoBehaviour
     // If the user mouses over this hex, display properties
     private void OnMouseOver()
     {
-        string text = spaceModel.GetDescription();
-        gameController.mouseOverText.text = text;
+        //string text = spaceModel.GetDescription();
+        //gameController.mouseOverText.text = text;
 
 
         // if the Space is attackable or moveable, then change the color of the tile selector
@@ -72,13 +71,13 @@ public class SpaceController : MonoBehaviour
         spaceModel.Clicked();
     }
 
-
 // *** A List of methods that change the selectable/selected look of this tile *********************
 
     // When a tile is clicked on, and is the selected tile.
     public void SetSelected()
     {
         CreateSelectorAndSetColor(gameController.assets.SelectedColor);
+        gameController.cameraController.SetPosition(GetPosition());
     }
 
     // When a tile can be moved to.
@@ -119,6 +118,15 @@ public class SpaceController : MonoBehaviour
     }
 
 // *** End Selectables *****************************************************************************
+
+    public void Show()
+    {
+        spaceView.GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);
+    }
+    public void Hide()
+    {
+        spaceView.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+    }
 
 
     // This Method Sets the hex view to the correct terrain
@@ -268,5 +276,12 @@ public class SpaceController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+
+    // todo testing methods
+    public void SetText(string v)
+    {
+        GetComponentInChildren<TextMesh>().text = v;
     }
 }

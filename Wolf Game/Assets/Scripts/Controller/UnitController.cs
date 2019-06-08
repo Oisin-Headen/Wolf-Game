@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,5 +14,10 @@ public class UnitController : MonoBehaviour
         unitView = view;
         unitModel = model;
         this.gameController = gameController;
+    }
+
+    public void MovePosition(PathfindingNode node)
+    {
+        unitView.GetComponent<Transform>().position = node.GetSpace().controller.GetPosition();
     }
 }
