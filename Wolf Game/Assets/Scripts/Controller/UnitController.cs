@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class UnitController : MonoBehaviour
 {
@@ -16,8 +17,8 @@ public class UnitController : MonoBehaviour
         this.gameController = gameController;
     }
 
-    public void MovePosition(PathfindingNode node)
+    public void MovePosition(SpaceModel space)
     {
-        unitView.GetComponent<Transform>().position = node.GetSpace().controller.GetPosition();
+        unitView.GetComponent<Transform>().position = space.controller.GetPosition();
     }
 }

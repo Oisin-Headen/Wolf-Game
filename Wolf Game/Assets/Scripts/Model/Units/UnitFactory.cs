@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public static class UnitFactory
 {
@@ -16,7 +17,8 @@ public static class UnitFactory
             space, 
             player, 
             gameModel, 
-            new IgnoreForestLOS()
+            new IgnoreForestLOS(),
+            new OrdinaryMovementCost()
         );
     }
 }

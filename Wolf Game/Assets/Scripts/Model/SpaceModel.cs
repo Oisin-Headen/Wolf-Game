@@ -1,4 +1,5 @@
 ﻿using System;
+using Pathfinding;
 
 public class SpaceModel
 {
@@ -12,15 +13,18 @@ public class SpaceModel
     private SpaceModel[] adjacentSpaces;
     private PathfindingNode pathfindingNode;
     private bool moving;
+    private bool explored = false;
 
 
 
     public UnitModel OccupingUnit { get; set; }
     public SpaceTerrain Terrain { get; private set; }
+    public bool Explored { get => explored; private set => explored = value; }
 
     public void Explore()
     {
         controller.Show();
+        Explored = true;
     }
 
     public SpaceModel(int row, int col, GameModel gameModel, MapModel map)
@@ -144,22 +148,28 @@ public class SpaceModel
         return adjacentSpaces;
     }
 
-    public int GetMovementCost()
-    {
-        if(Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
-           Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
-        {
-            // TODO Impassable
-            return -1;
-        }
-        if(Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
-           Terrain.feature == SpaceTerrain.SpaceFeature.Forest ||
-           Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
-        {
-            return 2;
-        }
-        return 1;
-    }
+
+    //// TODO Move to a Dependancy Injection in the UnitModel
+    //public int GetMovementCost()
+    //{
+    //    if(!Explored)
+    //    {
+    //        return PathfindingDijkstras.REST_OF_MOVEMENT;
+    //    }
+    //    if(Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
+    //       Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
+    //    {
+    //        // TODO Impassable
+    //        return -1;
+    //    }
+    //    if(Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
+    //       Terrain.feature == SpaceTerrain.SpaceFeature.Forest ||
+    //       Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+    //    {
+    //        return 2 * PathfindingDijkstras.ONE_SPACE;
+    //    }
+    //    return 1 * PathfindingDijkstras.ONE_SPACE;
+    //}
 
     public void SetAdjacentSpaces()
     {

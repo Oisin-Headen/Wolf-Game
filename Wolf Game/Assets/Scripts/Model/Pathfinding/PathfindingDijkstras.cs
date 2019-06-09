@@ -3,261 +3,253 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-// Pathfinding class for players
-public static class PathfindingDijkstras
+namespace Pathfinding
 {
-    // this uses Dijkstra's Algorithm to get all the spaces a player can visit.
-    public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost, 
-        bool ignoreTerrain)
+    // Pathfinding class for players
+    public static class PathfindingDijkstras
     {
-        List<PathfindingNode> allNodes = new List<PathfindingNode>();
-        //List<SpaceModel> shortestPath = new List<SpaceModel>
-        //{
-        //    startSpace
-        //};
-        PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, 0, true, null);
+        // Pathfinding Constants
+        public const int ONE_SPACE = 100;
+        public const int HALF_SPACE = 50;
+        public const int THIRD_SPACE = 34;
+        public const int QUARTER_SPACE = 25;
 
-        allNodes.Add(currentnode);
+        // No unit has 100 spaces of Movement
+        public const int REST_OF_MOVEMENT = 10000;
 
-        bool done = false;
-        while (!done)
+
+        // this uses Dijkstra's Algorithm to get all the spaces a player can visit.
+        public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost,
+            IMovementCost costDeterminer)
         {
-            foreach (SpaceModel adjacentSpace in currentnode.GetSpace().GetAdjacentSpaces())
+            List<PathfindingNode> allNodes = new List<PathfindingNode>();
+            //List<SpaceModel> shortestPath = new List<SpaceModel>
+            //{
+            //    startSpace
+            //};
+            PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, true, null);
+
+            allNodes.Add(currentnode);
+
+            bool done = false;
+            while (!done)
             {
-                // todo for debuggin, leave commented.
-                //System.Threading.Thread.Sleep(1000);
-
-                // If space exists
-                if (adjacentSpace != null)
+                foreach (SpaceModel adjacentSpace in currentnode.Space.GetAdjacentSpaces())
                 {
-                    PathfindingNode nextNode = adjacentSpace.GetNode();
-                    if (nextNode != null)
+                    // todo for debugging, leave commented.
+                    //System.Threading.Thread.Sleep(250);
+
+                    // If space exists
+                    if (adjacentSpace != null)
                     {
-                        // not null, there is already a node here
-                        if (!nextNode.BeenSeen())
+                        PathfindingNode nextNode = adjacentSpace.GetNode();
+                        if (nextNode != null)
                         {
-                            // Next node hasn't been visited yet
-                            if (ignoreTerrain)
+                            // not null, there is already a node here
+                            if (!nextNode.Seen)
                             {
-                                nextNode.Update(currentnode.GetCost() + 1, 
-                                    currentnode.GetCost() + 1, currentnode);
+                                // Next node hasn't been visited yet
+                                int adjacentSpaceCost = currentnode.Cost +
+                                    costDeterminer.GetMovementCost(adjacentSpace);
+                                //nextNode.Update(adjacentSpaceCost, adjacentSpacePathfindingCost,
+                                //currentnode);
+                                nextNode.Update(adjacentSpaceCost, currentnode);
                             }
-                            else
-                            {
-                                int adjacentSpaceCost = currentnode.GetCost() 
-                                    + adjacentSpace.GetMovementCost();
-                                double adjacentSpacePathfindingCost = adjacentSpaceCost;
 
-                                nextNode.Update(adjacentSpaceCost, adjacentSpacePathfindingCost, 
-                                    currentnode);
-                            }
-                        }
+                            // todo remove
+                            //UnityToolbag.Dispatcher.InvokeAsync(() =>
+                            //nextNode.Space.controller.SetText(nextNode.Cost.ToString()));
 
-                        // todo remove
-                        //UnityToolbag.Dispatcher.InvokeAsync(() =>
-                            //nextNode.GetSpace().controller.SetText(nextNode.GetCost()));
-
-                    }
-                    else
-                    {
-                        // Is null, need new node
-                        int newNodeCost;
-                        double pathfindingCost;
-
-                        if (ignoreTerrain)
-                        {
-                            newNodeCost = currentnode.GetCost() + 1;
-                            pathfindingCost = newNodeCost;
-
-                            if (newNodeCost <= maxCost)
-                            {
-                                PathfindingNode newNode = new PathfindingNode(
-                                    adjacentSpace, currentnode, newNodeCost, pathfindingCost,
-                                    false, null
-                                );
-                                allNodes.Add(newNode);
-                                adjacentSpace.SetNode(newNode);
-                            }
                         }
                         else
                         {
-                            newNodeCost = currentnode.GetCost() + adjacentSpace.GetMovementCost();
-                            pathfindingCost = newNodeCost;
-                            if (adjacentSpace.Occupied())
+                            // Is null, need new node
+                            int newNodeCost;
+                            newNodeCost = currentnode.Cost +
+                                costDeterminer.GetMovementCost(adjacentSpace);
+                            if (!adjacentSpace.Occupied())
                             {
                                 // TODO Freindly Units don't block movement
-                                pathfindingCost = -1;
+                                newNodeCost = -1;
                             }
-                            // Can move into a space when you don't have enough movement left,
-                            if (currentnode.GetCost() < maxCost &&
-                                adjacentSpace.GetMovementCost() != -1) // Can't move to impassable
-                            {
-                                PathfindingNode newNode = new PathfindingNode(adjacentSpace,
-                                    currentnode, newNodeCost, pathfindingCost, false, null);
-                                allNodes.Add(newNode);
-                                //adjacentSpace.SetNode(newNode);
 
-                                // todo remove after debug finished
-                                //UnityToolbag.Dispatcher.InvokeAsync(() =>
-                                //newNode.GetSpace().controller.SetText(newNode.GetCost()));
+                            // Can't move to impassable or other units
+                            if (costDeterminer.GetMovementCost(adjacentSpace) != -1
+                                && newNodeCost != -1)
+                            {
+                                // Can move to a space when you don't have enough movement left
+                                if (currentnode.Cost < maxCost)
+                                {
+                                    PathfindingNode newNode = new PathfindingNode(adjacentSpace,
+                                        currentnode, newNodeCost, false, null);
+                                    allNodes.Add(newNode);
+                                    //adjacentSpace.SetNode(newNode);
+
+                                    // todo remove after debug finished
+                                    //UnityToolbag.Dispatcher.InvokeAsync(() =>
+                                    //newNode.Space.controller.SetText(newNode.Cost.ToString()))
+                                }
                             }
                         }
                     }
                 }
-            }
-            PathfindingNode lowestNode = null;
-            foreach (PathfindingNode node in allNodes)
-            {
-                if (!node.BeenSeen())
+                PathfindingNode lowestNode = null;
+                foreach (PathfindingNode node in allNodes)
                 {
-                    if (lowestNode == null)
+                    if (!node.Seen)
                     {
-                        lowestNode = node;
-                    }
-                    else
-                    {
-                        if (node.GetPathfindingCost() < lowestNode.GetPathfindingCost())
+                        if (lowestNode == null)
                         {
                             lowestNode = node;
                         }
+                        else
+                        {
+                            //if (node.GetPathfindingCost() < lowestNode.GetPathfindingCost())
+                            if(node.Cost < lowestNode.Cost)
+                            {
+                                lowestNode = node;
+                            }
+                        }
                     }
                 }
+                if (lowestNode == null)
+                {
+                    done = true;
+                }
+                else
+                {
+                    lowestNode.SetSeen();
+                    //UnityToolbag.Dispatcher.InvokeAsync(() =>
+                    //lowestNode.GetSpace().controller.SetAttackable());
+                    currentnode = lowestNode;
+                }
             }
-            if (lowestNode == null)
+            foreach (PathfindingNode node in allNodes)
             {
-                done = true;
+                node.Space.SetNode(null);
+            }
+
+            return allNodes;
+        }
+
+        public static List<PathfindingNode> GetSpacesForMovementDijkstras(SpaceModel startSpace, 
+            int maxCost, IMovementCost costDeterminer)
+        {
+            return Dijkstras(startSpace, maxCost, costDeterminer);
+        }
+
+
+        // TODO I Think I want to try a different FOV method
+        public static List<PathfindingNode> GetFieldOfView(SpaceModel startSpace, int maxSpaces,
+            MapModel map, IBlockLOS blockLOS)
+        {
+            List<PathfindingNode> nodes = Dijkstras(startSpace, maxSpaces * ONE_SPACE, 
+                new OneCostMovement());
+            List<PathfindingNode> results = new List<PathfindingNode>();
+            foreach (PathfindingNode node in nodes)
+            {
+                List<SpaceModel> line = MapLinedraw(startSpace, node.Space, map);
+                line.Remove(startSpace);
+                line.Remove(node.Space);
+                bool blocked = false;
+                foreach (SpaceModel space in line)
+                {
+                    blocked |= blockLOS.BlocksLOS(startSpace.Terrain.elevation, space);
+                }
+                if (!blocked)
+                {
+                    results.Add(node);
+                }
+            }
+            return results;
+        }
+
+        // Helper algorithims
+
+        //private static CubeCoords CoordinatesToCubeCoords(SpaceModel space)
+        //{
+        //    double x = (space.Column - space.Row) / 2;
+        //    double z = space.Row;
+        //    double y = -x - z;
+        //    return new CubeCoord(x, y, z);
+        //}
+
+        private static DoubledCoords CubeCoordsToCoordinates(CubeCoords coord)
+        {
+            int col = (int)Math.Round(2 * coord.x + coord.z);
+            int row = (int)Math.Round(coord.z);
+            if ((col + row) % 2 == 1)
+            {
+                col--;
+            }
+            return new DoubledCoords(row, col);
+        }
+
+        private static CubeCoords RoundCubeCoords(CubeCoords cubeCoord)
+        {
+            float newX = Mathf.Round(cubeCoord.x);
+            float newY = Mathf.Round(cubeCoord.y);
+            float newZ = Mathf.Round(cubeCoord.z);
+
+            float x_diff = Math.Abs(newX - cubeCoord.x);
+            float y_diff = Math.Abs(newY - cubeCoord.y);
+            float z_diff = Math.Abs(newZ - cubeCoord.z);
+
+            if (x_diff > y_diff && x_diff > z_diff)
+            {
+                newX = -newY - newZ;
+            }
+            else if (y_diff > z_diff)
+            {
+                newY = -newX - newZ;
             }
             else
             {
-                lowestNode.Seen();
-                //UnityToolbag.Dispatcher.InvokeAsync(() =>
-                                //lowestNode.GetSpace().controller.SetAttackable());
-                currentnode = lowestNode;
+                newZ = -newX - newY;
             }
-        }
-        foreach (PathfindingNode node in allNodes)
-        {
-            node.GetSpace().SetNode(null);
+            return new CubeCoords(newX, newY, newZ);
         }
 
-        return allNodes;
-    }
-
-    public static List<PathfindingNode> GetSpacesForMovementDijkstras(SpaceModel startSpace, int maxCost)
-    {
-        return Dijkstras(startSpace, maxCost, false);
-    }
-
-
-    // TODO I Think I want to try a different FOV method
-    public static List<PathfindingNode> GetFieldOfView(SpaceModel startSpace, int maxDist, 
-        MapModel map, IBlockLOS blockLOS)
-    {
-        List<PathfindingNode> nodes = Dijkstras(startSpace, maxDist, true);
-        List<PathfindingNode> results = new List<PathfindingNode>();
-        foreach (PathfindingNode node in nodes)
+        private static float Lerp(float a, float b, float t)
         {
-            List<SpaceModel> line = MapLinedraw(startSpace, node.GetSpace(), map);
-            line.Remove(startSpace);
-            line.Remove(node.GetSpace());
-            bool blocked = false;
-            foreach (SpaceModel space in line)
+            return a + (b - a) * t;
+        }
+
+        private static CubeCoords CubeLerp(CubeCoords a, CubeCoords b, float t)
+        {
+            return new CubeCoords(Lerp(a.x, b.x, t),
+                                 Lerp(a.y, b.y, t),
+                                 Lerp(a.z, b.z, t));
+        }
+
+        private static List<SpaceModel> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
+        {
+            CubeCoords a = start.GetCubeCoords();
+            CubeCoords b = end.GetCubeCoords();
+
+
+            float N = CubeDistance(a, b);
+            List<SpaceModel> results = new List<SpaceModel>();
+            if (Math.Abs(N) > Double.Epsilon)
             {
-                blocked |= blockLOS.BlocksLOS(startSpace.Terrain.elevation, space);
-            }
-            if (!blocked)
-            {
-                results.Add(node);
-            }
-        }
-        return results;
-    }
-
-    // Helper algorithims
-
-    //private static CubeCoords CoordinatesToCubeCoords(SpaceModel space)
-    //{
-    //    double x = (space.Column - space.Row) / 2;
-    //    double z = space.Row;
-    //    double y = -x - z;
-    //    return new CubeCoord(x, y, z);
-    //}
-
-    private static DoubledCoords CubeCoordsToCoordinates(CubeCoords coord)
-    {
-        int col = (int)Math.Round(2 * coord.x + coord.z);
-        int row = (int)Math.Round(coord.z);
-        if((col+row)%2 == 1)
-        {
-            col--;
-        }
-        return new DoubledCoords(row, col);
-    }
-
-    private static CubeCoords RoundCubeCoords(CubeCoords cubeCoord)
-    {
-        float newX = Mathf.Round(cubeCoord.x);
-        float newY = Mathf.Round(cubeCoord.y);
-        float newZ = Mathf.Round(cubeCoord.z);
-
-        float x_diff = Math.Abs(newX - cubeCoord.x);
-        float y_diff = Math.Abs(newY - cubeCoord.y);
-        float z_diff = Math.Abs(newZ - cubeCoord.z);
-
-        if (x_diff > y_diff && x_diff > z_diff)
-        {
-            newX = -newY - newZ;
-        }
-        else if (y_diff > z_diff)
-        {
-            newY = -newX - newZ;
-        }
-        else
-        {
-            newZ = -newX - newY;
-        }
-        return new CubeCoords(newX, newY, newZ);
-    }
-
-    private static float Lerp(float a, float b, float t)
-    {
-        return a + (b - a) * t;
-    }
-
-    private static CubeCoords CubeLerp(CubeCoords a, CubeCoords b, float t)
-    {
-        return new CubeCoords(Lerp(a.x, b.x, t),
-                             Lerp(a.y, b.y, t),
-                             Lerp(a.z, b.z, t));
-    }
-
-    private static List<SpaceModel> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
-    {
-        CubeCoords a = start.GetCubeCoords();
-        CubeCoords b = end.GetCubeCoords();
-
-
-        float N = CubeDistance(a, b);
-        List<SpaceModel> results = new List<SpaceModel>();
-        if (Math.Abs(N) > Double.Epsilon)
-        {
-            for (int i = 0; i <= N; i++)
-            {
-                CubeCoords coord = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
-                DoubledCoords normalCoord = CubeCoordsToCoordinates(coord);
-                SpaceModel newSpace;
-                newSpace = map.GetSpace(normalCoord);
-                if (newSpace != null)
+                for (int i = 0; i <= N; i++)
                 {
-                    results.Add(newSpace);
+                    CubeCoords coord = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
+                    DoubledCoords normalCoord = CubeCoordsToCoordinates(coord);
+                    SpaceModel newSpace;
+                    newSpace = map.GetSpace(normalCoord);
+                    if (newSpace != null)
+                    {
+                        results.Add(newSpace);
+                    }
                 }
             }
+            return results;
         }
-        return results;
-    }
 
-    private static float CubeDistance(CubeCoords a, CubeCoords b)
-    {
-        return (Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y) + Math.Abs(a.z - b.z)) / 2;
+        private static float CubeDistance(CubeCoords a, CubeCoords b)
+        {
+            return (Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y) + Math.Abs(a.z - b.z)) / 2;
+        }
     }
 }

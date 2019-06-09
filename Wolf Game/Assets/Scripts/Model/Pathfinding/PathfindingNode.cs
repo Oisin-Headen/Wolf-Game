@@ -3,115 +3,89 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class PathfindingNode
+namespace Pathfinding
 {
-    private int cost;
-    private double pathfindingCost;
-    private bool seen;
-    private SpaceModel thisSpace;
-
-    // A* only variable. Guess of remaining distance
-    private int ASRemaining;
-    private PathfindingNode parent;
-
-    // Create a node on a space. Special constructor for A* nodes, includes guess of remaining distance
-    public PathfindingNode(SpaceModel space, PathfindingNode parent, int cost, double pathfindingCost, bool seen, SpaceModel destination)
+    public class PathfindingNode
     {
-        thisSpace = space;
-        this.cost = cost;
-        this.parent = parent;
-        this.seen = seen;
-        this.pathfindingCost = pathfindingCost;
+        // A* only variable. Guess of remaining distance
+        private readonly int aSRemaining;
+        internal int ASRemaining => aSRemaining;
+        internal int ASTotal => aSRemaining + Cost;
+
+        private PathfindingNode parent;
+
+        internal int Cost { get; private set; }
+        internal bool Seen { get; private set; }
+
+        public SpaceModel Space { get; }
 
 
-        space.SetNode(this);
-        if (destination != null)
+        // Create a node on a space. Special constructor for A* nodes, includes guess of remaining distance
+        public PathfindingNode(SpaceModel space, PathfindingNode parent, int cost, bool seen, SpaceModel destination)
         {
-            // Spaces Up/Down (UD) +
-            // Spaces Side - (UD) / 2 (Min 0)
-            // This section gets the minimum distance between two points on our hex map.
-            var coords = space.GetDoubledCoords();
-            int vertical = Math.Abs(coords.row - coords.row);
-            int furtherHorizontal = Math.Max(Math.Abs(coords.col - coords.col) - vertical, 0) / 2;
-            ASRemaining = vertical + furtherHorizontal;
+            Space = space;
+            Cost = cost;
+            this.parent = parent;
+            Seen = seen;
+            //this.pathfindingCost = pathfindingCost;
+
+
+            space.SetNode(this);
+            if (destination != null)
+            {
+                // Spaces Up/Down (UD) +
+                // Spaces Side - (UD) / 2 (Min 0)
+                // This section gets the minimum distance between two points on our hex map.
+                var coords = space.GetDoubledCoords();
+                int vertical = Math.Abs(coords.row - coords.row);
+                int furtherHorizontal = Math.Max(Math.Abs(coords.col - coords.col) - vertical, 0) / 2;
+                // Multiply remaining Spaces by space cost constant
+                aSRemaining = (vertical + furtherHorizontal) * PathfindingDijkstras.ONE_SPACE;
+            }
         }
-    }
 
-    // A* needs a guess of how far this space is from the destination
-    public double GetASCost()
-    {
-        return pathfindingCost + ASRemaining;
-    }
-    public PathfindingNode GetParent()
-    {
-        return parent;
-    }
-
-    // has this node been visited by the pathfinder
-    public bool BeenSeen()
-    {
-        return seen;
-    }
-
-    // This node has been visited
-    public void Seen()
-    {
-        seen = true;
-    }
-
-    // Gets the space this node is attached to.
-    public SpaceModel GetSpace()
-    {
-        return thisSpace;
-    }
-
-    // Gets the cost to travel to this node.
-    public int GetCost()
-    {
-        return cost;
-    }
-
-    public double GetPathfindingCost()
-    {
-        return pathfindingCost;
-    }
-
-    public int GetRemainingCost()
-    {
-        return ASRemaining;
-    }
-
-    // recursive function
-    public List<PathfindingNode> GetPath(bool endPoint)
-    {
-        if(parent == null)
+        internal PathfindingNode GetParent()
         {
-            return new List<PathfindingNode>();
+            return parent;
         }
-        else if(endPoint)
-        {
-            List<PathfindingNode> path = parent.GetPath(false);
-            path.Add(parent);
-            path.Add(this);
-            return path;
-        }
-        else
-        {
-            List<PathfindingNode> path = parent.GetPath(false);
-            path.Add(parent);
-            return path;
-        }
-    }
 
-    // Is this new path better than the current one? If yes, replace the current one.
-
-    internal void Update(int newCost, double newPathfindingCost, PathfindingNode newParent)
-    {
-        if (newCost < cost)
+        // This node has been visited
+        internal void SetSeen()
         {
-            cost = newCost;
-            pathfindingCost = newPathfindingCost;
-            parent = newParent;
+            Seen = true;
+        }
+
+        // recursive function
+        public List<PathfindingNode> GetPath(bool endPoint)
+        {
+            if (parent == null)
+            {
+                return new List<PathfindingNode>();
+            }
+            else if (endPoint)
+            {
+                List<PathfindingNode> path = parent.GetPath(false);
+                path.Add(parent);
+                path.Add(this);
+                return path;
+            }
+            else
+            {
+                List<PathfindingNode> path = parent.GetPath(false);
+                path.Add(parent);
+                return path;
+            }
+        }
+
+        // Is this new path better than the current one? If yes, replace the current one.
+        internal void Update(int newCost, PathfindingNode newParent)
+        {
+            if (newCost < Cost)
+            {
+                Cost = newCost;
+                //pathfindingCost = newPathfindingCost;
+                parent = newParent;
+            }
         }
     }
 }

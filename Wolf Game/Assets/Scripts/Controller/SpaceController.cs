@@ -11,12 +11,15 @@ public class SpaceController : MonoBehaviour
 
     private GameObject tileSelectorPrefab;
     private GameObject currentTileSelector;
+    private SpriteRenderer minimapDisplay;
 
     private bool attackable, moveable;
-    
+
     // Setup this Controller
     public void Setup(SpaceModel model, GameObject spaceView, GameController gameController)
     {
+        minimapDisplay = spaceView.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
+
         this.gameController = gameController;
         this.spaceModel = model;
         this.spaceView = spaceView;
@@ -29,6 +32,7 @@ public class SpaceController : MonoBehaviour
 
         attackable = false;
         moveable = false;
+        Hide();
     }
 
     public Vector2 GetPosition()
@@ -39,8 +43,8 @@ public class SpaceController : MonoBehaviour
     // If the user mouses over this hex, display properties
     private void OnMouseOver()
     {
-        //string text = spaceModel.GetDescription();
-        //gameController.mouseOverText.text = text;
+        string text = spaceModel.GetDescription();
+        gameController.mouseOverText.text = text;
 
 
         // if the Space is attackable or moveable, then change the color of the tile selector
@@ -122,10 +126,19 @@ public class SpaceController : MonoBehaviour
     public void Show()
     {
         spaceView.GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);
+
+
+        var childColor = minimapDisplay.color;
+        childColor.a = 1;
+        minimapDisplay.color = childColor;
     }
     public void Hide()
     {
         spaceView.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+
+        var childColor = minimapDisplay.color;
+        childColor.a = 0;
+        minimapDisplay.color = childColor;
     }
 
 
@@ -139,10 +152,15 @@ public class SpaceController : MonoBehaviour
                 if (terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
                 {
                     spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.WaterIceberg;
+
+                    // TODO Proper
+                    minimapDisplay.color = Color.cyan;
                 }
                 else
                 {
                     spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Water;
+                    // TODO Proper
+                    minimapDisplay.color = Color.cyan;
                 }
                 break;
 
@@ -152,20 +170,28 @@ public class SpaceController : MonoBehaviour
                 {
                     case SpaceTerrain.SpaceBaseTerrain.Desert:
                         spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Desert;
+                        // TODO Proper
+                        minimapDisplay.color = Color.red;
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Grassland:
                         if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.green;
                         }
                         else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassDeepForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.green;
                         }
                         else
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Grass;
+                            // TODO Proper
+                            minimapDisplay.color = Color.green;
                         }
                         break;
 
@@ -173,29 +199,41 @@ public class SpaceController : MonoBehaviour
                         if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.yellow;
                         }
                         else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsDeepForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.yellow;
                         }
                         else
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Plains;
+                            // TODO Proper
+                            minimapDisplay.color = Color.yellow;
                         }
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Snow:
                         spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Snow;
+                        // TODO Proper
+                        minimapDisplay.color = Color.white;
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Tundra:
                         if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.TundraForest;
+                            // TODO Proper
+                            minimapDisplay.color = new Color(210, 105, 30);
                         }
                         else
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Tundra;
+                            // TODO Proper
+                            minimapDisplay.color = new Color(210, 105, 30);
                         }
                         break;
 
@@ -211,20 +249,28 @@ public class SpaceController : MonoBehaviour
                 {
                     case SpaceTerrain.SpaceBaseTerrain.Desert:
                         spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.DesertHills;
+                        // TODO Proper
+                        minimapDisplay.color = Color.red;
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Grassland:
                         if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassHillForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.green;
                         }
                         else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassHillDeepForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.green;
                         }
                         else
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.GrassHill;
+                            // TODO Proper
+                            minimapDisplay.color = Color.green;
                         }
                         break;
 
@@ -232,29 +278,41 @@ public class SpaceController : MonoBehaviour
                         if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsHillForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.yellow;
                         }
                         else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsHillDeepForest;
+                            // TODO Proper
+                            minimapDisplay.color = Color.yellow;
                         }
                         else
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.PlainsHill;
+                            // TODO Proper
+                            minimapDisplay.color = Color.yellow;
                         }
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Snow:
                         spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.SnowHills;
+                        // TODO Proper
+                        minimapDisplay.color = Color.white;
                         break;
 
                     case SpaceTerrain.SpaceBaseTerrain.Tundra:
                         if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.TundraHillForest;
+                            // TODO Proper
+                            minimapDisplay.color = new Color(210, 105, 30);
                         }
                         else
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.TundraHill;
+                            // TODO Proper
+                            minimapDisplay.color = new Color(210,105,30);
                         }
                         break;
 
@@ -269,10 +327,14 @@ public class SpaceController : MonoBehaviour
                 if (terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
                 {
                     spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.MountainFrost;
+                    // TODO Proper
+                    minimapDisplay.color = Color.grey;
                 }
                 else
                 {
                     spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.Mountain;
+                    // TODO Proper
+                    minimapDisplay.color = Color.grey;
                 }
                 break;
         }

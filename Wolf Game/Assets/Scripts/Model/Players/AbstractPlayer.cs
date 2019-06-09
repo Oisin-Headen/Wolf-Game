@@ -8,7 +8,7 @@ public abstract class AbstractPlayer
     public readonly Player thisplayer;
     protected GameModel gameModel;
 
-    private List<PreEndTurnTask> tasks;
+    private List<IPreEndTurnTask> tasks;
 
     protected AbstractPlayer(Player newplayer, GameModel gameModel)
     {
@@ -19,11 +19,11 @@ public abstract class AbstractPlayer
     //public abstract void EndTurn();
     public void StartTurn()
     {
-        tasks = new List<PreEndTurnTask>();
+        tasks = new List<IPreEndTurnTask>();
         foreach (var unit in units)
         {
             unit.StartTurn();
-            tasks.Add(new PreEndTurnTask(unit));
+            tasks.Add(new PreEndTurnMovementTask(unit));
         }
     }
 
@@ -33,7 +33,7 @@ public abstract class AbstractPlayer
         bool canEndTurn = true;
         foreach(var task in tasks)
         {
-            canEndTurn &= task.Complete;
+            canEndTurn &= task.Complete();
         }
         return canEndTurn;
     }
@@ -44,7 +44,7 @@ public abstract class AbstractPlayer
         bool foundTask = false;
         foreach (var task in tasks)
         {
-            if(!foundTask && !task.Complete)
+            if(!foundTask && !task.Complete())
             {
                 task.Show();
                 foundTask = true;

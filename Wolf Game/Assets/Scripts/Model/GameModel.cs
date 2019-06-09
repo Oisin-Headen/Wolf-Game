@@ -38,7 +38,7 @@ public class GameModel{
             if(SelectedUnit.GetPlayer() == currentPlayer)
             {
                 // Todo for figuring out pathfinding, leave commented for now.
-                //var thread = new System.Threading.Thread(() => unit.Move());
+                //var thread = new System.Threading.Thread(() => SelectedUnit.StartMove());
                 //thread.Start();
                 SelectedUnit.StartMove();             }
         }

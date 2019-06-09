@@ -2,21 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
-public class UnitModel : IBlockLOS
+public class UnitModel
 {
-    public UnitModel(int attack, int defence, int maxHP, int movement, int healAmount, int visionRange,
-        SpaceModel space, AbstractPlayer player, GameModel gameModel, IBlockLOS blockLOS)
+    public UnitModel(int attack, int defence, int maxHP, int movementNumSpaces, int healAmount, int visionRange,
+        SpaceModel space, AbstractPlayer player, GameModel gameModel, IBlockLOS blockLOS, IMovementCost movementCostDeterminer)
     {
         Attack = attack;
         Defence = defence;
         MaxHP = maxHP;
-        Movement = movement;
+        // Max movement equal to number of spaces times cost.
+        Movement = movementNumSpaces * PathfindingDijkstras.ONE_SPACE;
         HealAmount = healAmount;
         VisionRange = visionRange;
 
         CurrentHP = maxHP;
-        CurrentMovement = movement;
+        CurrentMovement = Movement;
 
         Space = space;
         space.OccupingUnit = this;
@@ -24,9 +26,11 @@ public class UnitModel : IBlockLOS
         controller = gameModel.AddUnit(this);
         this.gameModel = gameModel;
         this.blockLOS = blockLOS;
+        this.movementCostDeterminer = movementCostDeterminer;
     }
 
     private readonly IBlockLOS blockLOS;
+    private readonly IMovementCost movementCostDeterminer;
 
     //private bool moving;
     private List<PathfindingNode> movementSpaces;
@@ -56,17 +60,17 @@ public class UnitModel : IBlockLOS
     // View all Spaces in Range
     public void Explore()
     {
-        foreach(var node in PathfindingDijkstras.GetFieldOfView(Space, VisionRange, 
+        foreach(var node in Pathfinding.PathfindingDijkstras.GetFieldOfView(Space, VisionRange, 
             gameModel.map, blockLOS))
         {
-            node.GetSpace().Explore();
+            node.Space.Explore();
         }
     }
 
     public int CurrentMovement { get; private set; }
     public SpaceModel Space { get; private set; }
 
-    public PreEndTurnTask MovementTask { get; internal set; }
+    public PreEndTurnMovementTask MovementTask { get; internal set; }
 
 
 
@@ -89,12 +93,12 @@ public class UnitModel : IBlockLOS
     {
         //moving = true;
         movementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(
-            Space, CurrentMovement);
+            Space, CurrentMovement, movementCostDeterminer);
 
 
         foreach(var node in movementSpaces)
         {
-            node.GetSpace().Moveable();
+            node.Space.Moveable();
             //node.GetSpace().controller.SetText(node.GetCost());
         }
     }
@@ -103,25 +107,23 @@ public class UnitModel : IBlockLOS
     {
         foreach (var node in movementSpaces)
         {
-            if(node.GetSpace() == spaceModel)
+            if(node.Space == spaceModel)
             {
-                Space = node.GetSpace();
-                CurrentMovement = Math.Max(0, CurrentMovement - node.GetCost());
-                controller.MovePosition(node);
+                CurrentMovement = Math.Max(0, CurrentMovement - node.Cost);
+                controller.MovePosition(node.Space);
                 Space.OccupingUnit = null;
-                node.GetSpace().OccupingUnit = this;
+                Space = node.Space;
+                Space.OccupingUnit = this;
             }
-            node.GetSpace().Deselect();
+            node.Space.Deselect();
         }
         movementSpaces = null;
         gameModel.SetSelectedUnit(null);
         Explore();
 
-        MovementTask.Complete = true;
-    }
-
-    public bool BlocksLOS(SpaceTerrain.SpaceElevation elevation, SpaceModel space)
-    {
-        return blockLOS.BlocksLOS(elevation, space);
+        if (CurrentMovement <= 0)
+        {
+            MovementTask.MarkComplete();
+        }
     }
 }

@@ -128,7 +128,7 @@ public class MapModel
         {
             return map[normalCoord.row][normalCoord.col];
         }
-        catch(IndexOutOfRangeException e)
+        catch(IndexOutOfRangeException)
         {
             Debug.Log("{" + normalCoord.row + ", " + normalCoord.col + "]");
             return null;
