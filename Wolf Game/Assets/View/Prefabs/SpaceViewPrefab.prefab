@@ -228,7 +228,6 @@ GameObject:
   - component: {fileID: 4832335072062789238}
   - component: {fileID: 7228461298649276852}
   - component: {fileID: 2423402952048876999}
-  - component: {fileID: 3842033702937503078}
   m_Layer: 10
   m_Name: MinimapTile
   m_TagString: Untagged
@@ -329,15 +328,3 @@ PolygonCollider2D:
       - {x: 0.5547546, y: -0.3204082}
       - {x: 0.554891, y: 0.32429013}
       - {x: 0.0020349352, y: 0.6473759}
---- !u!114 &3842033702937503078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8212035828957688492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90d420337a1a742ceb49d3deddf9a3ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
