@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -62,10 +63,13 @@ public class CameraController : MonoBehaviour
         // Pan Camera
         if(Input.GetMouseButtonDown(0))
         {
-            dragging = true;
-            mouseOrigin = Input.mousePosition;
-            mouseOrigin.z = 0;
-            mouseOrigin = mainCamera.ScreenToWorldPoint(mouseOrigin);
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                dragging = true;
+                mouseOrigin = Input.mousePosition;
+                mouseOrigin.z = 0;
+                mouseOrigin = mainCamera.ScreenToWorldPoint(mouseOrigin);
+            }
         }
  
         if(dragging)

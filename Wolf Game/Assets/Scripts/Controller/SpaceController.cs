@@ -43,18 +43,21 @@ public class SpaceController : MonoBehaviour
     // If the user mouses over this hex, display properties
     private void OnMouseOver()
     {
-        string text = spaceModel.GetDescription();
-        gameController.mouseOverText.text = text;
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            string text = spaceModel.GetDescription();
+            gameController.mouseOverText.text = text;
 
 
-        // if the Space is attackable or moveable, then change the color of the tile selector
-        if(moveable)
-        {
-            CreateSelectorAndSetColor(gameController.assets.MoveableHighlightedColor);
-        }
-        else if(attackable)
-        {
-            CreateSelectorAndSetColor(gameController.assets.AttackableHighlightedColor);
+            // if the Space is attackable or moveable, then change the color of the tile selector
+            if (moveable)
+            {
+                CreateSelectorAndSetColor(gameController.assets.MoveableHighlightedColor);
+            }
+            else if (attackable)
+            {
+                CreateSelectorAndSetColor(gameController.assets.AttackableHighlightedColor);
+            }
         }
     }
 
@@ -72,7 +75,10 @@ public class SpaceController : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        spaceModel.Clicked();
+        if(!EventSystem.current.IsPointerOverGameObject())
+        {
+            spaceModel.Clicked();
+        }
     }
 
 // *** A List of methods that change the selectable/selected look of this tile *********************

@@ -13,13 +13,10 @@ public class SpaceModel
     private SpaceModel[] adjacentSpaces;
     private PathfindingNode pathfindingNode;
     private bool moving;
-    private bool explored = false;
-
-
 
     public UnitModel OccupingUnit { get; set; }
     public SpaceTerrain Terrain { get; private set; }
-    public bool Explored { get => explored; private set => explored = value; }
+    public bool Explored { get; private set; }
 
     public void Explore()
     {
@@ -49,8 +46,11 @@ public class SpaceModel
     // Get a Description for this space.
     public string GetDescription()
     {
-        string desc = "";
-        switch(Terrain.elevation)
+        if(!Explored)
+        {
+            return "";
+        }
+        string desc;        switch (Terrain.elevation)
         {
             case SpaceTerrain.SpaceElevation.Water:
                 desc = "Ocean";
