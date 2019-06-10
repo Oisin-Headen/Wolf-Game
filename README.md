@@ -13,7 +13,12 @@ http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generati
 https://www.gamasutra.com/view/feature/129959/designing_ai_algorithms_for_.php
 
 // Hex grid stuff
+
 https://catlikecoding.com/unity/tutorials/hex-map/part-1/
+
+// Possible process
+
+https://forums.civfanatics.com/threads/civ1-map-generation-explained.498630/
 
 Useful for everything:
 
