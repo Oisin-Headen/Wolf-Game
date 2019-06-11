@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 namespace Pathfinding
@@ -8,6 +9,11 @@ namespace Pathfinding
     {
         public static List<SpaceModel> GetPathToDestination(SpaceModel startSpace, SpaceModel destSpace, IMovementCost costDeterminer)
         {
+            if (costDeterminer.GetMovementCost(destSpace) != -1)
+            {
+                return null;
+            }
+
             List<PathfindingNode> allNodes = new List<PathfindingNode>();
 
             PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, true, destSpace);
@@ -22,10 +28,13 @@ namespace Pathfinding
                         if (adjacentSpace.GetNode() == null)
                         {
                             // Is null, need new node
-                            int newNodeCost = currentnode.Cost + costDeterminer.GetMovementCost(adjacentSpace);
-                            PathfindingNode newNode = new PathfindingNode(adjacentSpace, currentnode, newNodeCost, false, destSpace);
-                            allNodes.Add(newNode);
-                            adjacentSpace.SetNode(newNode);
+                            if (costDeterminer.GetMovementCost(adjacentSpace) != -1)
+                            {
+                                int newNodeCost = currentnode.Cost + costDeterminer.GetMovementCost(adjacentSpace);
+                                PathfindingNode newNode = new PathfindingNode(adjacentSpace, currentnode, newNodeCost, false, destSpace);
+                                allNodes.Add(newNode);
+                                adjacentSpace.SetNode(newNode);
+                            }
                         }
                         else
                         {

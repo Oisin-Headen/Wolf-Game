@@ -1,37 +1,41 @@
 ﻿using System;
+using Model;
 
-public interface IPreEndTurnTask
+namespace Pathfinding
 {
-    void Show();
-    bool Complete();
-    //void MarkComplete();
-}
-
-public class PreEndTurnMovementTask : IPreEndTurnTask
-{
-    private readonly UnitModel unit;
-    private bool complete;
-
-    public PreEndTurnMovementTask(UnitModel unit)
+    public interface IPreEndTurnTask
     {
-        complete = false;
-        this.unit = unit;
-        unit.MovementTask = this;
+        void Show();
+        bool Complete();
+        //void MarkComplete();
     }
 
-    public void Show()
+    public class PreEndTurnMovementTask : IPreEndTurnTask
     {
-        unit.Space.Clicked();
-    }
+        private readonly UnitModel unit;
+        private bool complete;
 
-    public bool Complete()
-    {
-        return complete;
-    }
+        public PreEndTurnMovementTask(UnitModel unit)
+        {
+            complete = false;
+            this.unit = unit;
+            unit.MovementTask = this;
+        }
 
-    public void MarkComplete()
-    {
-        complete = true;
+        public void Show()
+        {
+            unit.Space.Clicked();
+        }
+
+        public bool Complete()
+        {
+            return complete;
+        }
+
+        public void MarkComplete()
+        {
+            complete = true;
+        }
     }
 }
 

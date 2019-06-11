@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using Model;
+
 
 public class GameController : MonoBehaviour
 {
@@ -23,18 +25,18 @@ public class GameController : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    internal void Start()
     {
         gameModel = new GameModel(this);
     }
 
-    public void Update()
+    internal void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Return))
+        if (Input.GetKeyUp(KeyCode.Return))
         {
             EndTurn();
         }
-        else if(Input.GetKeyUp(KeyCode.M))
+        else if (Input.GetKeyUp(KeyCode.M))
         {
             Move();
         }
@@ -50,12 +52,12 @@ public class GameController : MonoBehaviour
         // todo show some menus on other keys
     }
 
-    public void EndTurn()
+    internal void EndTurn()
     {
         gameModel.EndTurnButtonPressed();
     }
 
-    public void Move()
+    internal void Move()
     {
         gameModel.Move();
     }
@@ -65,10 +67,10 @@ public class GameController : MonoBehaviour
     public SpaceController AddSpace(SpaceModel spaceModel)
     {
         DoubledCoords coords = spaceModel.GetDoubledCoords();
-        var x = Utilities.HEX_SIZE * Mathf.Sqrt(3)/2 * coords.col;
-        var y = Utilities.HEX_SIZE * 3/2f * coords.row;
+        var x = Utilities.HEX_SIZE * Mathf.Sqrt(3) / 2 * coords.col;
+        var y = Utilities.HEX_SIZE * 3 / 2f * coords.row;
 
-        GameObject SpaceView = Instantiate(spaceViewPrefab, new Vector2(x, y), 
+        GameObject SpaceView = Instantiate(spaceViewPrefab, new Vector2(x, y),
             Quaternion.identity, mapContainer);
 
         SpaceView.GetComponent<SpaceController>().Setup(spaceModel, SpaceView, this);
@@ -79,7 +81,7 @@ public class GameController : MonoBehaviour
     // TODO Move to static method
     public UnitController AddUnit(UnitModel unitModel)
     {
-        GameObject unitView = Instantiate(unitPrefab, unitModel.Space.controller.GetPosition(), 
+        GameObject unitView = Instantiate(unitPrefab, unitModel.Space.controller.GetPosition(),
             Quaternion.identity, mapContainer);
 
         var unitController = unitView.GetComponent<UnitController>();

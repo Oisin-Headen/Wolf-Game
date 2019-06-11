@@ -2,136 +2,139 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapModel
+namespace Model
 {
-    readonly SpaceModel[][] map;
-    public MapModel(GameModel gameModel)
+    public class MapModel
     {
-        map = new SpaceModel[Utilities.MAP_HEIGHT][];
-        for(int row = 0; row < Utilities.MAP_HEIGHT; ++row)
+        readonly SpaceModel[][] map;
+        public MapModel(GameModel gameModel)
         {
-            map[row] = new SpaceModel[Utilities.MAP_WIDTH * 2];
-            
-            int col = 0;
-            if(row % 2 != 0)
+            map = new SpaceModel[Utilities.MAP_HEIGHT][];
+            for (int row = 0; row < Utilities.MAP_HEIGHT; ++row)
             {
-                ++col;
-            }
-            for(; col < Utilities.MAP_WIDTH * 2; col += 2)
-            {
-                map[row][col] = new SpaceModel(row, col, gameModel, this);
-            }
-        }
+                map[row] = new SpaceModel[Utilities.MAP_WIDTH * 2];
 
-        foreach (var row in map)
-        {
-            foreach (var space in row)
-            {
-                if(space != null)
+                int col = 0;
+                if (row % 2 != 0)
                 {
-                    space.SetAdjacentSpaces();
+                    ++col;
+                }
+                for (; col < Utilities.MAP_WIDTH * 2; col += 2)
+                {
+                    map[row][col] = new SpaceModel(row, col, gameModel, this);
+                }
+            }
+
+            foreach (var row in map)
+            {
+                foreach (var space in row)
+                {
+                    if (space != null)
+                    {
+                        space.SetAdjacentSpaces();
+                    }
                 }
             }
         }
-    }
 
-    public List<SpaceModel> GetDeepForests()
-    {
-        List<SpaceModel> deepforests = new List<SpaceModel>();
-        foreach(var row in map)
+        public List<SpaceModel> GetDeepForests()
         {
-            foreach(var space in row)
+            List<SpaceModel> deepforests = new List<SpaceModel>();
+            foreach (var row in map)
             {
-                if(space != null)
+                foreach (var space in row)
                 {
-                    if(space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                    if (space != null)
                     {
-                        deepforests.Add(space); 
+                        if (space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+                        {
+                            deepforests.Add(space);
+                        }
                     }
-                } 
+                }
             }
+            return deepforests;
         }
-        return deepforests;
-    }
 
-    // Movement Methods. Only used in Space generation.
-    public SpaceModel GetNE(DoubledCoords coords)
-    {
-        int newSpaceRow = coords.row - 1;
-        int newSpaceColumn = coords.col + 1;
-        if(newSpaceRow < 0 || newSpaceColumn >= Utilities.MAP_WIDTH*2)
+        // Movement Methods. Only used in Space generation.
+        public SpaceModel GetNE(DoubledCoords coords)
         {
-            return null;
+            int newSpaceRow = coords.row - 1;
+            int newSpaceColumn = coords.col + 1;
+            if (newSpaceRow < 0 || newSpaceColumn >= Utilities.MAP_WIDTH * 2)
+            {
+                return null;
+            }
+            return map[newSpaceRow][newSpaceColumn];
         }
-        return map[newSpaceRow][newSpaceColumn];
-    }
 
-    public SpaceModel GetE(DoubledCoords coords)
-    {
-        int newSpaceRow = coords.row;
-        int newSpaceColumn = coords.col + 2;
-        if (newSpaceColumn >= Utilities.MAP_WIDTH*2)
+        public SpaceModel GetE(DoubledCoords coords)
         {
-            return null;
+            int newSpaceRow = coords.row;
+            int newSpaceColumn = coords.col + 2;
+            if (newSpaceColumn >= Utilities.MAP_WIDTH * 2)
+            {
+                return null;
+            }
+            return map[newSpaceRow][newSpaceColumn];
         }
-        return map[newSpaceRow][newSpaceColumn];
-    }
 
-    public SpaceModel GetSE(DoubledCoords coords)
-    {
-        int newSpaceRow = coords.row + 1;
-        int newSpaceColumn = coords.col + 1;
-        if (newSpaceRow >= Utilities.MAP_HEIGHT  || newSpaceColumn >= Utilities.MAP_WIDTH*2)
+        public SpaceModel GetSE(DoubledCoords coords)
         {
-            return null;
+            int newSpaceRow = coords.row + 1;
+            int newSpaceColumn = coords.col + 1;
+            if (newSpaceRow >= Utilities.MAP_HEIGHT || newSpaceColumn >= Utilities.MAP_WIDTH * 2)
+            {
+                return null;
+            }
+            return map[newSpaceRow][newSpaceColumn];
         }
-        return map[newSpaceRow][newSpaceColumn];
-    }
-    public SpaceModel GetSW(DoubledCoords coords)
-    {
-        int newSpaceRow = coords.row + 1;
-        int newSpaceColumn = coords.col - 1;
-        if (newSpaceRow >= Utilities.MAP_HEIGHT || newSpaceColumn < 0)
+        public SpaceModel GetSW(DoubledCoords coords)
         {
-            return null;
+            int newSpaceRow = coords.row + 1;
+            int newSpaceColumn = coords.col - 1;
+            if (newSpaceRow >= Utilities.MAP_HEIGHT || newSpaceColumn < 0)
+            {
+                return null;
+            }
+            return map[newSpaceRow][newSpaceColumn];
         }
-        return map[newSpaceRow][newSpaceColumn];
-    }
-    public SpaceModel GetW(DoubledCoords coords)
-    {
-        int newSpaceRow = coords.row;
-        int newSpaceColumn = coords.col - 2;
-        if (newSpaceColumn < 0)
+        public SpaceModel GetW(DoubledCoords coords)
         {
-            return null;
+            int newSpaceRow = coords.row;
+            int newSpaceColumn = coords.col - 2;
+            if (newSpaceColumn < 0)
+            {
+                return null;
+            }
+            return map[newSpaceRow][newSpaceColumn];
         }
-        return map[newSpaceRow][newSpaceColumn];
-    }
-    public SpaceModel GetNW(DoubledCoords coords)
-    {
-        int newSpaceRow = coords.row - 1;
-        int newSpaceColumn = coords.col - 1;
-        if (newSpaceRow < 0 || newSpaceColumn < 0)
+        public SpaceModel GetNW(DoubledCoords coords)
         {
-            return null;
+            int newSpaceRow = coords.row - 1;
+            int newSpaceColumn = coords.col - 1;
+            if (newSpaceRow < 0 || newSpaceColumn < 0)
+            {
+                return null;
+            }
+            return map[newSpaceRow][newSpaceColumn];
         }
-        return map[newSpaceRow][newSpaceColumn];
-    }
 
-    public SpaceModel GetSpace(DoubledCoords normalCoord)
-    {
-        if(normalCoord == null)
+        public SpaceModel GetSpace(DoubledCoords normalCoord)
         {
-            return null;
-        }
-        try
-        {
-            return map[normalCoord.row][normalCoord.col];
-        }
-        catch(IndexOutOfRangeException)
-        {
-            Debug.Log("{" + normalCoord.row + ", " + normalCoord.col + "]");
-            return null;
+            if (normalCoord == null)
+            {
+                return null;
+            }
+            try
+            {
+                return map[normalCoord.row][normalCoord.col];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Debug.Log("{" + normalCoord.row + ", " + normalCoord.col + "]");
+                return null;
+            }
         }
     }
 }

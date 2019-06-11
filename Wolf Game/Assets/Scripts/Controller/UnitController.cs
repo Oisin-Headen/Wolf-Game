@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using Model;
 
 public class UnitController : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class UnitController : MonoBehaviour
     private UnitModel unitModel;
     private GameController gameController;
 
-    public void Setup(UnitModel model, GameObject view, GameController gameController)
+    internal void Setup(UnitModel model, GameObject view, GameController gameController)
     {
         unitView = view;
         unitModel = model;

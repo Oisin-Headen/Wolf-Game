@@ -36,4 +36,6 @@ public class Assets : MonoBehaviour
     public Color AttackableColor;
     public Color MoveableHighlightedColor;
     public Color AttackableHighlightedColor;
+    public Color PathColor;
+    public Color NoColor;
 }

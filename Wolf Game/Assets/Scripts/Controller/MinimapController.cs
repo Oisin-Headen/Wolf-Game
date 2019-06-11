@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class MinimapController : MonoBehaviour
 {
     public Canvas canvas;
@@ -26,4 +27,5 @@ public class MinimapController : MonoBehaviour
         Camera.main.GetComponent<CameraController>().SetPosition(camPos);
     }
 }
+
 

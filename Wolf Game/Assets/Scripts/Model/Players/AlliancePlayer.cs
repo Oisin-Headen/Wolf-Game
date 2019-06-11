@@ -1,13 +1,15 @@
 ﻿
-
-public class AlliancePlayer : AbstractPlayer
+namespace Model
 {
-    public AlliancePlayer(GameModel gameModel) : base(Player.Alliance, gameModel)
+    public class AlliancePlayer : AbstractPlayer
     {
-    }
+        public AlliancePlayer(GameModel gameModel) : base(Player.Alliance, gameModel)
+        {
+        }
 
-    //public override void StartTurn()
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+        //public override void StartTurn()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
+    }
 }

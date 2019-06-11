@@ -1,4 +1,6 @@
-﻿namespace Pathfinding
+﻿using Model;
+
+namespace Pathfinding
 {
     public interface IBlockLOS
     {

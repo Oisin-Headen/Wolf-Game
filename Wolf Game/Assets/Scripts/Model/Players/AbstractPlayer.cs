@@ -1,53 +1,57 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Pathfinding;
 
-public abstract class AbstractPlayer
+namespace Model
 {
-    public List<UnitModel> units;
-    public readonly Player thisplayer;
-    protected GameModel gameModel;
-
-    private List<IPreEndTurnTask> tasks;
-
-    protected AbstractPlayer(Player newplayer, GameModel gameModel)
+    public abstract class AbstractPlayer
     {
-        this.gameModel = gameModel;
-        thisplayer = newplayer;
-        units = new List<UnitModel>();
-    }
-    //public abstract void EndTurn();
-    public void StartTurn()
-    {
-        tasks = new List<IPreEndTurnTask>();
-        foreach (var unit in units)
+        public List<UnitModel> units;
+        public readonly Player thisplayer;
+        protected GameModel gameModel;
+
+        private List<IPreEndTurnTask> tasks;
+
+        protected AbstractPlayer(Player newplayer, GameModel gameModel)
         {
-            unit.StartTurn();
-            tasks.Add(new PreEndTurnMovementTask(unit));
+            this.gameModel = gameModel;
+            thisplayer = newplayer;
+            units = new List<UnitModel>();
         }
-    }
-
-    // See if there are any tasks the player needs to complete before ending their turn
-    public bool CanEndTurn()
-    {
-        bool canEndTurn = true;
-        foreach(var task in tasks)
+        //public abstract void EndTurn();
+        public void StartTurn()
         {
-            canEndTurn &= task.Complete();
-        }
-        return canEndTurn;
-    }
-
-    // Display the first task that hasn't been completed
-    public void PreEndTurnTask()
-    {
-        bool foundTask = false;
-        foreach (var task in tasks)
-        {
-            if(!foundTask && !task.Complete())
+            tasks = new List<IPreEndTurnTask>();
+            foreach (var unit in units)
             {
-                task.Show();
-                foundTask = true;
+                unit.StartTurn();
+                tasks.Add(new PreEndTurnMovementTask(unit));
+            }
+        }
+
+        // See if there are any tasks the player needs to complete before ending their turn
+        public bool CanEndTurn()
+        {
+            bool canEndTurn = true;
+            foreach (var task in tasks)
+            {
+                canEndTurn &= task.Complete();
+            }
+            return canEndTurn;
+        }
+
+        // Display the first task that hasn't been completed
+        public void PreEndTurnTask()
+        {
+            bool foundTask = false;
+            foreach (var task in tasks)
+            {
+                if (!foundTask && !task.Complete())
+                {
+                    task.Show();
+                    foundTask = true;
+                }
             }
         }
     }

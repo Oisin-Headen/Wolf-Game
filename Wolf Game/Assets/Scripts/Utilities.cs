@@ -1,4 +1,5 @@
 ﻿using System;
+using Model;
 using UnityEngine;
 
 public static class Utilities
@@ -17,8 +18,8 @@ public static class Utilities
     public const int MIN_CAMERA_X = 0;
     public const int MIN_CAMERA_Y = 0;
     public const float MAX_CAMERA_X = HEX_SIZE * 1.73205f * MAP_WIDTH;
-        
-    public const float MAX_CAMERA_Y = HEX_SIZE * 3/2f * MAP_HEIGHT;
+
+    public const float MAX_CAMERA_Y = HEX_SIZE * 3 / 2f * MAP_HEIGHT;
 
     public static SpaceTerrain GetTerrainForSpace(SpaceModel space, RandomSeeds seeds)
     {
@@ -27,12 +28,12 @@ public static class Utilities
         var distEdge = space.DistCenter();
         var worldTemp = space.WorldTemp();
 
-        var elevationPerlin = Mathf.PerlinNoise((seeds.elevation + coords.row)*0.2f, (seeds.elevation + coords.col/2f)*0.2f);
-        var temperaturePerlin = Mathf.PerlinNoise((seeds.temperature + coords.row)*0.5f, (seeds.temperature + coords.col/2f)*0.5f);
-        var moisturePerlin = Mathf.PerlinNoise((seeds.moisture + coords.row)*0.3f, (seeds.moisture + coords.col/2f)*0.3f);
+        var elevationPerlin = Mathf.PerlinNoise((seeds.elevation + coords.row) * 0.2f, (seeds.elevation + coords.col / 2f) * 0.2f);
+        var temperaturePerlin = Mathf.PerlinNoise((seeds.temperature + coords.row) * 0.5f, (seeds.temperature + coords.col / 2f) * 0.5f);
+        var moisturePerlin = Mathf.PerlinNoise((seeds.moisture + coords.row) * 0.3f, (seeds.moisture + coords.col / 2f) * 0.3f);
 
-        var elevation =(1 + elevationPerlin - distEdge) / 2;
-        var temperature = (0.75f + temperaturePerlin*0.25f - worldTemp*0.75f);
+        var elevation = (1 + elevationPerlin - distEdge) / 2;
+        var temperature = (0.75f + temperaturePerlin * 0.25f - worldTemp * 0.75f);
 
         // float randTest = temperature;
         // var color = new Color(randTest,randTest,randTest);
@@ -41,21 +42,21 @@ public static class Utilities
         SpaceTerrain.SpaceBaseTerrain spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.None;
         SpaceTerrain.SpaceFeature spaceFeature = SpaceTerrain.SpaceFeature.None;
 
-        if(elevation < 0.4f)
+        if (elevation < 0.4f)
         {
             // This is an Ocean Tile
             spaceElevation = SpaceTerrain.SpaceElevation.Water;
-            if(temperature < 0.2)
+            if (temperature < 0.2)
             {
                 // Iceberg
                 spaceFeature = SpaceTerrain.SpaceFeature.Iceberg;
             }
         }
-        else if(elevation >= 0.8f)
+        else if (elevation >= 0.8f)
         {
             // Mountian Tile
             spaceElevation = SpaceTerrain.SpaceElevation.Mountain;
-            if(temperature < 0.2)
+            if (temperature < 0.2)
             {
                 // Frosty Mountian
                 spaceFeature = SpaceTerrain.SpaceFeature.Frosted;
@@ -63,15 +64,15 @@ public static class Utilities
         }
         else
         {
-            if(elevation >= 0.7f)
+            if (elevation >= 0.7f)
             {
                 // A Hill in Addition to Below
                 spaceElevation = SpaceTerrain.SpaceElevation.Hill;
             }
-            if(temperature < 0.3f)
+            if (temperature < 0.3f)
             {
                 // Cold
-                if(moisturePerlin < 0.5f)
+                if (moisturePerlin < 0.5f)
                 {
                     // Tundra
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Tundra;
@@ -82,14 +83,14 @@ public static class Utilities
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Snow;
                 }
             }
-            else if(temperature < 0.4)
+            else if (temperature < 0.4)
             {
                 // Cool
-                if(moisturePerlin < 0.4f)
+                if (moisturePerlin < 0.4f)
                 {
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Tundra;
                 }
-                else if(moisturePerlin < 0.6f)
+                else if (moisturePerlin < 0.6f)
                 {
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Plain;
                 }
@@ -99,10 +100,10 @@ public static class Utilities
                     spaceFeature = SpaceTerrain.SpaceFeature.Forest;
                 }
             }
-            else if(temperature < 0.8)
+            else if (temperature < 0.8)
             {
                 // Warm
-                if(moisturePerlin < 0.4f)
+                if (moisturePerlin < 0.4f)
                 {
                     // Plains
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Plain;
@@ -113,7 +114,7 @@ public static class Utilities
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Plain;
                     spaceFeature = SpaceTerrain.SpaceFeature.Forest;
                 }
-                else if(moisturePerlin < 0.6f)
+                else if (moisturePerlin < 0.6f)
                 {
                     // grass
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Grassland;
@@ -127,15 +128,15 @@ public static class Utilities
             else
             {
                 // Hot
-                if(moisturePerlin < 0.35f)
+                if (moisturePerlin < 0.35f)
                 {
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Desert;
                 }
-                else if(moisturePerlin < 0.6f)
+                else if (moisturePerlin < 0.6f)
                 {
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Grassland;
                 }
-                else if(moisturePerlin < 0.8f)
+                else if (moisturePerlin < 0.8f)
                 {
                     spaceBaseTerrain = SpaceTerrain.SpaceBaseTerrain.Grassland;
                     spaceFeature = SpaceTerrain.SpaceFeature.Forest;
@@ -148,7 +149,7 @@ public static class Utilities
             }
         }
 
-        return new SpaceTerrain(spaceElevation, spaceBaseTerrain, spaceFeature);    
+        return new SpaceTerrain(spaceElevation, spaceBaseTerrain, spaceFeature);
     }
 }
 
@@ -160,7 +161,7 @@ public class DoubledCoords
 
     public DoubledCoords(int row, int col)
     {
-        
+
         this.col = col;
         this.row = row;
     }

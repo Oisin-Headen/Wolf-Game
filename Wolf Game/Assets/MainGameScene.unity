@@ -999,6 +999,8 @@ MonoBehaviour:
   AttackableColor: {r: 1, g: 0, b: 0, a: 1}
   MoveableHighlightedColor: {r: 0, g: 0.88235295, b: 1, a: 1}
   AttackableHighlightedColor: {r: 1, g: 0.48584908, b: 0.48584908, a: 1}
+  PathColor: {r: 0, g: 0, b: 0, a: 1}
+  NoColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1221659571
 Transform:
   m_ObjectHideFlags: 0

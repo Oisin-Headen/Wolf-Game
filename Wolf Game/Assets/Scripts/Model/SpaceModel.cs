@@ -1,225 +1,218 @@
 ﻿using System;
+using System.Collections.Generic;
 using Pathfinding;
 
-public class SpaceModel
+namespace Model
 {
-    public SpaceController controller;
-    private readonly GameModel gameModel;
-    private readonly MapModel map;
-
-    private readonly DoubledCoords doubledCoords;
-    private readonly CubeCoords cubeCoords;
-
-    private SpaceModel[] adjacentSpaces;
-    private PathfindingNode pathfindingNode;
-    private bool moving;
-
-    public UnitModel OccupingUnit { get; set; }
-    public SpaceTerrain Terrain { get; private set; }
-    public bool Explored { get; private set; }
-
-    public void Explore()
+    public class SpaceModel
     {
-        controller.Show();
-        Explored = true;
-    }
+        public SpaceController controller;
+        private readonly GameModel gameModel;
+        private readonly MapModel map;
 
-    public SpaceModel(int row, int col, GameModel gameModel, MapModel map)
-    {
-        this.map = map;
-        float cube_x = (col - row) / 2;
-        float cube_z = row;
-        float cube_y = -cube_x-cube_z;
-        cubeCoords = new CubeCoords(cube_x, cube_y, cube_z);
-        doubledCoords = new DoubledCoords(row, col);
-        this.gameModel = gameModel;
-        controller = gameModel.AddSpace(this);
+        private readonly DoubledCoords doubledCoords;
+        private readonly CubeCoords cubeCoords;
 
-        //controller.SetText("[" + row + ", " + col + "]");
-    }
+        private SpaceModel[] adjacentSpaces;
+        private PathfindingNode pathfindingNode;
+        private bool oneTurnMovable;
+        private List<SpaceModel> movementPath;
 
-    public DoubledCoords GetDoubledCoords()
-    {
-        return doubledCoords;
-    }
+        public UnitModel OccupingUnit { get; internal set; }
+        public SpaceTerrain Terrain { get; private set; }
+        public bool Explored { get; private set; }
 
-    // Get a Description for this space.
-    public string GetDescription()
-    {
-        if(!Explored)
+        public void Explore()
         {
-            return "";
-        }
-        string desc;        switch (Terrain.elevation)
-        {
-            case SpaceTerrain.SpaceElevation.Water:
-                desc = "Ocean";
-                if(Terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
-                { desc = "Iceberg"; }
-                break;
-            case SpaceTerrain.SpaceElevation.Mountain:
-                desc = "Mountain";
-                if (Terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
-                { desc = "Frosted Mountain"; }
-                break;
-            default:
-                string hill = "";
-                if(Terrain.elevation == SpaceTerrain.SpaceElevation.Hill)
-                { hill = " Hill"; }
-                string baseTerrain = "Error", feature = "";
-                switch(Terrain.baseTerrain)
-                {
-                    case SpaceTerrain.SpaceBaseTerrain.Desert:
-                        baseTerrain = "Desert";
-                        break;
-                    case SpaceTerrain.SpaceBaseTerrain.Snow:
-                        baseTerrain = "Snow";
-                        break;
-                    case SpaceTerrain.SpaceBaseTerrain.Tundra:
-                        baseTerrain = "Tundra";
-                        break;
-                    case SpaceTerrain.SpaceBaseTerrain.Plain:
-                        baseTerrain = "Plains";
-                        break;
-                    case SpaceTerrain.SpaceBaseTerrain.Grassland:
-                        baseTerrain = "Grassland";
-                        break;
-                }
-                switch (Terrain.feature)
-                {
-                    case SpaceTerrain.SpaceFeature.Forest:
-                        feature = " Forest";
-                        break;
-                    case SpaceTerrain.SpaceFeature.Deep_Forest:
-                        feature = " Deep Forest";
-                        break;
-                    case SpaceTerrain.SpaceFeature.None:
-                        break;
-                    default:
-                        feature = " Error";
-                        break;
-                }
-                desc = baseTerrain + feature + hill;
-                break;
+            controller.Show();
+            Explored = true;
         }
 
-        return desc;
-    }
-
-    public void Moveable()
-    {
-        moving = true;
-        controller.SetMoveable();
-    }
-
-
-    // When this space is clicked, this method is called.
-    public void Clicked()
-    {
-        if(moving)
+        public SpaceModel(int row, int col, GameModel gameModel, MapModel map)
         {
-            gameModel.SelectedUnit.FinishMove(this);
+            this.map = map;
+            float cube_x = (col - row) / 2;
+            float cube_z = row;
+            float cube_y = -cube_x - cube_z;
+            cubeCoords = new CubeCoords(cube_x, cube_y, cube_z);
+            doubledCoords = new DoubledCoords(row, col);
+            this.gameModel = gameModel;
+            controller = gameModel.AddSpace(this);
+
+            //controller.SetText("[" + row + ", " + col + "]");
         }
-        else if(OccupingUnit != null)
+
+        public DoubledCoords GetDoubledCoords()
         {
-            gameModel.SetSelectedUnit(OccupingUnit);
-            controller.SetSelected();
+            return doubledCoords;
         }
-    }
-
-    public void Deselect()
-    {
-        //if(OccupingUnit != null)
-        //{
-        //    OccupingUnit.Deselect();
-        //}
-        moving = false;
-        controller.Deselect();
-    }
-
-    public CubeCoords GetCubeCoords()
-    {
-        return cubeCoords;
-    }
 
 
-    public SpaceModel[] GetAdjacentSpaces()
-    {
-        return adjacentSpaces;
-    }
 
 
-    //// TODO Move to a Dependancy Injection in the UnitModel
-    //public int GetMovementCost()
-    //{
-    //    if(!Explored)
-    //    {
-    //        return PathfindingDijkstras.REST_OF_MOVEMENT;
-    //    }
-    //    if(Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
-    //       Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
-    //    {
-    //        // TODO Impassable
-    //        return -1;
-    //    }
-    //    if(Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
-    //       Terrain.feature == SpaceTerrain.SpaceFeature.Forest ||
-    //       Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
-    //    {
-    //        return 2 * PathfindingDijkstras.ONE_SPACE;
-    //    }
-    //    return 1 * PathfindingDijkstras.ONE_SPACE;
-    //}
+        public void Moveable()
+        {
+            oneTurnMovable = true;
+            controller.SetMoveable();
+        }
 
-    public void SetAdjacentSpaces()
-    {
-        adjacentSpaces = new SpaceModel[6];
-        adjacentSpaces[0] = map.GetNE(doubledCoords);
-        adjacentSpaces[1] = map.GetE(doubledCoords);
-        adjacentSpaces[2] = map.GetSE(doubledCoords);
-        adjacentSpaces[3] = map.GetSW(doubledCoords);
-        adjacentSpaces[4] = map.GetW(doubledCoords);
-        adjacentSpaces[5] = map.GetNW(doubledCoords);
-    }
 
-    public PathfindingNode GetNode()
-    {
-        return pathfindingNode;
-    }
-    public void SetNode(PathfindingNode node)
-    {
-        pathfindingNode = node;
-    }
+        // When this space is clicked, this method is called.
+        public void Clicked()
+        {
+            if (oneTurnMovable)
+            {
+                gameModel.SelectedUnit.FinishMove(this);
+            }
+            else if (OccupingUnit != null)
+            {
+                gameModel.SetSelectedUnit(OccupingUnit);
+                controller.SetSelected();
+            }
+        }
 
-    public SpaceTerrain GenerateTerrain()
-    {
-        Terrain = Utilities.GetTerrainForSpace(this, gameModel.seeds);
-        return Terrain;
-    }
+        // When a Space is Hovered over, this method is called
+        public void Hover()
+        {
+            gameModel.HoverOverSpace(this);
+        }
 
-    public float DistCenter()
-    {
-        float distSideEdge, distTopBottomEdge;
 
-        distSideEdge = Math.Abs(Math.Abs(Utilities.MAP_WIDTH/2-doubledCoords.col/2));
-        distTopBottomEdge = Math.Abs(Math.Abs(Utilities.MAP_HEIGHT/2-doubledCoords.row));
+        public void Deselect()
+        {
+            //if(OccupingUnit != null)
+            //{
+            //    OccupingUnit.Deselect();
+            //}
+            oneTurnMovable = false;
+            controller.Deselect();
+        }
 
-        return Math.Max(distSideEdge/(Utilities.MAP_WIDTH/2), distTopBottomEdge/(Utilities.MAP_HEIGHT/2));
-    }
+        public CubeCoords GetCubeCoords()
+        {
+            return cubeCoords;
+        }
 
-    public float WorldTemp()
-    {
-        float distTopBottomEdge;
 
-        distTopBottomEdge = Math.Abs(Utilities.MAP_HEIGHT/2-doubledCoords.row);
+        public SpaceModel[] GetAdjacentSpaces()
+        {
+            return adjacentSpaces;
+        }
 
-        // TODO Mountains are also cold
+        public void SetAdjacentSpaces()
+        {
+            adjacentSpaces = new SpaceModel[6];
+            adjacentSpaces[0] = map.GetNE(doubledCoords);
+            adjacentSpaces[1] = map.GetE(doubledCoords);
+            adjacentSpaces[2] = map.GetSE(doubledCoords);
+            adjacentSpaces[3] = map.GetSW(doubledCoords);
+            adjacentSpaces[4] = map.GetW(doubledCoords);
+            adjacentSpaces[5] = map.GetNW(doubledCoords);
+        }
 
-        return distTopBottomEdge/(Utilities.MAP_HEIGHT/2);
-    }
+        public PathfindingNode GetNode()
+        {
+            return pathfindingNode;
+        }
+        public void SetNode(PathfindingNode node)
+        {
+            pathfindingNode = node;
+        }
 
-    public bool Occupied()
-    {
-        return OccupingUnit == null;
+        public SpaceTerrain GenerateTerrain()
+        {
+            Terrain = Utilities.GetTerrainForSpace(this, gameModel.seeds);
+            return Terrain;
+        }
+
+        public float DistCenter()
+        {
+            float distSideEdge, distTopBottomEdge;
+
+            distSideEdge = Math.Abs(Math.Abs(Utilities.MAP_WIDTH / 2 - doubledCoords.col / 2));
+            distTopBottomEdge = Math.Abs(Math.Abs(Utilities.MAP_HEIGHT / 2 - doubledCoords.row));
+
+            return Math.Max(distSideEdge / (Utilities.MAP_WIDTH / 2), distTopBottomEdge / (Utilities.MAP_HEIGHT / 2));
+        }
+
+        public float WorldTemp()
+        {
+            float distTopBottomEdge;
+
+            distTopBottomEdge = Math.Abs(Utilities.MAP_HEIGHT / 2 - doubledCoords.row);
+
+            // TODO Mountains are also cold
+
+            return distTopBottomEdge / (Utilities.MAP_HEIGHT / 2);
+        }
+
+        public bool Occupied()
+        {
+            return OccupingUnit == null;
+        }
+
+        // Get a Description for this space.
+        public string GetDescription()
+        {
+            if (!Explored)
+            {
+                return "";
+            }
+            string desc;
+            switch (Terrain.elevation)
+            {
+                case SpaceTerrain.SpaceElevation.Water:
+                    desc = "Ocean";
+                    if (Terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
+                    { desc = "Iceberg"; }
+                    break;
+                case SpaceTerrain.SpaceElevation.Mountain:
+                    desc = "Mountain";
+                    if (Terrain.feature == SpaceTerrain.SpaceFeature.Frosted)
+                    { desc = "Frosted Mountain"; }
+                    break;
+                default:
+                    string hill = "";
+                    if (Terrain.elevation == SpaceTerrain.SpaceElevation.Hill)
+                    { hill = " Hill"; }
+                    string baseTerrain = "Error", feature = "";
+                    switch (Terrain.baseTerrain)
+                    {
+                        case SpaceTerrain.SpaceBaseTerrain.Desert:
+                            baseTerrain = "Desert";
+                            break;
+                        case SpaceTerrain.SpaceBaseTerrain.Snow:
+                            baseTerrain = "Snow";
+                            break;
+                        case SpaceTerrain.SpaceBaseTerrain.Tundra:
+                            baseTerrain = "Tundra";
+                            break;
+                        case SpaceTerrain.SpaceBaseTerrain.Plain:
+                            baseTerrain = "Plains";
+                            break;
+                        case SpaceTerrain.SpaceBaseTerrain.Grassland:
+                            baseTerrain = "Grassland";
+                            break;
+                    }
+                    switch (Terrain.feature)
+                    {
+                        case SpaceTerrain.SpaceFeature.Forest:
+                            feature = " Forest";
+                            break;
+                        case SpaceTerrain.SpaceFeature.Deep_Forest:
+                            feature = " Deep Forest";
+                            break;
+                        case SpaceTerrain.SpaceFeature.None:
+                            break;
+                        default:
+                            feature = " Error";
+                            break;
+                    }
+                    desc = baseTerrain + feature + hill;
+                    break;
+            }
+
+            return desc;
+        }
     }
 }

@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using Pathfinding;
+using System.Collections.Generic;
+using Model;
 
 public class SpaceController : MonoBehaviour
 {
@@ -14,6 +17,9 @@ public class SpaceController : MonoBehaviour
     private SpriteRenderer minimapDisplay;
 
     private bool attackable, moveable;
+
+    private List<SpaceController> oldPath;
+    private Color oldColor;
 
     // Setup this Controller
     public void Setup(SpaceModel model, GameObject spaceView, GameController gameController)
@@ -30,6 +36,8 @@ public class SpaceController : MonoBehaviour
         var terrain = model.GenerateTerrain();
         SetTerrain(terrain);
 
+        oldColor = gameController.assets.NoColor;
+
         attackable = false;
         moveable = false;
         Hide();
@@ -38,6 +46,14 @@ public class SpaceController : MonoBehaviour
     public Vector2 GetPosition()
     {
         return spaceView.transform.position;
+    }
+
+    private void OnMouseEnter()
+    {
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            spaceModel.Hover();
+        }
     }
 
     // If the user mouses over this hex, display properties
@@ -75,13 +91,13 @@ public class SpaceController : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        if(!EventSystem.current.IsPointerOverGameObject())
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
             spaceModel.Clicked();
         }
     }
 
-// *** A List of methods that change the selectable/selected look of this tile *********************
+    // *** A List of methods that change the selectable/selected look of this tile *********************
 
     // When a tile is clicked on, and is the selected tile.
     public void SetSelected()
@@ -102,6 +118,33 @@ public class SpaceController : MonoBehaviour
     {
         CreateSelectorAndSetColor(gameController.assets.AttackableColor);
         attackable = true;
+    }
+
+    public void SetPath(bool turningOn)
+    {
+        if (turningOn)
+        {
+            if (currentTileSelector != null)
+            {
+                oldColor = currentTileSelector.GetComponent<SpriteRenderer>().material.color;
+            }
+            else
+            {
+                oldColor = gameController.assets.NoColor;
+            }
+            CreateSelectorAndSetColor(gameController.assets.PathColor);
+        }
+        else
+        {
+            if (oldColor == gameController.assets.NoColor)
+            {
+                Deselect();
+            }
+            else
+            {
+                CreateSelectorAndSetColor(oldColor);
+            }
+        }
     }
 
     private void CreateSelectorAndSetColor(Color color)
@@ -127,11 +170,11 @@ public class SpaceController : MonoBehaviour
         attackable = false;
     }
 
-// *** End Selectables *****************************************************************************
+    // *** End Selectables *****************************************************************************
 
     public void Show()
     {
-        spaceView.GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);
+        spaceView.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
 
 
         var childColor = minimapDisplay.color;
@@ -147,6 +190,32 @@ public class SpaceController : MonoBehaviour
         minimapDisplay.color = childColor;
     }
 
+    //public void ShowPath(List<SpaceModel> path)
+    //{
+    //    if (oldPath.Count > 0)
+    //    {
+    //        Debug.Log("In Not null");
+
+    //        foreach (var controller in oldPath)
+    //        {
+    //            controller.SetPath(false);
+    //        }
+    //    }
+    //    oldPath = new List<SpaceController>();
+    //    foreach (SpaceModel space in path)
+    //    {
+    //        space.controller.SetPath(true);
+    //        oldPath.Add(space.controller);
+    //    }
+    //    Debug.Log(oldPath);
+    //}
+
+
+    // todo testing methods
+    public void SetText(string v)
+    {
+        GetComponentInChildren<TextMesh>().text = v;
+    }
 
     // This Method Sets the hex view to the correct terrain
     public void SetTerrain(SpaceTerrain terrain)
@@ -318,7 +387,7 @@ public class SpaceController : MonoBehaviour
                         {
                             spaceView.GetComponent<SpriteRenderer>().sprite = gameController.assets.TundraHill;
                             // TODO Proper
-                            minimapDisplay.color = new Color(210,105,30);
+                            minimapDisplay.color = new Color(210, 105, 30);
                         }
                         break;
 
@@ -346,10 +415,5 @@ public class SpaceController : MonoBehaviour
         }
     }
 
-
-    // todo testing methods
-    public void SetText(string v)
-    {
-        GetComponentInChildren<TextMesh>().text = v;
-    }
 }
+
