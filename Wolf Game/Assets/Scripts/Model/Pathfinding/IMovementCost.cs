@@ -16,17 +16,19 @@ namespace Pathfinding
     }
     // The Default way to determine cost.
     public class OrdinaryMovementCost : IMovementCost
-    {
+    {        private int unexploredCost;        public OrdinaryMovementCost(int unexploredCost)
+        {
+            this.unexploredCost = unexploredCost;
+        }
         public int GetMovementCost(SpaceModel space)
         {
             if (!space.Explored)
             {
-                return PathfindingDijkstras.REST_OF_MOVEMENT;
+                return unexploredCost * PathfindingDijkstras.ONE_SPACE;
             }
             if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
                space.Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
-            {
-                // TODO Impassable
+            {                // Impassable
                 return -1;
             }
             if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
@@ -36,6 +38,15 @@ namespace Pathfinding
                 return 2 * PathfindingDijkstras.ONE_SPACE;
             }
             return 1 * PathfindingDijkstras.ONE_SPACE;
+        }    }    public class DeepForestAtHalfMovementCost : IMovementCost
+    {        private int unexploredCost;        public DeepForestAtHalfMovementCost(int unexploredCost)        {            this.unexploredCost = unexploredCost;        }
+        public int GetMovementCost(SpaceModel space)        {
+            if (!space.Explored)            {
+                return unexploredCost * PathfindingDijkstras.ONE_SPACE;
+            }            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||               space.Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)            {                // Impassable                return -1;            }            if(space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+            {
+                return PathfindingDijkstras.HALF_SPACE;
+            }            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||               space.Terrain.feature == SpaceTerrain.SpaceFeature.Forest)            {                return 2 * PathfindingDijkstras.ONE_SPACE;            }            return 1 * PathfindingDijkstras.ONE_SPACE;
         }
     }
 }

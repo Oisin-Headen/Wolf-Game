@@ -7,20 +7,33 @@ namespace Model
 {
     internal static class UnitFactory
     {
-        internal static UnitModel CreateWolf(SpaceModel space, AbstractPlayer player, GameModel gameModel)
+        internal static UnitModel CreateWolf(SpaceModel space, APlayer player, GameModel gameModel)
         {
             return new UnitModel(
-                5, // attack
-                5, // defence
-                5, // Max HP
-                3, // movement
-                1, // heal amount
-                3, // Vision range
+                UnitTypeOverseerSingleton.GetInstance().Wolf, 
                 space,
                 player,
-                gameModel,
-                new IgnoreForestLOS(),
-                new OrdinaryMovementCost()
+                gameModel
+            );
+        }
+
+        internal static UnitModel CreateBattleSpider(SpaceModel space, APlayer player, GameModel gameModel)
+        {
+            return new UnitModel(
+                UnitTypeOverseerSingleton.GetInstance().BattleSpider,
+                space,
+                player,
+                gameModel
+            );
+        }
+
+        internal static UnitModel CreateWorkerSpider(SpaceModel space, APlayer player, GameModel gameModel)
+        {
+            return new UnitModel(
+                UnitTypeOverseerSingleton.GetInstance().WorkerSpider,
+                space,
+                player,
+                gameModel
             );
         }
     }

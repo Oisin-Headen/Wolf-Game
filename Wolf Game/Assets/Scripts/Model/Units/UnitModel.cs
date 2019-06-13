@@ -8,61 +8,50 @@ namespace Model
 {
     public class UnitModel
     {
-        public UnitModel(int attack, int defence, int maxHP, int movementNumSpaces, int healAmount, int visionRange,
-            SpaceModel space, AbstractPlayer player, GameModel gameModel, IBlockLOS blockLOS, IMovementCost movementCostDeterminer)
-        {
-            Attack = attack;
-            Defence = defence;
-            MaxHP = maxHP;
-            // Max movement equal to number of spaces times cost.
-            Movement = movementNumSpaces * PathfindingDijkstras.ONE_SPACE;
-            HealAmount = healAmount;
-            VisionRange = visionRange;
+        public readonly UnitTypeModel UnitType;
 
-            CurrentHP = maxHP;
-            CurrentMovement = Movement;
-
-            Space = space;
-            space.OccupingUnit = this;
-            this.player = player;
-            controller = gameModel.AddUnit(this);
-            this.gameModel = gameModel;
-            this.blockLOS = blockLOS;
-            this.MovementCostDeterminer = movementCostDeterminer;
-        }
-
-        private readonly IBlockLOS blockLOS;
         //private bool moving;
         private List<PathfindingNode> movementSpaces;
 
-        private readonly AbstractPlayer player;
         private readonly UnitController controller;
         private readonly GameModel gameModel;
 
-        public int Attack { get; private set; }
-        public int Defence { get; private set; }
-        public int MaxHP { get; private set; }
-        public int Movement { get; private set; }
-        // TODO Heal Amount might increase based on other factors
-        private int healAmount;
+
         public int HealAmount
         {
-            get => healAmount;
-            private set => healAmount = value;
+            get => UnitType.BaseHealAmount; // TODO Affected by surroundings
         }
-        public int VisionRange { get; private set; }
         public int CurrentHP { get; private set; }
         public int CurrentMovement { get; private set; }
         public SpaceModel Space { get; private set; }
         public PreEndTurnMovementTask MovementTask { get; internal set; }
-        public IMovementCost MovementCostDeterminer { get; }
+
+        public readonly APlayer Player;
+
+
+        public UnitModel(UnitTypeModel unitType, SpaceModel space, APlayer player,  GameModel gameModel)
+        {
+            UnitType = unitType;
+
+            CurrentHP = unitType.MaxHP;
+            CurrentMovement = unitType.Movement;
+
+            Space = space;
+            space.OccupingUnit = this;
+
+            Player = player;
+
+            controller = gameModel.AddUnit(this);
+            this.gameModel = gameModel;
+        }
+
 
 
         // View all Spaces in Range
         public void Explore()
         {
-            foreach (var node in Pathfinding.PathfindingDijkstras.GetFieldOfView(Space, VisionRange,
-                gameModel.map, blockLOS))
+            foreach (var node in PathfindingDijkstras.GetFieldOfView(Space, UnitType.VisionRange,
+                gameModel.map, UnitType.BlockLOS))
             {
                 node.Space.Explore();
             }
@@ -71,23 +60,23 @@ namespace Model
         public void StartTurn()
         {
             // If the unit didn't move last turn, and it is damaged, heals a bit.
-            if (CurrentMovement == Movement && CurrentHP < MaxHP)
+            if (CurrentMovement == UnitType.Movement && CurrentHP < UnitType.MaxHP)
             {
-                CurrentHP = Math.Min(CurrentHP + HealAmount, MaxHP);
+                CurrentHP = Math.Min(CurrentHP + HealAmount, UnitType.MaxHP);
             }
-            CurrentMovement = Movement;
+            CurrentMovement = UnitType.Movement;
         }
 
-        public Player GetPlayer()
+        public PlayerType GetPlayer()
         {
-            return player.thisplayer;
+            return Player.thisplayer;
         }
 
         public void StartMove()
         {
             //moving = true;
             movementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(
-                Space, CurrentMovement, MovementCostDeterminer);
+                Space, CurrentMovement, UnitType.MovementCostDeterminer);
 
 
             foreach (var node in movementSpaces)

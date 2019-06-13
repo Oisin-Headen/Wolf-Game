@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 public class Assets : MonoBehaviour
@@ -38,4 +39,30 @@ public class Assets : MonoBehaviour
     public Color AttackableHighlightedColor;
     public Color PathColor;
     public Color NoColor;
+
+    public Dictionary<UnitTypeModel.UnitTypes, Sprite> Units;
+    public Dictionary<UnitBackgrounds, Sprite> UnitBackGrounds;
+
+    public void Start()
+    {
+        var extraSprites = GetComponent<AssetsPositions>();
+
+        UnitBackGrounds = new Dictionary<UnitBackgrounds, Sprite>
+        {
+            [UnitBackgrounds.Normal] = extraSprites.NormalBackground,
+            [UnitBackgrounds.Worker] = extraSprites.WorkerBackground
+        };
+
+        Units = new Dictionary<UnitTypeModel.UnitTypes, Sprite>
+        {
+            [UnitTypeModel.UnitTypes.Wolf] = extraSprites.Wolf,
+            [UnitTypeModel.UnitTypes.BattleSpider] = extraSprites.BattleSpider,
+            [UnitTypeModel.UnitTypes.WorkerSpider] = extraSprites.WorkerSpider
+        };
+    }
+
+    public enum UnitBackgrounds
+    {
+        Normal, Worker, Leader, Party, Shield
+    }
 }

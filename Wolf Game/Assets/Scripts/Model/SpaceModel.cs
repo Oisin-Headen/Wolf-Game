@@ -74,7 +74,7 @@ namespace Model
         // When a Space is Hovered over, this method is called
         public void Hover()
         {
-            gameModel.HoverOverSpace(this);
+            gameModel.HoverOverSpaceAsync(this);
         }
 
 
@@ -148,7 +148,7 @@ namespace Model
 
         public bool Occupied()
         {
-            return OccupingUnit == null;
+            return OccupingUnit != null;
         }
 
         // Get a Description for this space.

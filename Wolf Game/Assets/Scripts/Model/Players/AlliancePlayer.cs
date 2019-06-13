@@ -1,9 +1,9 @@
 ﻿
 namespace Model
 {
-    public class AlliancePlayer : AbstractPlayer
+    public class AlliancePlayer : APlayer
     {
-        public AlliancePlayer(GameModel gameModel) : base(Player.Alliance, gameModel)
+        public AlliancePlayer(GameModel gameModel) : base(PlayerType.Alliance, gameModel)
         {
         }
 

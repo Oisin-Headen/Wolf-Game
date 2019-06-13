@@ -5,15 +5,15 @@ using Pathfinding;
 
 namespace Model
 {
-    public abstract class AbstractPlayer
+    public abstract class APlayer
     {
         public List<UnitModel> units;
-        public readonly Player thisplayer;
+        public readonly PlayerType thisplayer;
         protected GameModel gameModel;
 
         private List<IPreEndTurnTask> tasks;
 
-        protected AbstractPlayer(Player newplayer, GameModel gameModel)
+        public APlayer(PlayerType newplayer, GameModel gameModel)
         {
             this.gameModel = gameModel;
             thisplayer = newplayer;

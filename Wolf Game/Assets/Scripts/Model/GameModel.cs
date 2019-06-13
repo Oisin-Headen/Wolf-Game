@@ -1,16 +1,17 @@
 ﻿using System;using System.Collections.Generic;
+using System.Threading.Tasks;
 using Pathfinding;
 namespace Model{
     public class GameModel
     {
         public RandomSeeds seeds;
         public MapModel map;
-        private readonly Dictionary<Player, AbstractPlayer> PlayerMap;
-        private Player currentPlayer;
+        private readonly Dictionary<PlayerType, APlayer> PlayerMap;
+        private PlayerType currentPlayer;
         private readonly GameController gameController;
 
         public UnitModel SelectedUnit { get; private set; }
-        public bool Moving { get; internal set; }        private List<SpaceModel> currentlyDispayedPath;
+        public bool Moving { get; internal set; }        private List<SpaceModel> currentlyDispayedPath;        private SpaceModel currentMousePosition;
 
         public GameModel(GameController gameController)
         {
@@ -21,14 +22,14 @@ using Pathfinding;
 
             List<SpaceModel> deepforests = map.GetDeepForests();
 
-            PlayerMap = new Dictionary<Player, AbstractPlayer>        {            { Player.Wolves, new WolfPlayer(this, deepforests) },            { Player.Alliance, new AlliancePlayer(this) }        };
+            PlayerMap = new Dictionary<PlayerType, APlayer>        {            { PlayerType.Wolves, new WolfPlayer(this, deepforests) },            { PlayerType.Alliance, new AlliancePlayer(this) }        };
 
-            currentPlayer = Player.Wolves;
+            currentPlayer = PlayerType.Wolves;
             gameController.currentPlayerText.text = "Wolves";
             GetCurrentPlayer().StartTurn();
         }
 
-        public AbstractPlayer GetCurrentPlayer()
+        public APlayer GetCurrentPlayer()
         {
             return PlayerMap[currentPlayer];
         }
@@ -93,16 +94,19 @@ using Pathfinding;
         {
             return gameController.AddSpace(spaceModel);
         }
-
-        internal void HoverOverSpace(SpaceModel spaceModel)
-        {
+
+        internal async void HoverOverSpaceAsync(SpaceModel spaceModel)
+        {            currentMousePosition = spaceModel;
             if (!Moving)
             {
                 return;
             }
-            if(currentlyDispayedPath != null)            {                foreach(var space in currentlyDispayedPath)                {                    space.controller.SetPath(false);                }            }
-            currentlyDispayedPath = AStarPathfinding.GetPathToDestination(SelectedUnit.Space, spaceModel,                 SelectedUnit.MovementCostDeterminer);
-
+
+            var newPath = await AStarPathfinding.GetPathToDestination(SelectedUnit.Space, spaceModel,                 SelectedUnit.UnitType.MovementCostDeterminer);
+            // The Mouse has moved somewhere else            if(spaceModel != currentMousePosition)
+            {
+                return;
+            }            if (currentlyDispayedPath != null)            {                foreach (var space in currentlyDispayedPath)                {                    space.controller.SetPath(false);                }            }            currentlyDispayedPath = newPath;
             if (currentlyDispayedPath != null)            {
                 foreach (var space in currentlyDispayedPath)
                 {

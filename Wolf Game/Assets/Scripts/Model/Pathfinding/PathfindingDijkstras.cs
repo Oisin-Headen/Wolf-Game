@@ -68,7 +68,7 @@ namespace Pathfinding
                             int newNodeCost;
                             newNodeCost = currentnode.Cost +
                                 costDeterminer.GetMovementCost(adjacentSpace);
-                            if (!adjacentSpace.Occupied())
+                            if (adjacentSpace.Occupied())
                             {
                                 // TODO Freindly Units don't block movement
                                 newNodeCost = -1;
