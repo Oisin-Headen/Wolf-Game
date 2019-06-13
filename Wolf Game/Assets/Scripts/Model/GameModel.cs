@@ -1,7 +1,9 @@
 ﻿using System;using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pathfinding;
-namespace Model{
+using UnityEngine;
+
+namespace Model{
     public class GameModel
     {
         public RandomSeeds seeds;
@@ -12,7 +14,7 @@ using Pathfinding;
 
         public UnitModel SelectedUnit { get; internal set; }
         public bool Moving { get; internal set; }
-        public SpaceModel CurrentMousePosition { get; private set; }
+        public SpaceModel CurrentMousePosition { get; private set; }        private int movingUnits;
 
         //private List<SpaceModel> currentlyDispayedPath;
         public GameModel(GameController gameController)
@@ -37,16 +39,18 @@ using Pathfinding;
         }
 
         public void EndTurnButtonPressed()
-        {
+        {            Debug.Log(movingUnits);            movingUnits = 0;            //gameController.SetMainButtonText("Please Wait");
+
             if (GetCurrentPlayer().TryEndTurn())
             {                // todo put turn cycle in here.
                 GetCurrentPlayer().StartTurn();
             }
             else
-            {
+            {                //gameController.SetMainButtonText("A Unit Needs Orders");
                 GetCurrentPlayer().PreEndTurnTask();
             }
-        }
+        }        internal void EndTurnUnitMoved()        {            --movingUnits;            if(movingUnits == 0)
+            {                //gameController.SetMainButtonText("End Turn");             }        }        internal void EndTurnUnitMoving()        {            ++movingUnits;        }
 
         internal void Clicked(SpaceModel spaceModel)
         {
@@ -62,8 +66,7 @@ using Pathfinding;
                 {
                     SelectedUnit = spaceModel.OccupingUnit;
                     spaceModel.controller.SetSelected();
-                }            }
-        }
+                }            }        }        internal void HoverOverSpace(SpaceModel spaceModel)        {            CurrentMousePosition = spaceModel;            if (SelectedUnit != null)            {                SelectedUnit.MovementOverseer.HoverSpace(spaceModel);            }        }
 
         public void Move()
         {
@@ -88,14 +91,5 @@ using Pathfinding;
         {
             return gameController.AddSpace(spaceModel);
         }
-
-        internal void HoverOverSpace(SpaceModel spaceModel)
-        {            CurrentMousePosition = spaceModel;            if (SelectedUnit != null)
-            {
-                SelectedUnit.MovementOverseer.HoverSpace(spaceModel);
-            }
-        }        //internal void FinishedMovement()
-        //{
-        //    if (currentlyDispayedPath != null)        //    {        //        foreach (var space in currentlyDispayedPath)        //        {        //            space.controller.Deselect();        //        }        //    }        //}
     }
 }

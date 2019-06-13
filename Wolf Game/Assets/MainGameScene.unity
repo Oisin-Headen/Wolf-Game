@@ -1030,6 +1030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WorkerBackground: {fileID: 21300000, guid: cdcb1782a7a8b41a29282fce232fefc8, type: 3}
   NormalBackground: {fileID: 21300000, guid: 0d7892994d89a4d208f3a8b331c21b6e, type: 3}
+  ShieldBackGround: {fileID: 0}
   Wolf: {fileID: 21300000, guid: 85fb6c4b5b6c04c7c89a69e056a52f6c, type: 3}
   BattleSpider: {fileID: 21300000, guid: bcfdda8caa1a440a18a5ab89a053b8ed, type: 3}
   WorkerSpider: {fileID: 21300000, guid: d14c5e55738d8457c87886348b0470c7, type: 3}
@@ -1264,6 +1265,7 @@ MonoBehaviour:
     type: 3}
   tileSelectorPrefab: {fileID: 6077356037929531278, guid: 71ce2bebf2331410f842f9384c53981b,
     type: 3}
+  MainButtonText: {fileID: 1678231752}
   assets: {fileID: 1221659570}
   mouseOverText: {fileID: 1178051379}
   cameraController: {fileID: 519420030}

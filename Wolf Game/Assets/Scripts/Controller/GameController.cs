@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public GameObject spaceViewPrefab;
     public GameObject unitPrefab;
     public GameObject tileSelectorPrefab;
+    public Text MainButtonText;
     public Assets assets;
     public Text mouseOverText;
     public CameraController cameraController;
@@ -87,5 +88,10 @@ public class GameController : MonoBehaviour
         var unitController = unitView.GetComponent<UnitController>();
         unitController.Setup(unitModel, unitView, this);
         return unitController;
+    }
+
+    public void SetMainButtonText(string newText)
+    {
+        MainButtonText.text = newText;
     }
 }
