@@ -9,6 +9,13 @@ public class CameraController : MonoBehaviour
     private bool dragging = false;
     private Vector3 mouseOrigin;
 
+    private bool cameraSnapping;
+
+    private Vector3 snapEndPos;
+    private Vector3 snapStartPos;
+    private float snapTotal;
+    private float startSnapTime;
+
     void Start()
     {
         var x = Utilities.HEX_SIZE * Mathf.Sqrt(3) / 2 * (Utilities.MAP_WIDTH);
@@ -91,13 +98,31 @@ public class CameraController : MonoBehaviour
         }
 
         dragging &= !Input.GetMouseButtonUp(0);
+
+
+
+        if(cameraSnapping)
+        {
+            float currentSnap = (Time.time - startSnapTime) * Utilities.CAMERA_SNAP_SPEED;
+            float fractionSnap = currentSnap / snapTotal;
+            fractionSnap = Mathf.Min(1f, fractionSnap);
+            fractionSnap = Mathf.Max(0f, fractionSnap);
+            transform.position = Vector3.Lerp(snapStartPos, snapEndPos, fractionSnap);
+            cameraSnapping &= transform.position != snapEndPos;
+        }
     }
 
     internal void SetPosition(Vector2 vector2)
     {
+        //cameraSnapping = true;
         Vector3 pos = vector2;
         pos.z = -10;
-        mainCamera.transform.position = pos;
-        //mainCamera.orthographicSize = (Utilities.MAX_CAMERA_SIZE + Utilities.MIN_CAMERA_SIZE) / 2;
+
+        snapEndPos = pos;
+        startSnapTime = Time.time;
+        snapStartPos = transform.position;
+        snapTotal = Vector3.Distance(transform.position, snapEndPos);
+
+        transform.position = pos;
     }
 }

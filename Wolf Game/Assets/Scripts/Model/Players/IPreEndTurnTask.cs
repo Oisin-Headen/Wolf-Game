@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Model;
 
-namespace Pathfinding
+namespace Model
 {
     public interface IPreEndTurnTask
     {
         void Show();
         bool Complete();
+        void TryComplete();
         //void MarkComplete();
     }
 
     public class PreEndTurnMovementTask : IPreEndTurnTask
     {
+        private UnitMovementOverseer overseer;
         private readonly UnitModel unit;
         private bool complete;
 
@@ -19,12 +22,18 @@ namespace Pathfinding
         {
             complete = false;
             this.unit = unit;
-            unit.MovementTask = this;
+            unit.MovementOverseer.MovementTask = this;
+            overseer = unit.MovementOverseer;
         }
 
         public void Show()
         {
             unit.Space.Clicked();
+        }
+
+        public void TryComplete()
+        {
+            overseer.TryEndTurn();
         }
 
         public bool Complete()

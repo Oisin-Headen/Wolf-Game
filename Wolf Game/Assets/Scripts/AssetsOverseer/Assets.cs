@@ -50,7 +50,8 @@ public class Assets : MonoBehaviour
         UnitBackGrounds = new Dictionary<UnitBackgrounds, Sprite>
         {
             [UnitBackgrounds.Normal] = extraSprites.NormalBackground,
-            [UnitBackgrounds.Worker] = extraSprites.WorkerBackground
+            [UnitBackgrounds.Worker] = extraSprites.WorkerBackground,
+            [UnitBackgrounds.Shield] = extraSprites.ShieldBackGround
         };
 
         Units = new Dictionary<UnitTypeModel.UnitTypes, Sprite>

@@ -10,9 +10,11 @@ using Pathfinding;
         private PlayerType currentPlayer;
         private readonly GameController gameController;
 
-        public UnitModel SelectedUnit { get; private set; }
-        public bool Moving { get; internal set; }        private List<SpaceModel> currentlyDispayedPath;        private SpaceModel currentMousePosition;
+        public UnitModel SelectedUnit { get; internal set; }
+        public bool Moving { get; internal set; }
+        public SpaceModel CurrentMousePosition { get; private set; }
 
+        //private List<SpaceModel> currentlyDispayedPath;
         public GameModel(GameController gameController)
         {
             this.gameController = gameController;
@@ -22,7 +24,7 @@ using Pathfinding;
 
             List<SpaceModel> deepforests = map.GetDeepForests();
 
-            PlayerMap = new Dictionary<PlayerType, APlayer>        {            { PlayerType.Wolves, new WolfPlayer(this, deepforests) },            { PlayerType.Alliance, new AlliancePlayer(this) }        };
+            PlayerMap = new Dictionary<PlayerType, APlayer>            {                { PlayerType.Wolves, new WolfPlayer(this, deepforests) },                { PlayerType.Alliance, new AlliancePlayer(this) }            };
 
             currentPlayer = PlayerType.Wolves;
             gameController.currentPlayerText.text = "Wolves";
@@ -34,32 +36,10 @@ using Pathfinding;
             return PlayerMap[currentPlayer];
         }
 
-
-        public void SetSelectedUnit(UnitModel unitModel)
-        {
-            if (SelectedUnit != null)
-            {
-                SelectedUnit.Space.Deselect();
-            }
-            SelectedUnit = unitModel;
-        }
-
         public void EndTurnButtonPressed()
         {
-            if (GetCurrentPlayer().CanEndTurn())
-            {
-                //switch (currentPlayer)
-                //{
-                //    case Player.Alliance:
-                //        currentPlayer = Player.Wolves;
-                //        gameController.currentPlayerText.text = "Wolves";
-                //        break;
-                //    case Player.Wolves:
-                //        currentPlayer = Player.Alliance;
-                //        gameController.currentPlayerText.text = "Draconic Alliance";
-                //        break;
-                //}
-
+            if (GetCurrentPlayer().TryEndTurn())
+            {                // todo put turn cycle in here.
                 GetCurrentPlayer().StartTurn();
             }
             else
@@ -68,16 +48,30 @@ using Pathfinding;
             }
         }
 
+        internal void Clicked(SpaceModel spaceModel)
+        {
+            if(SelectedUnit == null)
+            {
+                SelectedUnit = spaceModel.OccupingUnit;                if (SelectedUnit != null)
+                {
+                    SelectedUnit.Space.controller.SetSelected();
+                }
+            }            else if(SelectedUnit.MovementOverseer.Moving)
+            {                SelectedUnit.MovementOverseer.ClickSpace(spaceModel);             }            else
+            {                SelectedUnit.Space.controller.Deselect();                SelectedUnit = null;                if (spaceModel.Occupied())
+                {
+                    SelectedUnit = spaceModel.OccupingUnit;
+                    spaceModel.controller.SetSelected();
+                }            }
+        }
+
         public void Move()
         {
             if (SelectedUnit != null)
             {
                 if (SelectedUnit.GetPlayer() == currentPlayer)
                 {
-                    // Todo for figuring out pathfinding, leave commented for now.
-                    //var thread = new System.Threading.Thread(() => SelectedUnit.StartMove());
-                    //thread.Start();
-                    SelectedUnit.StartMove();
+                    SelectedUnit.MovementOverseer.ShowMove();
                 }
             }
         }
@@ -94,27 +88,14 @@ using Pathfinding;
         {
             return gameController.AddSpace(spaceModel);
         }
-
-        internal async void HoverOverSpaceAsync(SpaceModel spaceModel)
-        {            currentMousePosition = spaceModel;
-            if (!Moving)
-            {
-                return;
-            }
 
-            var newPath = await AStarPathfinding.GetPathToDestination(SelectedUnit.Space, spaceModel,                 SelectedUnit.UnitType.MovementCostDeterminer);
-            // The Mouse has moved somewhere else            if(spaceModel != currentMousePosition)
+        internal void HoverOverSpace(SpaceModel spaceModel)
+        {            CurrentMousePosition = spaceModel;            if (SelectedUnit != null)
             {
-                return;
-            }            if (currentlyDispayedPath != null)            {                foreach (var space in currentlyDispayedPath)                {                    space.controller.SetPath(false);                }            }            currentlyDispayedPath = newPath;
-            if (currentlyDispayedPath != null)            {
-                foreach (var space in currentlyDispayedPath)
-                {
-                    space.controller.SetPath(true);
-                }
+                SelectedUnit.MovementOverseer.HoverSpace(spaceModel);
             }
-        }        internal void FinishedMovement()
-        {
-            if (currentlyDispayedPath != null)            {                foreach (var space in currentlyDispayedPath)                {                    space.controller.Deselect();                }            }        }
+        }        //internal void FinishedMovement()
+        //{
+        //    if (currentlyDispayedPath != null)        //    {        //        foreach (var space in currentlyDispayedPath)        //        {        //            space.controller.Deselect();        //        }        //    }        //}
     }
 }

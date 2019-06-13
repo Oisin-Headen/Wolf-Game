@@ -6,7 +6,7 @@ public class AssetsPositions : MonoBehaviour
 {
     public Sprite WorkerBackground;
     public Sprite NormalBackground;
-
+    public Sprite ShieldBackGround;
 
     public Sprite Wolf;
     public Sprite BattleSpider;

@@ -8,15 +8,15 @@ namespace Model
     {
         public SpaceController controller;
         private readonly GameModel gameModel;
-        private readonly MapModel map;
+        public readonly MapModel map;
 
         private readonly DoubledCoords doubledCoords;
         private readonly CubeCoords cubeCoords;
 
         private SpaceModel[] adjacentSpaces;
+
+        // Never use this, it is for pathfinding algorithms.
         private PathfindingNode pathfindingNode;
-        private bool oneTurnMovable;
-        private List<SpaceModel> movementPath;
 
         public UnitModel OccupingUnit { get; internal set; }
         public SpaceTerrain Terrain { get; private set; }
@@ -48,43 +48,21 @@ namespace Model
         }
 
 
-
-
-        public void Moveable()
-        {
-            oneTurnMovable = true;
-            controller.SetMoveable();
-        }
-
-
         // When this space is clicked, this method is called.
         public void Clicked()
         {
-            if (oneTurnMovable)
-            {
-                gameModel.SelectedUnit.FinishMove(this);
-            }
-            else if (OccupingUnit != null)
-            {
-                gameModel.SetSelectedUnit(OccupingUnit);
-                controller.SetSelected();
-            }
+            gameModel.Clicked(this);
         }
 
         // When a Space is Hovered over, this method is called
         public void Hover()
         {
-            gameModel.HoverOverSpaceAsync(this);
+            gameModel.HoverOverSpace(this);
         }
 
 
         public void Deselect()
         {
-            //if(OccupingUnit != null)
-            //{
-            //    OccupingUnit.Deselect();
-            //}
-            oneTurnMovable = false;
             controller.Deselect();
         }
 

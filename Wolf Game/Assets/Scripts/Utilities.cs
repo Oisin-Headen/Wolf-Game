@@ -11,7 +11,8 @@ public static class Utilities
 
     public const int CAMERA_SPEED = 10;
     public const int CAMERA_ZOOM_SPEED = 15;
-    // Usually 5
+    public const int CAMERA_SNAP_SPEED = 80;
+
     public const float MAX_CAMERA_SIZE = 11.0f;
     public const float MIN_CAMERA_SIZE = 2.0f;
 

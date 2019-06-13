@@ -8,15 +8,15 @@ namespace Pathfinding
 {
     public static class AStarPathfinding
     {
-        public async static Task<List<SpaceModel>> GetPathToDestination(SpaceModel startSpace, SpaceModel destSpace, IMovementCost costDeterminer)
+        public static List<SpaceModel> GetPathToDestination(SpaceModel startSpace, SpaceModel destSpace, IMovementCost costDeterminer)
         {
             if (costDeterminer.GetMovementCost(destSpace) == -1)
             {
                 return null;
             }
 
-            return await Task.Run(() =>
-            {
+            //return await Task.Run(() =>
+            //{
                 List<PathfindingNode> allNodes = new List<PathfindingNode>();
 
                 PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, true, destSpace);
@@ -94,6 +94,11 @@ namespace Pathfinding
                     }
                 }
 
+                if(currentnode.Space != destSpace)
+                {
+                    return null;
+                }
+
                 List<SpaceModel> path = new List<SpaceModel>();
                 PathfindingNode backtrackNode = currentnode;
                 while (backtrackNode != null)
@@ -112,7 +117,7 @@ namespace Pathfinding
 
                 path.Remove(startSpace);
                 return path;
-            });
+            //});
         }
     }
 }

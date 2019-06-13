@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Pathfinding;
 
 namespace Model
@@ -53,6 +54,20 @@ namespace Model
                     foundTask = true;
                 }
             }
+        }
+
+        internal bool TryEndTurn()
+        {
+            //List<Task> asyncTasks = new List<Task>();
+            foreach (var task in tasks)
+            {
+                //asyncTasks.Add(task.TryComplete());
+                task.TryComplete();
+            }
+
+            //Task.WaitAll(asyncTasks.ToArray());
+
+            return CanEndTurn();
         }
     }
 }

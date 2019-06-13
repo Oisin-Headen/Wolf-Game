@@ -9,11 +9,8 @@ namespace Model
     public class UnitModel
     {
         public readonly UnitTypeModel UnitType;
+        public readonly UnitController controller;
 
-        //private bool moving;
-        private List<PathfindingNode> movementSpaces;
-
-        private readonly UnitController controller;
         private readonly GameModel gameModel;
 
 
@@ -24,9 +21,10 @@ namespace Model
         public int CurrentHP { get; private set; }
         public int CurrentMovement { get; private set; }
         public SpaceModel Space { get; private set; }
-        public PreEndTurnMovementTask MovementTask { get; internal set; }
 
         public readonly APlayer Player;
+
+        public readonly UnitMovementOverseer MovementOverseer;
 
 
         public UnitModel(UnitTypeModel unitType, SpaceModel space, APlayer player,  GameModel gameModel)
@@ -43,8 +41,9 @@ namespace Model
 
             controller = gameModel.AddUnit(this);
             this.gameModel = gameModel;
-        }
 
+            MovementOverseer = new UnitMovementOverseer(this, gameModel);
+        }
 
 
         // View all Spaces in Range
@@ -72,46 +71,19 @@ namespace Model
             return Player.thisplayer;
         }
 
-        public void StartMove()
+        // does not check that this space is empty;
+        internal void Enter(SpaceModel spaceModel)
         {
-            //moving = true;
-            movementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(
-                Space, CurrentMovement, UnitType.MovementCostDeterminer);
-
-
-            foreach (var node in movementSpaces)
+            Space.OccupingUnit = null;
+            spaceModel.OccupingUnit = this;
+            Space = spaceModel;
+            foreach(var node in PathfindingDijkstras.GetFieldOfView(spaceModel, UnitType.VisionRange, 
+                   spaceModel.map, UnitType.BlockLOS))
             {
-                node.Space.Moveable();
-                //node.GetSpace().controller.SetText(node.GetCost());
+                node.Space.Explore();
             }
-            gameModel.Moving = true;
-        }
-
-        public void FinishMove(SpaceModel spaceModel)
-        {
-            foreach (var node in movementSpaces)
-            {
-                if (node.Space == spaceModel)
-                {
-                    CurrentMovement = Math.Max(0, CurrentMovement - node.Cost);
-                    controller.MovePosition(node.Space);
-                    Space.OccupingUnit = null;
-                    Space = node.Space;
-                    Space.OccupingUnit = this;
-                }
-                node.Space.Deselect();
-            }
-            movementSpaces = null;
-            gameModel.SetSelectedUnit(null);
-            Explore();
-
-            if (CurrentMovement <= 0)
-            {
-                MovementTask.MarkComplete();
-            }
-
-            gameModel.Moving = false;
-            gameModel.FinishedMovement();
+            CurrentMovement = Math.Max(0, CurrentMovement - UnitType.MovementCostDeterminer.GetMovementCost(spaceModel));
+            controller.MovePosition(spaceModel);
         }
     }
 }
