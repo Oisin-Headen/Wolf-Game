@@ -8,7 +8,7 @@ namespace Model
     {
         void Show();
         bool Complete();
-        void TryComplete();
+        bool TryComplete();
         //void MarkComplete();
     }
 
@@ -31,9 +31,9 @@ namespace Model
             unit.Space.Clicked();
         }
 
-        public void TryComplete()
+        public bool TryComplete()
         {
-            overseer.TryEndTurn();
+            return overseer.TryEndTurn();
         }
 
         public bool Complete()

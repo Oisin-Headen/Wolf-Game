@@ -56,18 +56,24 @@ namespace Model
             }
         }
 
-        internal bool TryEndTurn()
+        internal EndTurnButtonResult TryEndTurn()
         {
-            //List<Task> asyncTasks = new List<Task>();
+            bool notThreading = true;
+
             foreach (var task in tasks)
             {
-                //asyncTasks.Add(task.TryComplete());
-                task.TryComplete();
+                notThreading &= task.TryComplete();
             }
 
-            //Task.WaitAll(asyncTasks.ToArray());
-
-            return CanEndTurn();
+            if (!notThreading)
+            {
+                return EndTurnButtonResult.Threading;
+            }
+            if (CanEndTurn())
+            {
+                return EndTurnButtonResult.Normal;
+            }
+            return EndTurnButtonResult.Show_Task;
         }
     }
 }

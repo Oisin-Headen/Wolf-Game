@@ -55,16 +55,16 @@ namespace Model
                         pathSpace.controller.SetPath(true);
                     }
                 }
-            }        }        internal void ClickSpace(SpaceModel space)        {            if (Moving)            {                destination = space;                Fortified = false;                unit.controller.RevertBackground();                HideMove();                Moving = false;                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.SetPath(false);                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        internal void TryEndTurn()
+            }        }        internal void ClickSpace(SpaceModel space)        {            if (Moving)            {                destination = space;                Fortified = false;                unit.controller.RevertBackground();                HideMove();                Moving = false;                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.SetPath(false);                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        // Returns true if done, false if threading.        internal bool TryEndTurn()
         {            if (Fortified)
             {
-                MovementTask.MarkComplete();                return;
+                MovementTask.MarkComplete();                return true;
             }            if (unit.CurrentMovement == 0)
-            {                MovementTask.MarkComplete();                return;
+            {                MovementTask.MarkComplete();                return true;
             }            if (unit.Space == destination)
             {
                 destination = null;
-            }            if (destination == null)            {                return;            }            gameModel.EndTurnUnitMoving();            Thread thread = new Thread(() =>
+            }            if (destination == null)            {                return true;            }            gameModel.EndTurnUnitMoving();            Thread thread = new Thread(() =>
             {
                 List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
                        unit.UnitType.MovementCostDeterminer);
@@ -72,6 +72,7 @@ namespace Model
                 if (newPath == null)
                 {
                     destination = null;
+                    gameModel.EndTurnUnitMoved();
                     return;
                 }
                 UnityToolbag.Dispatcher.InvokeAsync(() =>
@@ -80,7 +81,7 @@ namespace Model
 
                     TravelAlongPath();                    gameModel.EndTurnUnitMoved();
                 });
-            });            thread.Start();        }        public void TravelAlongPath()
+            });            thread.Start();            return false;        }        public void TravelAlongPath()
         {
             int pathSpaceNum = 0;            bool continuing = true;            if(currentTravelPath == null)
             {

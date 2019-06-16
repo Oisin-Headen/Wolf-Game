@@ -22,6 +22,8 @@ public static class Utilities
 
     public const float MAX_CAMERA_Y = HEX_SIZE * 3 / 2f * MAP_HEIGHT;
 
+    public const float UNIT_SPEED = 5f;
+
     public static SpaceTerrain GetTerrainForSpace(SpaceModel space, RandomSeeds seeds)
     {
         DoubledCoords coords = space.GetDoubledCoords();

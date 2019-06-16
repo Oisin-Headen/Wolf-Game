@@ -14,6 +14,11 @@ public class UnitController : MonoBehaviour
     private Transform backgroundSymbol;
     private Sprite NormalBackgroundSprite;
 
+    private Queue<Vector2> spacesToMove;
+    private Vector2 startPos;
+    private float startTime;
+    private float distance;
+
     internal void Setup(UnitModel model, GameObject view, GameController gameController)
     {
         unitView = view;
@@ -35,11 +40,47 @@ public class UnitController : MonoBehaviour
 
         icon.GetComponent<SpriteRenderer>().sprite = unitSprite;
         backgroundSymbol.GetComponent<SpriteRenderer>().sprite = NormalBackgroundSprite;
+
+        spacesToMove = new Queue<Vector2>();
     }
 
     public void MovePosition(SpaceModel space)
     {
-        unitView.GetComponent<Transform>().position = space.controller.GetPosition();
+        spacesToMove.Enqueue(space.controller.GetPosition());
+        if(startPos == null)
+        {
+            startPos = transform.position;
+            startTime = Time.time;
+            distance = Vector2.Distance(startPos, space.controller.GetPosition());
+        }
+
+        //unitView.GetComponent<Transform>().position = space.controller.GetPosition();
+    }
+
+    public void Update()
+    {
+        if(spacesToMove.Count > 0)
+        {
+
+            float current = (Time.time - startTime) * Utilities.UNIT_SPEED;
+            float fraction = current / distance;
+            fraction = Mathf.Min(1f, fraction);
+            fraction = Mathf.Max(0f, fraction);
+
+            unitView.GetComponent<Transform>().position = Vector2.Lerp(startPos, spacesToMove.Peek(), fraction);
+
+            if(fraction >= 1f)
+            {
+                spacesToMove.Dequeue();
+
+                if (spacesToMove.Count > 0)
+                {
+                    startPos = transform.position;
+                    startTime = Time.time;
+                    distance = Vector2.Distance(startPos, spacesToMove.Peek());
+                }
+            }
+        }
     }
 
     public void SetBackGroundShape(Assets.UnitBackgrounds background)

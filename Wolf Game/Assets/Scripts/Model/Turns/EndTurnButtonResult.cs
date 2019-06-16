@@ -1,0 +1,1 @@
+﻿using System;public enum EndTurnButtonResult{    Threading, Show_Task, Normal}
