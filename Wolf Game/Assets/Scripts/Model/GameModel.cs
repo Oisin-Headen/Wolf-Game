@@ -39,9 +39,9 @@ namespace Model{
         }
 
         public void EndTurnButtonPressed()
-        {            Debug.Log(movingUnits);            movingUnits = 0;            //gameController.SetMainButtonText("Please Wait");
+        {            //Debug.Log(movingUnits);            movingUnits = 0;            //gameController.SetMainButtonText("Please Wait");
 
-            Debug.Log("End Turn Button");
+            //Debug.Log("End Turn Button");
 
             if (GetCurrentPlayer().CanEndTurn())
             {
@@ -68,12 +68,12 @@ namespace Model{
             // TODO end turn cycle here
             gameController.SetMainButtonText("End Turn");
             GetCurrentPlayer().StartTurn();
-            Debug.Log("End Turn Real");
-        }        internal void EndTurnUnitMoved()        {            Debug.Log("End Turn Moved");            --movingUnits;            if(movingUnits == 0)
+            //Debug.Log("End Turn Real");
+        }        internal void EndTurnUnitMoved()        {            //Debug.Log("End Turn Moved");            --movingUnits;            if(movingUnits == 0)
             {                if (GetCurrentPlayer().CanEndTurn())
                 {
                     gameController.SetMainButtonText("End Turn");                    EndTurn();
-                }                else                {                    GetCurrentPlayer().PreEndTurnTask();                }            }        }        internal void EndTurnUnitMoving()        {            Debug.Log("End Turn Button");            ++movingUnits;        }
+                }                else                {                    GetCurrentPlayer().PreEndTurnTask();                }            }        }        internal void EndTurnUnitMoving()        {            //Debug.Log("End Turn Button");            ++movingUnits;        }
 
         internal void Clicked(SpaceModel spaceModel)
         {
@@ -98,6 +98,17 @@ namespace Model{
                 if (SelectedUnit.GetPlayer() == currentPlayer)
                 {
                     SelectedUnit.MovementOverseer.ShowMove();
+                }
+            }
+        }
+
+        public void Fortify()
+        {
+            if(SelectedUnit != null)
+            {
+                if(SelectedUnit.GetPlayer() == currentPlayer)
+                {
+                    SelectedUnit.MovementOverseer.Fortify();
                 }
             }
         }

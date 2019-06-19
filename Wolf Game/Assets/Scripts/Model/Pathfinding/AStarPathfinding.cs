@@ -15,109 +15,96 @@ namespace Pathfinding
                 return null;
             }
 
-            //return await Task.Run(() =>
-            //{
-                List<PathfindingNode> allNodes = new List<PathfindingNode>();
+            Dictionary<SpaceModel, PathfindingNode> allNodes = new Dictionary<SpaceModel, PathfindingNode>();
 
-                PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, true, destSpace);
-                allNodes.Add(currentnode);
-                bool done = false;
-                while (!done)
+            PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, true, destSpace);
+            allNodes[startSpace] = currentnode;
+            bool done = false;
+            while (!done)
+            {
+                foreach (SpaceModel adjacentSpace in currentnode.Space.GetAdjacentSpaces())
                 {
-                    foreach (SpaceModel adjacentSpace in currentnode.Space.GetAdjacentSpaces())
+                    if (adjacentSpace != null)
                     {
-                        if (adjacentSpace != null)
+                        try
                         {
-                            if (adjacentSpace.GetNode() == null)
+                            PathfindingNode nextNode = allNodes[adjacentSpace];
+                            int newNodeCost = currentnode.Cost + costDeterminer.GetMovementCost(adjacentSpace);
+                            double newPathfindingCost = newNodeCost;
+                            if (!nextNode.Seen)
                             {
-                                // Is null, need new node
-                                if (costDeterminer.GetMovementCost(adjacentSpace) != -1)
-                                {
-                                    int newNodeCost = currentnode.Cost + costDeterminer.GetMovementCost(adjacentSpace);
-                                    PathfindingNode newNode = new PathfindingNode(adjacentSpace, currentnode, newNodeCost, false, destSpace);
-                                    allNodes.Add(newNode);
-                                    adjacentSpace.SetNode(newNode);
-                                }
+                                // Next node hasn't been visited yet
+                                //nextNode.Update(newNodeCost, newPathfindingCost, currentnode);
+                                nextNode.Update(newNodeCost, currentnode);
                             }
-                            else
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            // Is null, need new node
+                            if (costDeterminer.GetMovementCost(adjacentSpace) != -1)
                             {
-                                // not null, there is a node here
-                                PathfindingNode nextNode = adjacentSpace.GetNode();
                                 int newNodeCost = currentnode.Cost + costDeterminer.GetMovementCost(adjacentSpace);
-                                double newPathfindingCost = newNodeCost;
-                                if (!nextNode.Seen)
-                                {
-                                    // Next node hasn't been visited yet
-                                    //nextNode.Update(newNodeCost, newPathfindingCost, currentnode);
-                                    nextNode.Update(newNodeCost, currentnode);
-                                }
-
+                                PathfindingNode newNode = new PathfindingNode(adjacentSpace, currentnode, newNodeCost, false, destSpace);
+                                allNodes[adjacentSpace] = newNode;
                             }
                         }
                     }
-                    currentnode.SetSeen();
-                    if (!currentnode.Space.Equals(destSpace))
+                }
+                currentnode.SetSeen();
+                if (!currentnode.Space.Equals(destSpace))
+                {
+                    PathfindingNode lowestNode = null;
+                    foreach (PathfindingNode node in allNodes.Values)
                     {
-                        PathfindingNode lowestNode = null;
-                        foreach (PathfindingNode node in allNodes)
+                        if (!node.Seen)
                         {
-                            if (!node.Seen)
+                            if (lowestNode == null)
                             {
-                                if (lowestNode == null)
+                                lowestNode = node;
+                            }
+                            else
+                            {
+                                if (node.ASTotal <= lowestNode.ASTotal)
                                 {
-                                    lowestNode = node;
-                                }
-                                else
-                                {
-                                    if (node.ASTotal <= lowestNode.ASTotal)
+                                    if (node.ASRemaining <= lowestNode.ASRemaining)
                                     {
-                                        if (node.ASRemaining <= lowestNode.ASRemaining)
-                                        {
-                                            lowestNode = node;
-                                        }
+                                        lowestNode = node;
                                     }
                                 }
                             }
                         }
-                        if (lowestNode == null)
-                        {
-                            done = true;
-                        }
-                        else
-                        {
-                            currentnode = lowestNode;
-                        }
                     }
-                    else
+                    if (lowestNode == null)
                     {
                         done = true;
                     }
+                    else
+                    {
+                        currentnode = lowestNode;
+                    }
                 }
-
-                if(currentnode.Space != destSpace)
+                else
                 {
-                    return null;
+                    done = true;
                 }
+            }
 
-                List<SpaceModel> path = new List<SpaceModel>();
-                PathfindingNode backtrackNode = currentnode;
-                while (backtrackNode != null)
-                {
-                    path.Add(backtrackNode.Space);
-                    backtrackNode = backtrackNode.GetParent();
-                }
-                path.Reverse();
+            if (currentnode.Space != destSpace)
+            {
+                return null;
+            }
 
-                foreach (PathfindingNode node in allNodes)
-                {
-                    node.Space.SetNode(null);
+            List<SpaceModel> path = new List<SpaceModel>();
+            PathfindingNode backtrackNode = currentnode;
+            while (backtrackNode != null)
+            {
+                path.Add(backtrackNode.Space);
+                backtrackNode = backtrackNode.GetParent();
+            }
+            path.Reverse();
 
-                    //node.GetSpace().ClearHighlighted();
-                }
-
-                path.Remove(startSpace);
-                return path;
-            //});
+            path.Remove(startSpace);
+            return path;
         }
     }
 }

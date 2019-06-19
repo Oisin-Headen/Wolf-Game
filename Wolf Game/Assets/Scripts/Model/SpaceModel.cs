@@ -15,9 +15,6 @@ namespace Model
 
         private SpaceModel[] adjacentSpaces;
 
-        // Never use this, it is for pathfinding algorithms.
-        private PathfindingNode pathfindingNode;
-
         public UnitModel OccupingUnit { get; internal set; }
         public SpaceTerrain Terrain { get; private set; }
         public bool Explored { get; private set; }
@@ -86,15 +83,6 @@ namespace Model
             adjacentSpaces[3] = map.GetSW(doubledCoords);
             adjacentSpaces[4] = map.GetW(doubledCoords);
             adjacentSpaces[5] = map.GetNW(doubledCoords);
-        }
-
-        public PathfindingNode GetNode()
-        {
-            return pathfindingNode;
-        }
-        public void SetNode(PathfindingNode node)
-        {
-            pathfindingNode = node;
         }
 
         public SpaceTerrain GenerateTerrain()

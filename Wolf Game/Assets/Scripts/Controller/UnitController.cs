@@ -47,25 +47,23 @@ public class UnitController : MonoBehaviour
     public void MovePosition(SpaceModel space)
     {
         spacesToMove.Enqueue(space.controller.GetPosition());
-        if(startPos == null)
+        if(spacesToMove.Count == 1)
         {
             startPos = transform.position;
             startTime = Time.time;
-            distance = Vector2.Distance(startPos, space.controller.GetPosition());
+            distance = Vector2.Distance(startPos, spacesToMove.Peek());
         }
-
-        //unitView.GetComponent<Transform>().position = space.controller.GetPosition();
     }
 
     public void Update()
     {
         if(spacesToMove.Count > 0)
         {
-
             float current = (Time.time - startTime) * Utilities.UNIT_SPEED;
             float fraction = current / distance;
-            fraction = Mathf.Min(1f, fraction);
             fraction = Mathf.Max(0f, fraction);
+            fraction = Mathf.Min(1f, fraction);
+            
 
             unitView.GetComponent<Transform>().position = Vector2.Lerp(startPos, spacesToMove.Peek(), fraction);
 

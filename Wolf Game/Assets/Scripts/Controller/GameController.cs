@@ -41,8 +41,10 @@ public class GameController : MonoBehaviour
         {
             Move();
         }
-        // todo if getkeyup 'm'
-        // if a moveable unit is selected, call move on it.
+        else if (Input.GetKeyUp(KeyCode.F))
+        {
+            Fortify();
+        }
 
         // todo if getkeyup 'a'
         // if a unit with attacks is selected, call attack on it.
@@ -61,6 +63,11 @@ public class GameController : MonoBehaviour
     internal void Move()
     {
         gameModel.Move();
+    }
+
+    internal void Fortify()
+    {
+        gameModel.Fortify();
     }
 
 

@@ -23,50 +23,36 @@ namespace Pathfinding
         public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost,
             IMovementCost costDeterminer)
         {
-            List<PathfindingNode> allNodes = new List<PathfindingNode>();
-            //List<SpaceModel> shortestPath = new List<SpaceModel>
-            //{
-            //    startSpace
-            //};
+            Dictionary<SpaceModel, PathfindingNode> allNodes = new Dictionary<SpaceModel, PathfindingNode>();
+
             PathfindingNode currentnode = new PathfindingNode(startSpace, null, 0, true, null);
 
-            allNodes.Add(currentnode);
+            allNodes[startSpace] = currentnode;
 
             bool done = false;
             while (!done)
             {
                 foreach (SpaceModel adjacentSpace in currentnode.Space.GetAdjacentSpaces())
                 {
-                    // todo for debugging, leave commented.
-                    //System.Threading.Thread.Sleep(250);
-
                     // If space exists
                     if (adjacentSpace != null)
                     {
-                        PathfindingNode nextNode = adjacentSpace.GetNode();
-                        if (nextNode != null)
+                        try
                         {
-                            // not null, there is already a node here
+                            PathfindingNode nextNode = allNodes[adjacentSpace];
+
                             if (!nextNode.Seen)
                             {
                                 // Next node hasn't been visited yet
                                 int adjacentSpaceCost = currentnode.Cost +
                                     costDeterminer.GetMovementCost(adjacentSpace);
-                                //nextNode.Update(adjacentSpaceCost, adjacentSpacePathfindingCost,
-                                //currentnode);
                                 nextNode.Update(adjacentSpaceCost, currentnode);
                             }
-
-                            // todo remove
-                            //UnityToolbag.Dispatcher.InvokeAsync(() =>
-                            //nextNode.Space.controller.SetText(nextNode.Cost.ToString()));
-
                         }
-                        else
+                        catch(KeyNotFoundException)
                         {
                             // Is null, need new node
-                            int newNodeCost;
-                            newNodeCost = currentnode.Cost +
+                            int newNodeCost = currentnode.Cost +
                                 costDeterminer.GetMovementCost(adjacentSpace);
                             if (adjacentSpace.Occupied())
                             {
@@ -83,19 +69,14 @@ namespace Pathfinding
                                 {
                                     PathfindingNode newNode = new PathfindingNode(adjacentSpace,
                                         currentnode, newNodeCost, false, null);
-                                    allNodes.Add(newNode);
-                                    //adjacentSpace.SetNode(newNode);
-
-                                    // todo remove after debug finished
-                                    //UnityToolbag.Dispatcher.InvokeAsync(() =>
-                                    //newNode.Space.controller.SetText(newNode.Cost.ToString()))
+                                    allNodes[adjacentSpace] = newNode;
                                 }
                             }
                         }
                     }
                 }
                 PathfindingNode lowestNode = null;
-                foreach (PathfindingNode node in allNodes)
+                foreach (PathfindingNode node in allNodes.Values)
                 {
                     if (!node.Seen)
                     {
@@ -125,12 +106,8 @@ namespace Pathfinding
                     currentnode = lowestNode;
                 }
             }
-            foreach (PathfindingNode node in allNodes)
-            {
-                node.Space.SetNode(null);
-            }
 
-            return allNodes;
+            return new List<PathfindingNode>(allNodes.Values);
         }
 
         public static List<PathfindingNode> GetSpacesForMovementDijkstras(SpaceModel startSpace, 

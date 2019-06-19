@@ -28,10 +28,7 @@ namespace Pathfinding
             Cost = cost;
             this.parent = parent;
             Seen = seen;
-            //this.pathfindingCost = pathfindingCost;
 
-
-            space.SetNode(this);
             if (destination != null)
             {
                 // Spaces Up/Down (UD) +

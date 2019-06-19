@@ -25,9 +25,13 @@ namespace Model
             }            Moving = true;            oneTurnMovementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(                unit.Space, unit.CurrentMovement, unit.UnitType.MovementCostDeterminer);            foreach (var node in oneTurnMovementSpaces)
             {                node.Space.controller.SetMoveable();
             }
-        }        internal void HideMove()        {            Moving = false;            foreach (var node in oneTurnMovementSpaces)
-            {                node.Space.controller.Deselect();                unit.Space.controller.SetSelected();
-            }        }        internal void HoverSpace(SpaceModel space)        {            if (Moving)
+        }        internal void HideMove()        {            Moving = false;            if (oneTurnMovementSpaces != null)
+            {
+                foreach (var node in oneTurnMovementSpaces)
+                {
+                    node.Space.controller.Deselect();
+                    unit.Space.controller.SetSelected();
+                }            }        }        internal void HoverSpace(SpaceModel space)        {            if (Moving)
             {
                 var newPath = AStarPathfinding.GetPathToDestination(unit.Space, space,
                     unit.UnitType.MovementCostDeterminer);
@@ -55,7 +59,7 @@ namespace Model
                         pathSpace.controller.SetPath(true);
                     }
                 }
-            }        }        internal void ClickSpace(SpaceModel space)        {            if (Moving)            {                destination = space;                Fortified = false;                unit.controller.RevertBackground();                HideMove();                Moving = false;                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.SetPath(false);                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        // Returns true if done, false if threading.        internal bool TryEndTurn()
+            }        }        internal void ClickSpace(SpaceModel space)        {            if (Moving)            {                destination = space;                Fortified = false;                unit.controller.RevertBackground();                HideMove();                Moving = false;                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.Deselect();                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        // Returns true if done, false if threading.        internal bool TryEndTurn()
         {            if (Fortified)
             {
                 MovementTask.MarkComplete();                return true;

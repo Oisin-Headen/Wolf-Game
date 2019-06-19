@@ -1030,7 +1030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WorkerBackground: {fileID: 21300000, guid: cdcb1782a7a8b41a29282fce232fefc8, type: 3}
   NormalBackground: {fileID: 21300000, guid: 0d7892994d89a4d208f3a8b331c21b6e, type: 3}
-  ShieldBackGround: {fileID: 0}
+  ShieldBackGround: {fileID: 21300000, guid: 5b4d56277434747ab850758d7a88da19, type: 3}
   Wolf: {fileID: 21300000, guid: 85fb6c4b5b6c04c7c89a69e056a52f6c, type: 3}
   BattleSpider: {fileID: 21300000, guid: bcfdda8caa1a440a18a5ab89a053b8ed, type: 3}
   WorkerSpider: {fileID: 21300000, guid: d14c5e55738d8457c87886348b0470c7, type: 3}
