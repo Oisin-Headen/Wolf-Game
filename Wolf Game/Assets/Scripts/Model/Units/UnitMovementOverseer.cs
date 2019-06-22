@@ -25,7 +25,15 @@ namespace Model
             }            Moving = true;            oneTurnMovementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(                unit.Space, unit.CurrentMovement, unit.UnitType.MovementCostDeterminer);            foreach (var node in oneTurnMovementSpaces)
             {                node.Space.controller.SetMoveable();
             }
-        }        internal void HideMove()        {            Moving = false;            if (oneTurnMovementSpaces != null)
+        }
+
+        // Does the player need to give this unit orders?
+        internal bool HasQueuedActions()
+        {
+            return Fortified || destination != null;
+        }
+
+        internal void HideMove()        {            Moving = false;            if (oneTurnMovementSpaces != null)
             {
                 foreach (var node in oneTurnMovementSpaces)
                 {
@@ -73,24 +81,30 @@ namespace Model
                 List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
                        unit.UnitType.MovementCostDeterminer);
 
-                if (newPath == null)
-                {
-                    destination = null;
-                    gameModel.EndTurnUnitMoved();
-                    return;
-                }
                 UnityToolbag.Dispatcher.InvokeAsync(() =>
                 {
-                    currentTravelPath = newPath;
+                    if (newPath == null)
+                    {
+                        destination = null;
+                        gameModel.EndTurnUnitMoved();
+                    }
+                    else
+                    {
+                        currentTravelPath = newPath;
 
-                    TravelAlongPath();                    gameModel.EndTurnUnitMoved();
+                        TravelAlongPath();
+                        gameModel.EndTurnUnitMoved();
+                    }
                 });
             });            thread.Start();            return false;        }        public void TravelAlongPath()
         {
             int pathSpaceNum = 0;            bool continuing = true;            if(currentTravelPath == null)
             {
                 return;
-            }            while (unit.CurrentMovement > 0 && continuing)            {                var nextSpace = currentTravelPath[pathSpaceNum];                if (!nextSpace.Occupied() &&                    unit.UnitType.MovementCostDeterminer.GetMovementCost(nextSpace) != -1)                {                    unit.Enter(nextSpace);                    pathSpaceNum++;                }                else                {                    continuing = false;                }                continuing &= unit.Space != destination;            }            if (unit.CurrentMovement == 0)
+            }            while (unit.CurrentMovement > 0 && continuing)            {                var nextSpace = currentTravelPath[pathSpaceNum];                if (!nextSpace.Occupied() &&                    unit.UnitType.MovementCostDeterminer.GetMovementCost(nextSpace) != -1)                {                    unit.Enter(nextSpace);                    pathSpaceNum++;                }                else                {                    continuing = false;                }                continuing &= unit.Space != destination;                if (unit.Space == destination)
+                {
+                    destination = null;
+                }            }            if (unit.CurrentMovement == 0)
             {
                 MovementTask.MarkComplete();
             }

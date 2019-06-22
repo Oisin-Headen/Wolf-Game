@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
 
     // The game's main class
     private GameModel gameModel;
+    private bool mainButtonEnabled = true;
 
 
 
@@ -33,24 +34,27 @@ public class GameController : MonoBehaviour
 
     internal void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Return))
+        if (mainButtonEnabled)
         {
-            EndTurn();
-        }
-        else if (Input.GetKeyUp(KeyCode.M))
-        {
-            Move();
-        }
-        else if (Input.GetKeyUp(KeyCode.F))
-        {
-            Fortify();
-        }
+            if (Input.GetKeyUp(KeyCode.Return))
+            {
+                EndTurn();
+            }
+            else if (Input.GetKeyUp(KeyCode.M))
+            {
+                Move();
+            }
+            else if (Input.GetKeyUp(KeyCode.F))
+            {
+                Fortify();
+            }
 
-        // todo if getkeyup 'a'
-        // if a unit with attacks is selected, call attack on it.
+            // todo if getkeyup 'a'
+            // if a unit with attacks is selected, call attack on it.
 
-        // todo if getkeyup 'b'
-        // if a unit that can build is selected, call build on it.
+            // todo if getkeyup 'b'
+            // if a unit that can build is selected, call build on it.
+        }
 
         // todo show some menus on other keys
     }
@@ -97,8 +101,10 @@ public class GameController : MonoBehaviour
         return unitController;
     }
 
-    public void SetMainButtonText(string newText)
+    public void SetMainButton(string newText, bool enable)
     {
+        mainButtonEnabled = enable;
         MainButtonText.text = newText;
+        MainButtonText.GetComponentInParent<Button>().enabled = enable;
     }
 }

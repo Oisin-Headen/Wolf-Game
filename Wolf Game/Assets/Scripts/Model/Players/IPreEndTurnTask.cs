@@ -9,12 +9,13 @@ namespace Model
         void Show();
         bool Complete();
         bool TryComplete();
+        bool PossiblyComplete();
         //void MarkComplete();
     }
 
     public class PreEndTurnMovementTask : IPreEndTurnTask
     {
-        private UnitMovementOverseer overseer;
+        private readonly UnitMovementOverseer overseer;
         private readonly UnitModel unit;
         private bool complete;
 
@@ -44,6 +45,15 @@ namespace Model
         public void MarkComplete()
         {
             complete = true;
+        }
+
+        public bool PossiblyComplete()
+        {
+            if(overseer.HasQueuedActions())
+            {
+                return true;
+            }
+            return complete;
         }
     }
 }

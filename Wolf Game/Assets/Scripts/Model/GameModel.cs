@@ -49,31 +49,51 @@ namespace Model{
             }
             else
             {
-                switch(GetCurrentPlayer().TryEndTurn())
+                if (GetCurrentPlayer().PossiblyCanEndTurn())
                 {
-                    case EndTurnButtonResult.Normal:
-                        EndTurn();
-                        break;
-                    case EndTurnButtonResult.Show_Task:
-                        GetCurrentPlayer().PreEndTurnTask();
-                        break;
-                    case EndTurnButtonResult.Threading:
-                        gameController.SetMainButtonText("Please Wait, Threading");
-                        // Do Nothing
-                        break;
+                    switch (GetCurrentPlayer().TryEndTurn())
+                    {
+                        case EndTurnButtonResult.Normal:
+                            EndTurn();
+                            break;
+                        case EndTurnButtonResult.Show_Task:
+                            gameController.SetMainButton("A Unit Needs Orders", true);
+                            GetCurrentPlayer().PreEndTurnTask();
+                            break;
+                        case EndTurnButtonResult.Threading:
+                            gameController.SetMainButton("Please Wait...", false);
+                            // Do Nothing
+                            break;
+                    }
+                }
+                else
+                {
+                    gameController.SetMainButton("A Unit Needs Orders", true);
+                    GetCurrentPlayer().ShowIncompletePossibleTask();
                 }
             }
         }        public void EndTurn()
         {
+            gameController.SetMainButton("Please Wait...", false);
             // TODO end turn cycle here
-            gameController.SetMainButtonText("End Turn");
             GetCurrentPlayer().StartTurn();
+
+            if(GetCurrentPlayer().PossiblyCanEndTurn())
+            {
+                gameController.SetMainButton("End Turn", true);
+            }
+            else
+            {
+                gameController.SetMainButton("A Unit Needs Orders", true);
+            }
+
             //Debug.Log("End Turn Real");
         }        internal void EndTurnUnitMoved()        {            //Debug.Log("End Turn Moved");            --movingUnits;            if(movingUnits == 0)
             {                if (GetCurrentPlayer().CanEndTurn())
                 {
-                    gameController.SetMainButtonText("End Turn");                    EndTurn();
-                }                else                {                    GetCurrentPlayer().PreEndTurnTask();                }            }        }        internal void EndTurnUnitMoving()        {            //Debug.Log("End Turn Button");            ++movingUnits;        }
+                    EndTurn();
+                }                else                {
+                    gameController.SetMainButton("A Unit Needs Orders", true);                    GetCurrentPlayer().PreEndTurnTask();                }            }        }        internal void EndTurnUnitMoving()        {            //Debug.Log("End Turn Button");            ++movingUnits;        }
 
         internal void Clicked(SpaceModel spaceModel)
         {

@@ -42,6 +42,17 @@ namespace Model
             return canEndTurn;
         }
 
+        // See if there are any tasks the player needs to complete before checking if the threading tasks are complete.
+        public bool PossiblyCanEndTurn()
+        {
+            bool possible = true;
+            foreach (var task in tasks)
+            {
+                possible &= task.PossiblyComplete();
+            }
+            return possible;
+        }
+
         // Display the first task that hasn't been completed
         public void PreEndTurnTask()
         {
@@ -49,6 +60,19 @@ namespace Model
             foreach (var task in tasks)
             {
                 if (!foundTask && !task.Complete())
+                {
+                    task.Show();
+                    foundTask = true;
+                }
+            }
+        }
+
+        public void ShowIncompletePossibleTask()
+        {
+            bool foundTask = false;
+            foreach (var task in tasks)
+            {
+                if (!foundTask && !task.PossiblyComplete())
                 {
                     task.Show();
                     foundTask = true;
