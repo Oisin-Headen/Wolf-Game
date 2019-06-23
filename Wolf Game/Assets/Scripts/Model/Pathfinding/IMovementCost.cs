@@ -24,7 +24,7 @@ namespace Pathfinding
         {
             if (!space.Explored)
             {
-                return unexploredCost * PathfindingDijkstras.ONE_SPACE;
+                return 2 * PathfindingDijkstras.ONE_SPACE;
             }
             if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
                space.Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
@@ -47,6 +47,21 @@ namespace Pathfinding
             {
                 return PathfindingDijkstras.HALF_SPACE;
             }            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||               space.Terrain.feature == SpaceTerrain.SpaceFeature.Forest)            {                return 2 * PathfindingDijkstras.ONE_SPACE;            }            return 1 * PathfindingDijkstras.ONE_SPACE;
+        }
+    }
+
+
+    public class DeepForestAtHalfMovementCostForestAtOne : IMovementCost
+    {        private int unexploredCost;        public DeepForestAtHalfMovementCostForestAtOne(int unexploredCost)        {            this.unexploredCost = unexploredCost;        }
+        public int GetMovementCost(SpaceModel space)        {
+            if (!space.Explored)            {
+                return unexploredCost * PathfindingDijkstras.ONE_SPACE;
+            }            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||               space.Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)            {
+                // Impassable
+                return -1;            }            if (space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+            {
+                return PathfindingDijkstras.HALF_SPACE;
+            }            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Hill)            {                return 2 * PathfindingDijkstras.ONE_SPACE;            }            return 1 * PathfindingDijkstras.ONE_SPACE;
         }
     }
 }

@@ -133,6 +133,17 @@ namespace Model{
             }
         }
 
+        public void Explore()
+        {
+            if(SelectedUnit != null)
+            {
+                if(SelectedUnit.GetPlayer() == currentPlayer)
+                {
+                    SelectedUnit.MovementOverseer.Explore();
+                }
+            }
+        }
+
 
         // Methods for creating new gameobjects for unity, and linking them all together.
         // todo don't like these

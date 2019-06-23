@@ -13,7 +13,7 @@ namespace Model
 
         public PreEndTurnMovementTask MovementTask { get; internal set; }
         public bool Fortified { get; private set; }
-        public bool Moving { get; internal set; }        private List<PathfindingNode> oneTurnMovementSpaces;
+        public bool Moving { get; private set; }        public bool Exploring { get; private set; }        private List<PathfindingNode> oneTurnMovementSpaces;
         private List<SpaceModel> currentlyDispayedPath;        private List<SpaceModel> currentTravelPath;        private SpaceModel destination;
         public UnitMovementOverseer(UnitModel unit, GameModel gameModel)
         {            this.unit = unit;            this.gameModel = gameModel;
@@ -30,7 +30,7 @@ namespace Model
         // Does the player need to give this unit orders?
         internal bool HasQueuedActions()
         {
-            return Fortified || destination != null;
+            return Fortified || destination != null || Exploring;
         }
 
         internal void HideMove()        {            Moving = false;            if (oneTurnMovementSpaces != null)
@@ -67,7 +67,15 @@ namespace Model
                         pathSpace.controller.SetPath(true);
                     }
                 }
-            }        }        internal void ClickSpace(SpaceModel space)        {            if (Moving)            {                destination = space;                Fortified = false;                unit.controller.RevertBackground();                HideMove();                Moving = false;                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.Deselect();                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        // Returns true if done, false if threading.        internal bool TryEndTurn()
+            }        }        internal void ClickSpace(SpaceModel space)        {            if (Moving)            {                destination = space;                Fortified = false;
+                Exploring = false;                unit.controller.RevertBackground();                HideMove();                Moving = false;                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.Deselect();                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Exploring = false;            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        internal void Explore()
+        {
+            HideMove();
+            Fortified = false;
+            unit.controller.RevertBackground();
+            destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
+            TravelAlongPath();
+        }        // Returns true if done, false if threading.        internal bool TryEndTurn()
         {            if (Fortified)
             {
                 MovementTask.MarkComplete();                return true;
@@ -76,6 +84,10 @@ namespace Model
             }            if (unit.Space == destination)
             {
                 destination = null;
+                if(Exploring)
+                {
+                    destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
+                }
             }            if (destination == null)            {                return true;            }            gameModel.EndTurnUnitMoving();            Thread thread = new Thread(() =>
             {
                 List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
@@ -93,6 +105,13 @@ namespace Model
                         currentTravelPath = newPath;
 
                         TravelAlongPath();
+                        if(unit.Space == destination)
+                        {
+                            destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
+                            currentTravelPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
+                                unit.UnitType.MovementCostDeterminer);
+                            TravelAlongPath();
+                        }
                         gameModel.EndTurnUnitMoved();
                     }
                 });

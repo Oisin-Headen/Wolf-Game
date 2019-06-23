@@ -16,12 +16,12 @@ namespace Pathfinding
         public const int QUARTER_SPACE = 25;
 
         // No unit has 100 spaces of Movement
-        public const int REST_OF_MOVEMENT = 10000;
+        //public const int REST_OF_MOVEMENT = 10000;
 
 
         // this uses Dijkstra's Algorithm to get all the spaces a player can visit.
         public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost,
-            IMovementCost costDeterminer)
+            IMovementCost costDeterminer, IIsOfType isOfType)
         {
             Dictionary<SpaceModel, PathfindingNode> allNodes = new Dictionary<SpaceModel, PathfindingNode>();
 
@@ -32,6 +32,14 @@ namespace Pathfinding
             bool done = false;
             while (!done)
             {
+                if(isOfType != null)
+                {
+                    if(isOfType.IsType(currentnode.Space))
+                    {
+                        return new List<PathfindingNode>() { currentnode };
+                    }
+                }
+
                 foreach (SpaceModel adjacentSpace in currentnode.Space.GetAdjacentSpaces())
                 {
                     // If space exists
@@ -113,7 +121,12 @@ namespace Pathfinding
         public static List<PathfindingNode> GetSpacesForMovementDijkstras(SpaceModel startSpace, 
             int maxCost, IMovementCost costDeterminer)
         {
-            return Dijkstras(startSpace, maxCost, costDeterminer);
+            return Dijkstras(startSpace, maxCost, costDeterminer, null);
+        }
+
+        public static SpaceModel GetClosestUnexplored(SpaceModel startSpace, IMovementCost costDeterminer)
+        {
+            return Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType())[0].Space;
         }
 
 
@@ -122,17 +135,22 @@ namespace Pathfinding
             MapModel map, IBlockLOS blockLOS)
         {
             List<PathfindingNode> nodes = Dijkstras(startSpace, maxSpaces * ONE_SPACE, 
-                new OneCostMovement());
+                new OneCostMovement(), null);
             List<PathfindingNode> results = new List<PathfindingNode>();
             foreach (PathfindingNode node in nodes)
             {
-                List<SpaceModel> line = MapLinedraw(startSpace, node.Space, map);
-                line.Remove(startSpace);
-                line.Remove(node.Space);
-                bool blocked = false;
-                foreach (SpaceModel space in line)
+                var line = MapLinedraw(startSpace, node.Space, map);
+                if (line.Count > 0)
                 {
-                    blocked |= blockLOS.BlocksLOS(startSpace.Terrain.elevation, space);
+                    line.Remove(line[0]);
+                    line.Remove(line[line.Count - 1]);
+                }
+                bool blocked = false;
+                foreach (var spacePair in line)
+                {
+                    blocked |=
+                        blockLOS.BlocksLOS(startSpace.Terrain.elevation, spacePair.Item1)
+                        && blockLOS.BlocksLOS(startSpace.Terrain.elevation, spacePair.Item2);
                 }
                 if (!blocked)
                 {
@@ -200,26 +218,41 @@ namespace Pathfinding
                                  Lerp(a.z, b.z, t));
         }
 
-        private static List<SpaceModel> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
+        private static List<Tuple<SpaceModel, SpaceModel>> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
         {
             CubeCoords a = start.GetCubeCoords();
             CubeCoords b = end.GetCubeCoords();
 
 
             float N = CubeDistance(a, b);
-            List<SpaceModel> results = new List<SpaceModel>();
-            if (Math.Abs(N) > Double.Epsilon)
+            List<Tuple<SpaceModel, SpaceModel>> results = new List<Tuple<SpaceModel, SpaceModel>>();
+
+            if (Math.Abs(N) > float.Epsilon)
             {
                 for (int i = 0; i <= N; i++)
                 {
-                    CubeCoords coord = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
-                    DoubledCoords normalCoord = CubeCoordsToCoordinates(coord);
-                    SpaceModel newSpace;
-                    newSpace = map.GetSpace(normalCoord);
-                    if (newSpace != null)
-                    {
-                        results.Add(newSpace);
-                    }
+                    CubeCoords coordOne = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
+                    CubeCoords coordTwo = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
+
+                    coordOne.x += 0.0001f;
+                    coordOne.y += 0.0002f;
+                    coordOne.z -= 0.0003f;
+
+                    coordTwo.x -= 0.0001f;
+                    coordTwo.y -= 0.0002f;
+                    coordTwo.z += 0.0003f;
+
+                    DoubledCoords normalCoordOne = CubeCoordsToCoordinates(coordOne);
+                    DoubledCoords normalCoordTwo = CubeCoordsToCoordinates(coordTwo);
+
+
+                    SpaceModel newSpaceOne;
+                    newSpaceOne = map.GetSpace(normalCoordOne);
+
+                    SpaceModel newSpaceTwo;
+                    newSpaceTwo = map.GetSpace(normalCoordTwo);
+
+                    results.Add(new Tuple<SpaceModel, SpaceModel>(newSpaceOne, newSpaceTwo));
                 }
             }
             return results;

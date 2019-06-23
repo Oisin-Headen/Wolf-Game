@@ -41,7 +41,7 @@ namespace Pathfinding
                         catch (KeyNotFoundException)
                         {
                             // Is null, need new node
-                            if (costDeterminer.GetMovementCost(adjacentSpace) != -1)
+                            if (costDeterminer.GetMovementCost(adjacentSpace) != -1 && !adjacentSpace.Occupied())
                             {
                                 int newNodeCost = currentnode.Cost + costDeterminer.GetMovementCost(adjacentSpace);
                                 PathfindingNode newNode = new PathfindingNode(adjacentSpace, currentnode, newNodeCost, false, destSpace);

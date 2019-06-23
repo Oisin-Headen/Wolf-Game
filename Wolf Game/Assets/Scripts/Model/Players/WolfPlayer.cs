@@ -30,7 +30,6 @@
                     var space = deepForests[i];
                     if (!space.Occupied())
                     {
-                        Debug.Log("A Worker!");
                         units.Add(UnitFactory.CreateWorkerSpider(space, this, gameModel));
                     }
                     int besideNum = 0;
@@ -40,12 +39,10 @@
                         {
                             if (besideNum < 2)
                             {
-                                Debug.Log("A BattleSpider!");
                                 units.Add(UnitFactory.CreateBattleSpider(besideSpace, this, gameModel));
                             }
                             else
                             {
-                                Debug.Log("A Wolf!");
                                 units.Add(UnitFactory.CreateWolf(besideSpace, this, gameModel));
                             }
                             besideNum++;

@@ -48,6 +48,10 @@ public class GameController : MonoBehaviour
             {
                 Fortify();
             }
+            else if (Input.GetKeyUp(KeyCode.E))
+            {
+                Explore();
+            }
 
             // todo if getkeyup 'a'
             // if a unit with attacks is selected, call attack on it.
@@ -72,6 +76,10 @@ public class GameController : MonoBehaviour
     internal void Fortify()
     {
         gameModel.Fortify();
+    }
+    internal void Explore()
+    {
+        gameModel.Explore();
     }
 
 
