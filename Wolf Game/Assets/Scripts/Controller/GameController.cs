@@ -38,7 +38,7 @@ public class GameController : MonoBehaviour
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
-                EndTurn();
+                MainButton();
             }
             else if (Input.GetKeyUp(KeyCode.M))
             {
@@ -63,21 +63,21 @@ public class GameController : MonoBehaviour
         // todo show some menus on other keys
     }
 
-    internal void EndTurn()
+    public void MainButton()
     {
-        gameModel.EndTurnButtonPressed();
+        gameModel.MainButtonPressed();
     }
 
-    internal void Move()
+    public void Move()
     {
         gameModel.Move();
     }
 
-    internal void Fortify()
+    public void Fortify()
     {
         gameModel.Fortify();
     }
-    internal void Explore()
+    public void Explore()
     {
         gameModel.Explore();
     }
@@ -113,6 +113,6 @@ public class GameController : MonoBehaviour
     {
         mainButtonEnabled = enable;
         MainButtonText.text = newText;
-        MainButtonText.GetComponentInParent<Button>().enabled = enable;
+        MainButtonText.GetComponentInParent<Button>().interactable = enable;
     }
 }

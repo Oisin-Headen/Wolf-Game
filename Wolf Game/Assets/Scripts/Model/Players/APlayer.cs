@@ -43,14 +43,27 @@ namespace Model
         }
 
         // See if there are any tasks the player needs to complete before checking if the threading tasks are complete.
-        public bool PossiblyCanEndTurn()
+        public bool NeedsOrders()
         {
-            bool possible = true;
+            bool needsOrders = false;
+            foreach(var task in tasks)
+            {
+                needsOrders |= task.NeedsOrders();
+            }
+            return needsOrders;
+        }
+
+        public void ShowTaskNeedingOrders()
+        {
+            bool foundTask = false;
             foreach (var task in tasks)
             {
-                possible &= task.PossiblyComplete();
+                if (!foundTask && task.NeedsOrders())
+                {
+                    task.Show();
+                    foundTask = true;
+                }
             }
-            return possible;
         }
 
         // Display the first task that hasn't been completed
@@ -67,20 +80,9 @@ namespace Model
             }
         }
 
-        public void ShowIncompletePossibleTask()
-        {
-            bool foundTask = false;
-            foreach (var task in tasks)
-            {
-                if (!foundTask && !task.PossiblyComplete())
-                {
-                    task.Show();
-                    foundTask = true;
-                }
-            }
-        }
+        
 
-        internal EndTurnButtonResult TryEndTurn()
+        internal EndTurnButtonResult ExecuteRemainingTasks()
         {
             bool notThreading = true;
 

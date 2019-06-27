@@ -24,7 +24,7 @@
             Wolf, BattleSpider, WorkerSpider
         }        public enum UnitKind
         {
-            Normal, Worker
+            Normal, Worker, Single
         }
     }
 }

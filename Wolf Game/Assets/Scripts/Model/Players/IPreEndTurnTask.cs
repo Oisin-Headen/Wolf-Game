@@ -9,8 +9,7 @@ namespace Model
         void Show();
         bool Complete();
         bool TryComplete();
-        bool PossiblyComplete();
-        //void MarkComplete();
+        bool NeedsOrders();
     }
 
     public class PreEndTurnMovementTask : IPreEndTurnTask
@@ -47,13 +46,13 @@ namespace Model
             complete = true;
         }
 
-        public bool PossiblyComplete()
+        public bool NeedsOrders()
         {
             if(overseer.HasQueuedActions())
             {
-                return true;
+                return false;
             }
-            return complete;
+            return !complete;
         }
     }
 }
