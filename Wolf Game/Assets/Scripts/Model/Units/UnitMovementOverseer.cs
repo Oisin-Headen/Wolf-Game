@@ -17,16 +17,33 @@ namespace Model
         public bool MovingDisplayed { get; private set; }
         public bool Exploring { get; private set; }
         private List<PathfindingNode> oneTurnMovementSpaces;
-        private List<SpaceModel> currentlyDispayedPath;        private List<SpaceModel> currentTravelPath;        private List<SpaceModel> exploredTravelPath;        private int spaceAlongExploredPath;        private SpaceModel destination;
+        private List<SpaceModel> currentlyDispayedPath;
+        private List<SpaceModel> currentTravelPath;
+
+        private List<SpaceModel> exploredTravelPath;
+        private int spaceAlongExploredPath;
+
+        private SpaceModel destination;
+
         public UnitMovementOverseer(UnitModel unit, GameModel gameModel)
-        {            this.unit = unit;            this.gameModel = gameModel;
-        }        internal void ShowMove()
+        {
+            this.unit = unit;
+            this.gameModel = gameModel;
+        }
+
+        internal void ShowMove()
         {
             if (MovingDisplayed)
             {
-                HideMove();                return;
-            }            MovingDisplayed = true;            oneTurnMovementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(                unit.Space, unit.CurrentMovement, unit.UnitType.MovementCostDeterminer);            foreach (var node in oneTurnMovementSpaces)
-            {                node.Space.controller.SetMoveable();
+                HideMove();
+                return;
+            }
+            MovingDisplayed = true;
+            oneTurnMovementSpaces = PathfindingDijkstras.GetSpacesForMovementDijkstras(
+                unit.Space, unit.CurrentMovement, unit.UnitType.MovementCostDeterminer);
+            foreach (var node in oneTurnMovementSpaces)
+            {
+                node.Space.controller.SetMoveable();
             }
         }
 
@@ -36,19 +53,29 @@ namespace Model
             return Fortified || Exploring || destination != null;
         }
 
-        internal void HideMove()        {            MovingDisplayed = false;            if (oneTurnMovementSpaces != null)
+        internal void HideMove()
+        {
+            MovingDisplayed = false;
+            if (oneTurnMovementSpaces != null)
             {
                 foreach (var node in oneTurnMovementSpaces)
                 {
                     node.Space.controller.Deselect();
                     unit.Space.controller.SetSelected();
-                }            }            if(currentlyDispayedPath != null)
+                }
+            }
+            if (currentlyDispayedPath != null)
             {
                 foreach (var pathSpace in currentlyDispayedPath)
                 {
                     pathSpace.controller.Deselect();
                 }
-            }        }        internal void HoverSpace(SpaceModel space)        {            if (MovingDisplayed)
+            }
+        }
+
+        internal void HoverSpace(SpaceModel space)
+        {
+            if (MovingDisplayed)
             {
                 var newPath = AStarPathfinding.GetPathToDestination(unit.Space, space,
                     unit.UnitType.MovementCostDeterminer);
@@ -76,8 +103,42 @@ namespace Model
                         pathSpace.controller.SetPath(true);
                     }
                 }
-            }        }        internal void ClickSpace(SpaceModel space)        {            if (MovingDisplayed)            {                destination = space;                Fortified = false;
-                Exploring = false;                unit.controller.RevertBackground();                HideMove();                gameModel.SelectedUnit = null;                unit.Space.controller.Deselect();                if (currentlyDispayedPath != null)                {                    foreach (var pathSpace in currentlyDispayedPath)                    {                        pathSpace.controller.Deselect();                    }                }                currentTravelPath = currentlyDispayedPath;                TravelAlongPath();            }        }        internal void Fortify()        {            HideMove();            Exploring = false;            Fortified = true;            destination = null;            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);        }        internal void Explore()
+            }
+        }
+
+        internal void ClickSpace(SpaceModel space)
+        {
+            if (MovingDisplayed)
+            {
+                destination = space;
+                Fortified = false;
+                Exploring = false;
+                unit.controller.RevertBackground();
+                HideMove();
+                gameModel.SelectedUnit = null;
+                unit.Space.controller.Deselect();
+                if (currentlyDispayedPath != null)
+                {
+                    foreach (var pathSpace in currentlyDispayedPath)
+                    {
+                        pathSpace.controller.Deselect();
+                    }
+                }
+                currentTravelPath = currentlyDispayedPath;
+                TravelAlongPath();
+            }
+        }
+
+        internal void Fortify()
+        {
+            HideMove();
+            Exploring = false;
+            Fortified = true;
+            destination = null;
+            unit.controller.SetBackGroundShape(Assets.UnitBackgrounds.Shield);
+        }
+
+        internal void Explore()
         {
             HideMove();
             Fortified = false;
@@ -168,8 +229,12 @@ namespace Model
                         gameModel.EndTurnUnitMoved();
                     }
                 });
-            }); thread.Start(); return false;
-        }        private void CalculatePath()
+            });
+            thread.Start();
+            return false;
+        }
+
+        private void CalculatePath()
         {
             List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
                        unit.UnitType.MovementCostDeterminer);
@@ -189,14 +254,35 @@ namespace Model
             }
 
             exploredTravelPath = null;
-        }        public void TravelAlongPath()
-        {            bool continuing = true;            if(exploredTravelPath == null)
+        }
+
+        public void TravelAlongPath()
+        {
+            bool continuing = true;
+            if (exploredTravelPath == null)
             {
                 return;
-            }            while (unit.CurrentMovement > 0 && continuing)            {                var nextSpace = exploredTravelPath[spaceAlongExploredPath];                if (!nextSpace.Occupied() &&                    unit.UnitType.MovementCostDeterminer.GetMovementCost(nextSpace) != -1)                {                    unit.Enter(nextSpace);                    spaceAlongExploredPath++;                }                else                {                    continuing = false;                }                continuing &= unit.Space != destination;                if (unit.Space == destination)
+            }
+            while (unit.CurrentMovement > 0 && continuing)
+            {
+                var nextSpace = exploredTravelPath[spaceAlongExploredPath];
+                if (!nextSpace.Occupied() &&
+                    unit.UnitType.MovementCostDeterminer.GetMovementCost(nextSpace) != -1)
+                {
+                    unit.Enter(nextSpace);
+                    spaceAlongExploredPath++;
+                }
+                else
+                {
+                    continuing = false;
+                }
+                continuing &= unit.Space != destination;
+                if (unit.Space == destination)
                 {
                     destination = null;
-                }            }            if (unit.CurrentMovement == 0)
+                }
+            }
+            if (unit.CurrentMovement == 0)
             {
                 MovementTask.MarkComplete();
             }

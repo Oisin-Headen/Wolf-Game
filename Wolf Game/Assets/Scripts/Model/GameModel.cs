@@ -1,9 +1,11 @@
-﻿using System;using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pathfinding;
 using UnityEngine;
 
-namespace Model{
+namespace Model
+{
     public class GameModel
     {
         public RandomSeeds seeds;
@@ -14,7 +16,8 @@ namespace Model{
 
         public UnitModel SelectedUnit { get; internal set; }
         public bool Moving { get; internal set; }
-        public SpaceModel CurrentMousePosition { get; private set; }        private int movingUnits;
+        public SpaceModel CurrentMousePosition { get; private set; }
+        private int movingUnits;
 
         //private List<SpaceModel> currentlyDispayedPath;
         public GameModel(GameController gameController)
@@ -26,7 +29,10 @@ namespace Model{
 
             List<SpaceModel> deepforests = map.GetDeepForests();
 
-            PlayerMap = new Dictionary<PlayerType, APlayer>            {                { PlayerType.Wolves, new WolfPlayer(this, deepforests) },                { PlayerType.Alliance, new AlliancePlayer(this) }            };
+            PlayerMap = new Dictionary<PlayerType, APlayer> {
+                { PlayerType.Wolves, new WolfPlayer(this, deepforests) },
+                { PlayerType.Alliance, new AlliancePlayer(this) }
+            };
 
             currentPlayer = PlayerType.Wolves;
             gameController.currentPlayerText.text = "Wolves";
@@ -39,7 +45,8 @@ namespace Model{
         }
 
         public void MainButtonPressed()
-        {            if(GetCurrentPlayer().NeedsOrders())
+        {
+            if (GetCurrentPlayer().NeedsOrders())
             {
                 GetCurrentPlayer().ShowTaskNeedingOrders();
                 gameController.SetMainButton("A Unit Needs Orders", true);
@@ -62,13 +69,14 @@ namespace Model{
                         break;
                 }
             }
-        }        public void EndTurn()
+        }
+        public void EndTurn()
         {
             gameController.SetMainButton("Please Wait...", false);
             // TODO end turn cycle here
             GetCurrentPlayer().StartTurn();
 
-            if(!GetCurrentPlayer().NeedsOrders())
+            if (!GetCurrentPlayer().NeedsOrders())
             {
                 gameController.SetMainButton("End Turn", true);
             }
@@ -76,29 +84,44 @@ namespace Model{
             {
                 gameController.SetMainButton("A Unit Needs Orders", true);
             }
-        }        internal void EndTurnUnitMoved()        {
-            --movingUnits;            if(movingUnits == 0)
-            {                if (GetCurrentPlayer().CanEndTurn())
+        }
+        internal void EndTurnUnitMoved()
+        {
+            --movingUnits; if (movingUnits == 0)
+            {
+                if (GetCurrentPlayer().CanEndTurn())
                 {
                     EndTurn();
-                }                else                {
-                    gameController.SetMainButton("A Unit Needs Orders", true);                    GetCurrentPlayer().PreEndTurnTask();                }            }        }        internal void EndTurnUnitMoving()        {            ++movingUnits;        }
+                }
+                else
+                {
+                    gameController.SetMainButton("A Unit Needs Orders", true); GetCurrentPlayer().PreEndTurnTask();
+                }
+            }
+        }
+        internal void EndTurnUnitMoving() { ++movingUnits; }
 
         internal void Clicked(SpaceModel spaceModel)
         {
-            if(SelectedUnit == null)
+            if (SelectedUnit == null)
             {
-                SelectedUnit = spaceModel.OccupingUnit;                if (SelectedUnit != null)
+                SelectedUnit = spaceModel.OccupingUnit; if (SelectedUnit != null)
                 {
                     SelectedUnit.Space.controller.SetSelected();
                 }
-            }            else if(SelectedUnit.MovementOverseer.MovingDisplayed)
-            {                SelectedUnit.MovementOverseer.ClickSpace(spaceModel);             }            else
-            {                SelectedUnit.Space.controller.Deselect();                SelectedUnit = null;                if (spaceModel.Occupied())
+            }
+            else if (SelectedUnit.MovementOverseer.MovingDisplayed)
+            { SelectedUnit.MovementOverseer.ClickSpace(spaceModel); }
+            else
+            {
+                SelectedUnit.Space.controller.Deselect(); SelectedUnit = null; if (spaceModel.Occupied())
                 {
                     SelectedUnit = spaceModel.OccupingUnit;
                     spaceModel.controller.SetSelected();
-                }            }        }        internal void HoverOverSpace(SpaceModel spaceModel)        {            CurrentMousePosition = spaceModel;            if (SelectedUnit != null)            {                SelectedUnit.MovementOverseer.HoverSpace(spaceModel);            }        }
+                }
+            }
+        }
+        internal void HoverOverSpace(SpaceModel spaceModel) { CurrentMousePosition = spaceModel; if (SelectedUnit != null) { SelectedUnit.MovementOverseer.HoverSpace(spaceModel); } }
 
         public void Move()
         {
@@ -113,9 +136,9 @@ namespace Model{
 
         public void Fortify()
         {
-            if(SelectedUnit != null)
+            if (SelectedUnit != null)
             {
-                if(SelectedUnit.GetPlayer() == currentPlayer)
+                if (SelectedUnit.GetPlayer() == currentPlayer)
                 {
                     SelectedUnit.MovementOverseer.Fortify();
                 }
@@ -124,9 +147,9 @@ namespace Model{
 
         public void Explore()
         {
-            if(SelectedUnit != null)
+            if (SelectedUnit != null)
             {
-                if(SelectedUnit.GetPlayer() == currentPlayer)
+                if (SelectedUnit.GetPlayer() == currentPlayer)
                 {
                     SelectedUnit.MovementOverseer.Explore();
                 }

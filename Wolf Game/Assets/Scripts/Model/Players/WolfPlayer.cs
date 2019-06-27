@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;using Pathfinding;using UnityEngine;namespace Model{
+﻿using System.Collections.Generic;
+using Pathfinding;
+using UnityEngine;
+
+namespace Model
+{
     public class WolfPlayer : APlayer
     {
         private List<SpaceModel> deepForests;
@@ -16,7 +21,7 @@
                         adjacentSpace.Explore();
                     }
                 }
-            }
+            }
             // TODO Remove Test Unit
             if (deepForests.Count > 3)
             {
@@ -66,4 +71,4 @@
         //    }
         //}
     }
-}
+}
