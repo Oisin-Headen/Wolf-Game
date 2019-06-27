@@ -19,6 +19,9 @@ namespace Model
         public SpaceModel CurrentMousePosition { get; private set; }
         private int movingUnits;
 
+
+        public int TurnNumber = 0;
+
         //private List<SpaceModel> currentlyDispayedPath;
         public GameModel(GameController gameController)
         {
@@ -35,7 +38,7 @@ namespace Model
             };
 
             currentPlayer = PlayerType.Wolves;
-            gameController.currentPlayerText.text = "Wolves";
+            gameController.currentPlayerText.text = "Wolves : 1";
             EndTurn();
         }
 
@@ -74,6 +77,10 @@ namespace Model
         {
             gameController.SetMainButton("Please Wait...", false);
             // TODO end turn cycle here
+            TurnNumber++;
+
+            gameController.currentPlayerText.text = "Wolves : " + TurnNumber;
+
             GetCurrentPlayer().StartTurn();
 
             if (!GetCurrentPlayer().NeedsOrders())
@@ -85,6 +92,7 @@ namespace Model
                 gameController.SetMainButton("A Unit Needs Orders", true);
             }
         }
+
         internal void EndTurnUnitMoved()
         {
             --movingUnits; if (movingUnits == 0)

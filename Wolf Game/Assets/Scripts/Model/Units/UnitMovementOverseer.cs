@@ -20,8 +20,8 @@ namespace Model
         private List<SpaceModel> currentlyDispayedPath;
         private List<SpaceModel> currentTravelPath;
 
-        private List<SpaceModel> exploredTravelPath;
-        private int spaceAlongExploredPath;
+        //private List<SpaceModel> exploredTravelPath;
+        //private int spaceAlongExploredPath;
 
         private SpaceModel destination;
 
@@ -131,6 +131,7 @@ namespace Model
 
         internal void Fortify()
         {
+            unit.Space.Deselect();
             HideMove();
             Exploring = false;
             Fortified = true;
@@ -140,146 +141,145 @@ namespace Model
 
         internal void Explore()
         {
+            unit.Space.Deselect();
             HideMove();
             Fortified = false;
+            Exploring = true;
             unit.controller.RevertBackground();
-            destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
-            TravelAlongPath();
+            //destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
+            //TravelAlongPath();
         }
 
 
         // Returns true if done, false if threading.
         internal bool TryEndTurn()
         {
-            //while (unit.CurrentMovement > 0)
-            //{
-            //    if (unit.Space == destination)
-            //    {
-            //        if (Exploring)
-            //        {
-            //            destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
-            //            CalculatePath();
-            //        }
-            //        else
-            //        {
-            //            destination = null;
-            //            break;
-            //        }
-            //    }
-
-            //    if (exploredTravelPath != null)
-            //    {
-            //        TravelAlongPath();
-            //    }
-            //    else
-            //    {
-            //        CalculatePath();
-            //    }
-            //}
-
-            //if(unit.CurrentMovement == 0)
-            //{
-            //    MovementTask.MarkComplete();
-            //}
-            //return true;
-
-            //gameModel.EndTurnUnitMoving();
-
             if (Fortified)
             {
-                MovementTask.MarkComplete(); return true;
+                MovementTask.MarkComplete();
+                return true;
             }
             if (unit.CurrentMovement == 0)
             {
-                MovementTask.MarkComplete(); return true;
+                MovementTask.MarkComplete();
+                return true;
             }
             if (unit.Space == destination)
             {
                 destination = null;
-                if (Exploring)
-                {
-                    destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
-                }
+                
             }
-            if (destination == null) { return true; }
-            gameModel.EndTurnUnitMoving(); Thread thread = new Thread(() =>
-            {
-                List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
-                       unit.UnitType.MovementCostDeterminer);
 
-                UnityToolbag.Dispatcher.InvokeAsync(() =>
+            if (Exploring)
+            {
+
+                gameModel.EndTurnUnitMoving();
+                Thread thread = new Thread(() =>
                 {
-                    if (newPath == null)
+                    var closestUnexplored = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
+
+
+                    bool continuing = true;
+                    if (closestUnexplored == null)
                     {
-                        destination = null;
-                        gameModel.EndTurnUnitMoved();
+                        Exploring = false;
+                        continuing = false;
                     }
-                    else
+
+                    while (!MovementTask.Complete() && continuing)
                     {
+                        List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, closestUnexplored,
+                               unit.UnitType.MovementCostDeterminer);
+
                         currentTravelPath = newPath;
 
-                        TravelAlongPath();
-                        if (unit.Space == destination)
+                        UnityToolbag.Dispatcher.Invoke(TravelAlongPath);
+
+                        if (!MovementTask.Complete())
                         {
-                            destination = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
-                            currentTravelPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
-                                unit.UnitType.MovementCostDeterminer);
-                            TravelAlongPath();
+                            closestUnexplored = PathfindingDijkstras.GetClosestUnexplored(unit.Space, unit.UnitType.MovementCostDeterminer);
+                            if (closestUnexplored == null)
+                            {
+                                Exploring = false;
+                                continuing = false;
+                            }
                         }
-                        gameModel.EndTurnUnitMoved();
                     }
+                    UnityToolbag.Dispatcher.InvokeAsync(() =>
+                    {
+                        gameModel.EndTurnUnitMoved();
+                    });
                 });
-            });
-            thread.Start();
-            return false;
-        }
-
-        private void CalculatePath()
-        {
-            List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
-                       unit.UnitType.MovementCostDeterminer);
-
-            if(newPath != null)
-            {
-                List<SpaceModel> exploredPath = new List<SpaceModel>();
-
-                int alongPath = 0;
-                while(!newPath[alongPath].Explored)
-                {
-                    exploredPath.Add(newPath[alongPath]);
-                    alongPath++;
-                }
-                spaceAlongExploredPath = 0;
-                exploredTravelPath = exploredPath;
+                thread.Start();
+                return false;
             }
+            else
+            {
+                if (destination == null)
+                {
+                    return true;
+                }
 
-            exploredTravelPath = null;
+                gameModel.EndTurnUnitMoving();
+                Thread thread = new Thread(() =>
+                {
+                    List<SpaceModel> newPath = AStarPathfinding.GetPathToDestination(unit.Space, destination,
+                           unit.UnitType.MovementCostDeterminer);
+
+                    UnityToolbag.Dispatcher.InvokeAsync(() =>
+                    {
+                        if (newPath == null)
+                        {
+                            destination = null;
+                            gameModel.EndTurnUnitMoved();
+                        }
+                        else
+                        {
+                            currentTravelPath = newPath;
+
+                            TravelAlongPath();
+                            gameModel.EndTurnUnitMoved();
+                        }
+                    });
+                });
+                thread.Start();
+                return false;
+            }
         }
 
         public void TravelAlongPath()
         {
+            int spaceAlongPath = 0;
             bool continuing = true;
-            if (exploredTravelPath == null)
+            if (currentTravelPath == null)
             {
                 return;
             }
             while (unit.CurrentMovement > 0 && continuing)
             {
-                var nextSpace = exploredTravelPath[spaceAlongExploredPath];
-                if (!nextSpace.Occupied() &&
-                    unit.UnitType.MovementCostDeterminer.GetMovementCost(nextSpace) != -1)
+                try
                 {
-                    unit.Enter(nextSpace);
-                    spaceAlongExploredPath++;
+                    var nextSpace = currentTravelPath[spaceAlongPath];
+                    if (!nextSpace.Occupied() &&
+                        unit.UnitType.MovementCostDeterminer.GetMovementCost(nextSpace) != -1)
+                    {
+                        unit.Enter(nextSpace);
+                        spaceAlongPath++;
+                    }
+                    else
+                    {
+                        continuing = false;
+                    }
+                    continuing &= unit.Space != destination;
+                    if (unit.Space == destination)
+                    {
+                        destination = null;
+                    }
                 }
-                else
+                catch (ArgumentOutOfRangeException)
                 {
                     continuing = false;
-                }
-                continuing &= unit.Space != destination;
-                if (unit.Space == destination)
-                {
-                    destination = null;
+                    MovementTask.MarkComplete();
                 }
             }
             if (unit.CurrentMovement == 0)

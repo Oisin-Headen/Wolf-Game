@@ -126,7 +126,12 @@ namespace Pathfinding
 
         public static SpaceModel GetClosestUnexplored(SpaceModel startSpace, IMovementCost costDeterminer)
         {
-            return Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType())[0].Space;
+            var space =  Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType())[0].Space;
+            if (space.Explored)
+            {
+                return null;
+            }
+            return space;
         }
 
 
