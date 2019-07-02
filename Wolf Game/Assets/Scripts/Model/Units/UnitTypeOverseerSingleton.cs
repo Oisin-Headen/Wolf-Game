@@ -44,12 +44,26 @@ namespace Model
                 new NormalLOS(),
                 new DeepForestAtHalfMovementCost()
                 );
+
+            ScoutEagle = new UnitTypeModel(
+                UnitTypeModel.UnitTypes.ScoutEagle,
+                UnitTypeModel.UnitKind.Normal,
+                2, // attack
+                2, // defence
+                3, // Max HP
+                3, // movement
+                1, // heal amount
+                2, // Vision range
+                new NormalLOS(),
+                new OneCostMovement()
+                );
         }
 
         // Unit Types
         public readonly UnitTypeModel Wolf;
         public readonly UnitTypeModel BattleSpider;
         public readonly UnitTypeModel WorkerSpider;
+        public readonly UnitTypeModel ScoutEagle;
 
         public static UnitTypeOverseerSingleton GetInstance()
         {

@@ -26,7 +26,7 @@ namespace Model
         }
         public enum UnitTypes
         {
-            Wolf, BattleSpider, WorkerSpider
+            Wolf, BattleSpider, WorkerSpider, ScoutEagle
         }
         public enum UnitKind
         {

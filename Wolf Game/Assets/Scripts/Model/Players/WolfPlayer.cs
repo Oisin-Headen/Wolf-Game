@@ -23,7 +23,7 @@ namespace Model
                 }
             }
             // TODO Remove Test Unit
-            if (deepForests.Count > 3)
+            if (deepForests.Count > 4)
             {
                 //units.Add(UnitFactory.CreateWolf(deepForests[0], this, gameModel));
                 //units.Add(UnitFactory.CreateWolf(deepForests[1], this, gameModel));
@@ -52,6 +52,14 @@ namespace Model
                             }
                             besideNum++;
                         }
+                    }
+                }
+
+                foreach(var space in deepForests[3].GetAdjacentSpaces())
+                {
+                    if ((!space.Occupied()))
+                    {
+                        units.Add(UnitFactory.CreateScoutEagle(space, this, gameModel));
                     }
                 }
 

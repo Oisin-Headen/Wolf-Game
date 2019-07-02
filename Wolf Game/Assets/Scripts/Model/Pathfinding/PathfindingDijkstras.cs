@@ -153,9 +153,19 @@ namespace Pathfinding
                 bool blocked = false;
                 foreach (var spacePair in line)
                 {
-                    blocked |=
-                        blockLOS.BlocksLOS(startSpace.Terrain.elevation, spacePair.Item1)
-                        && blockLOS.BlocksLOS(startSpace.Terrain.elevation, spacePair.Item2);
+                    bool blockedOne = false, blockedTwo = false;
+
+                    if(spacePair.Item1 != null)
+                    {
+                        blockedOne = blockLOS.BlocksLOS(startSpace.Terrain.elevation, spacePair.Item1);
+                    }
+
+                    if (spacePair.Item2 != null)
+                    {
+                        blockedTwo = blockLOS.BlocksLOS(startSpace.Terrain.elevation, spacePair.Item2);
+                    }
+
+                    blocked |= blockedOne && blockedTwo;
                 }
                 if (!blocked)
                 {

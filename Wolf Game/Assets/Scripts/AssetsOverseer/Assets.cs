@@ -58,7 +58,8 @@ public class Assets : MonoBehaviour
         {
             [UnitTypeModel.UnitTypes.Wolf] = extraSprites.Wolf,
             [UnitTypeModel.UnitTypes.BattleSpider] = extraSprites.BattleSpider,
-            [UnitTypeModel.UnitTypes.WorkerSpider] = extraSprites.WorkerSpider
+            [UnitTypeModel.UnitTypes.WorkerSpider] = extraSprites.WorkerSpider,
+            [UnitTypeModel.UnitTypes.ScoutEagle] = extraSprites.ScoutEagle,
         };
     }
 

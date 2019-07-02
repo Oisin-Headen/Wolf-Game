@@ -36,5 +36,15 @@ namespace Model
                 gameModel
             );
         }
+
+        internal static UnitModel CreateScoutEagle(SpaceModel space, APlayer player, GameModel gameModel)
+        {
+            return new UnitModel(
+                UnitTypeOverseerSingleton.GetInstance().ScoutEagle,
+                space,
+                player,
+                gameModel
+            );
+        }
     }
 }

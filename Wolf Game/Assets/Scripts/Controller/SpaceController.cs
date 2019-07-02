@@ -230,10 +230,18 @@ public class SpaceController : MonoBehaviour
         {
             minimapDisplay.color = new Color(105 / 255f, 105 / 255f, 105 / 255f, 1);
         }
+        else if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+        {
+            minimapDisplay.color = new Color(50 / 255f, 205 / 255f, 50 / 255f, 1);
+        }
+        else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+        {
+            minimapDisplay.color = new Color(0 / 255f, 100 / 255f, 0 / 255f, 1);
+        }
         else
         {
             //minimapDisplay.color = Color.green;
-            minimapDisplay.color = new Color(144 / 255f, 255 / 255f, 30 / 255f, 1);
+            minimapDisplay.color = new Color(127 / 255f, 255 / 255f, 0 / 255f, 1);
         }
 
 

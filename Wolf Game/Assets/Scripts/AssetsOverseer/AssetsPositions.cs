@@ -11,4 +11,5 @@ public class AssetsPositions : MonoBehaviour
     public Sprite Wolf;
     public Sprite BattleSpider;
     public Sprite WorkerSpider;
+    public Sprite ScoutEagle;
 }

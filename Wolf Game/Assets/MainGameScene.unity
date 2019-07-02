@@ -1034,6 +1034,7 @@ MonoBehaviour:
   Wolf: {fileID: 21300000, guid: 85fb6c4b5b6c04c7c89a69e056a52f6c, type: 3}
   BattleSpider: {fileID: 21300000, guid: bcfdda8caa1a440a18a5ab89a053b8ed, type: 3}
   WorkerSpider: {fileID: 21300000, guid: d14c5e55738d8457c87886348b0470c7, type: 3}
+  ScoutEagle: {fileID: 21300000, guid: c030745d9691743ae8581271f8a26472, type: 3}
 --- !u!1 &1302566450
 GameObject:
   m_ObjectHideFlags: 0
