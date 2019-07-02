@@ -222,11 +222,18 @@ public class SpaceController : MonoBehaviour
     {
         if(terrain.elevation == SpaceTerrain.SpaceElevation.Water)
         {
-            minimapDisplay.color = Color.cyan;
+            //minimapDisplay.color = Color.blue;
+
+            minimapDisplay.color = new Color(30 / 255f, 144 / 255f, 255 / 255f, 1);
+        }
+        else if (terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
+        {
+            minimapDisplay.color = new Color(105 / 255f, 105 / 255f, 105 / 255f, 1);
         }
         else
         {
-            minimapDisplay.color = Color.green;
+            //minimapDisplay.color = Color.green;
+            minimapDisplay.color = new Color(144 / 255f, 255 / 255f, 30 / 255f, 1);
         }
 
 
