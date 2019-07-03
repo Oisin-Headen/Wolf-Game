@@ -55,7 +55,7 @@ namespace Model
                     }
                 }
 
-                foreach(var space in deepForests[3].GetAdjacentSpaces())
+                foreach (var space in deepForests[3].GetAdjacentSpaces())
                 {
                     if ((!space.Occupied()))
                     {

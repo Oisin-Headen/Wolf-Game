@@ -40,6 +40,14 @@ public class Assets : MonoBehaviour
     public Color PathColor;
     public Color NoColor;
 
+
+    public Color MinimapOcean;
+    public Color MinimapLand;
+    public Color MinimapMountain;
+    public Color MinimapUnexplored;
+    public Color MinimapIceberg;
+    public Color MinimapDeepForest;
+
     public Dictionary<UnitTypeModel.UnitTypes, Sprite> Units;
     public Dictionary<UnitBackgrounds, Sprite> UnitBackGrounds;
 

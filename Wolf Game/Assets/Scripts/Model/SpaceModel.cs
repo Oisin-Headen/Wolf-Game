@@ -91,6 +91,16 @@ namespace Model
             return Terrain;
         }
 
+        public void SetTerrain(SpaceTerrain terrain)
+        {
+            Terrain = terrain;
+            controller.SetTerrain(terrain);
+            if(!Explored)
+            {
+                controller.Hide();
+            }
+        }
+
         public float DistCenter()
         {
             float distSideEdge, distTopBottomEdge;
@@ -177,7 +187,10 @@ namespace Model
                     desc = baseTerrain + feature + hill;
                     break;
             }
-
+            if(Occupied())
+            {
+                desc += "\n" + OccupingUnit.UnitType.Description + "\n" + OccupingUnit.CurrentHP + "/" + OccupingUnit.UnitType.MaxHP;
+            }
             return desc;
         }
     }

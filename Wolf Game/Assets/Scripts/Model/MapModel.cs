@@ -6,7 +6,9 @@ namespace Model
 {
     public class MapModel
     {
+        // Indexes must add to an even number
         readonly SpaceModel[][] map;
+
         public MapModel(GameModel gameModel)
         {
             map = new SpaceModel[Utilities.MAP_HEIGHT][];
@@ -33,6 +35,74 @@ namespace Model
                     {
                         space.SetAdjacentSpaces();
                     }
+                }
+            }
+
+            var rand = new System.Random();
+            for (int i = 0; i < 21; i++)
+            {
+                
+                int fifthHeight, fifthWidth, randHeight, randWidth;
+                fifthHeight = Utilities.MAP_HEIGHT / 5;
+                fifthWidth = Utilities.MAP_WIDTH * 2 / 5;
+
+                randHeight = rand.Next(fifthHeight);
+                randWidth = rand.Next(fifthWidth);
+
+                randHeight += (2 * fifthHeight);
+                randWidth += (2 * fifthWidth);
+
+                if ((randHeight + randWidth) % 2 != 0)
+                {
+                    randHeight++;
+                }
+
+                List<SpaceModel> river = new List<SpaceModel>();
+
+                var origin = map[randHeight][randWidth];
+                origin.SetTerrain(new SpaceTerrain(SpaceTerrain.SpaceElevation.Mountain,
+                    SpaceTerrain.SpaceBaseTerrain.None,
+                    SpaceTerrain.SpaceFeature.Frosted));
+
+                SpaceModel next = null;
+                foreach (var space in origin.GetAdjacentSpaces())
+                {
+                    if (next == null)
+                    {
+                        next = space;
+                    }
+                    else
+                    {
+                        if (space.DistCenter() > next.DistCenter())
+                        {
+                            next = space;
+                        }
+                    }
+                }
+                while (next.Terrain.elevation != SpaceTerrain.SpaceElevation.Water)
+                {
+                    river.Add(next);
+                    foreach (var space in next.GetAdjacentSpaces())
+                    {
+                        if (next == null)
+                        {
+                            next = space;
+                        }
+                        else
+                        {
+                            if (space.DistCenter()+(rand.Next(4)/10f) > next.DistCenter() + (rand.Next(4) / 10f))
+                            {
+                                next = space;
+                            }
+                        }
+                    }
+                }
+
+                foreach (var riverSpace in river)
+                {
+                    riverSpace.SetTerrain(new SpaceTerrain(SpaceTerrain.SpaceElevation.Water,
+                        SpaceTerrain.SpaceBaseTerrain.None,
+                        SpaceTerrain.SpaceFeature.None));
                 }
             }
         }
@@ -132,8 +202,22 @@ namespace Model
             }
             catch (IndexOutOfRangeException)
             {
-                Debug.Log("{" + normalCoord.row + ", " + normalCoord.col + "]");
                 return null;
+            }
+        }
+
+        //todo test method
+        public void ExploreAll()
+        {
+            foreach (var row in map)
+            {
+                foreach (var col in row)
+                {
+                    if(col!=null)
+                    {
+                        col.Explore();
+                    }
+                }
             }
         }
     }

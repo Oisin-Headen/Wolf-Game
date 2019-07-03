@@ -190,28 +190,8 @@ public class SpaceController : MonoBehaviour
         minimapDisplay.color = childColor;
     }
 
-    //public void ShowPath(List<SpaceModel> path)
-    //{
-    //    if (oldPath.Count > 0)
-    //    {
-    //        Debug.Log("In Not null");
 
-    //        foreach (var controller in oldPath)
-    //        {
-    //            controller.SetPath(false);
-    //        }
-    //    }
-    //    oldPath = new List<SpaceController>();
-    //    foreach (SpaceModel space in path)
-    //    {
-    //        space.controller.SetPath(true);
-    //        oldPath.Add(space.controller);
-    //    }
-    //    Debug.Log(oldPath);
-    //}
-
-
-    // todo testing methods
+    // todo testing method
     public void SetText(string v)
     {
         GetComponentInChildren<TextMesh>().text = v;
@@ -222,26 +202,30 @@ public class SpaceController : MonoBehaviour
     {
         if(terrain.elevation == SpaceTerrain.SpaceElevation.Water)
         {
-            //minimapDisplay.color = Color.blue;
-
-            minimapDisplay.color = new Color(30 / 255f, 144 / 255f, 255 / 255f, 1);
+            if (terrain.feature == SpaceTerrain.SpaceFeature.Iceberg)
+            {
+                minimapDisplay.color = gameController.assets.MinimapIceberg;
+            }
+            else
+            {
+                minimapDisplay.color = gameController.assets.MinimapOcean;
+            }
         }
         else if (terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
         {
-            minimapDisplay.color = new Color(105 / 255f, 105 / 255f, 105 / 255f, 1);
+            minimapDisplay.color = gameController.assets.MinimapMountain;
         }
         else if (terrain.feature == SpaceTerrain.SpaceFeature.Forest)
         {
-            minimapDisplay.color = new Color(50 / 255f, 205 / 255f, 50 / 255f, 1);
+            minimapDisplay.color = gameController.assets.MinimapLand;
         }
         else if (terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
         {
-            minimapDisplay.color = new Color(0 / 255f, 100 / 255f, 0 / 255f, 1);
+            minimapDisplay.color = gameController.assets.MinimapDeepForest;
         }
         else
         {
-            //minimapDisplay.color = Color.green;
-            minimapDisplay.color = new Color(127 / 255f, 255 / 255f, 0 / 255f, 1);
+            minimapDisplay.color = gameController.assets.MinimapLand;
         }
 
 

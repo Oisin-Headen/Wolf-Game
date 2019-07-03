@@ -176,5 +176,11 @@ namespace Model
         {
             return gameController.AddSpace(spaceModel);
         }
+
+        //todo text method
+        public void ExploreAll()
+        {
+            map.ExploreAll();
+        }
     }
 }

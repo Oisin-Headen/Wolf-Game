@@ -83,6 +83,12 @@ public class GameController : MonoBehaviour
     }
 
 
+    // TODO Test Method
+    public void ExploreAll()
+    {
+        gameModel.ExploreAll();
+    }
+
     // TODO something. Adds a SpaceModel's controller and view.
     public SpaceController AddSpace(SpaceModel spaceModel)
     {

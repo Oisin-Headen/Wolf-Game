@@ -16,6 +16,7 @@ namespace Model
                 3, // movement
                 1, // heal amount
                 3, // Vision range
+                "Wolf",
                 new IgnoreForestLOS(),
                 new OrdinaryMovementCost()
                 );
@@ -29,6 +30,7 @@ namespace Model
                 2, // movement
                 2, // heal amount
                 2, // Vision range
+                "Battle Spider",
                 new NormalLOS(),
                 new DeepForestAtHalfMovementCostForestAtOne()
                 );
@@ -41,6 +43,7 @@ namespace Model
                 1, // movement
                 1, // heal amount
                 2, // Vision range
+                "Worker Spider",
                 new NormalLOS(),
                 new DeepForestAtHalfMovementCost()
                 );
@@ -54,6 +57,7 @@ namespace Model
                 3, // movement
                 1, // heal amount
                 2, // Vision range
+                "Scout Eagle",
                 new NormalLOS(),
                 new OneCostMovement()
                 );
