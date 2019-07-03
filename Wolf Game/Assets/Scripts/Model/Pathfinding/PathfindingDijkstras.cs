@@ -21,7 +21,7 @@ namespace Pathfinding
 
         // this uses Dijkstra's Algorithm to get all the spaces a player can visit.
         public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost,
-            IMovementCost costDeterminer, IIsOfType isOfType, int noOfType)
+            IMovementCost costDeterminer, IIsOfType isOfType)
         {
             Dictionary<SpaceModel, PathfindingNode> allNodes = new Dictionary<SpaceModel, PathfindingNode>();
 
@@ -121,12 +121,12 @@ namespace Pathfinding
         public static List<PathfindingNode> GetSpacesForMovementDijkstras(SpaceModel startSpace, 
             int maxCost, IMovementCost costDeterminer)
         {
-            return Dijkstras(startSpace, maxCost, costDeterminer, null, -1);
+            return Dijkstras(startSpace, maxCost, costDeterminer, null);
         }
 
         public static SpaceModel GetClosestUnexplored(SpaceModel startSpace, IMovementCost costDeterminer)
         {
-            var space =  Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType(), 1)[0].Space;
+            var space =  Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType())[0].Space;
             if (space.Explored)
             {
                 return null;
@@ -140,12 +140,12 @@ namespace Pathfinding
             MapModel map, IBlockLOS blockLOS)
         {
             List<PathfindingNode> nodes = Dijkstras(startSpace, maxSpaces * ONE_SPACE, 
-                new OneCostMovement(), null, -1);
+                new OneCostMovement(), null);
             List<PathfindingNode> results = new List<PathfindingNode>();
             foreach (PathfindingNode node in nodes)
             {
                 var line = MapLinedraw(startSpace, node.Space, map);
-                if (line.Count > 0)
+                if (line.Count > 1)
                 {
                     line.Remove(line[0]);
                     line.Remove(line[line.Count - 1]);
@@ -178,7 +178,7 @@ namespace Pathfinding
         internal static List<SpaceModel> GetWaterBody(SpaceModel origin)
         {
             List<SpaceModel> spaceModels = new List<SpaceModel>();
-            foreach(var node in Dijkstras(origin, -1, new OneCostWaterMovement(), null, -1))
+            foreach(var node in Dijkstras(origin, -1, new OneCostWaterMovement(), null))
             {
                 spaceModels.Add(node.Space);
             }
@@ -228,7 +228,7 @@ namespace Pathfinding
             {
                 newZ = -newX - newY;
             }
-            return new CubeCoords(newX, newY, newZ);
+            return new CubeCoords((int)newX, (int)newY, (int)newZ);
         }
 
         private static float Lerp(float a, float b, float t)
@@ -245,31 +245,42 @@ namespace Pathfinding
 
         private static List<Tuple<SpaceModel, SpaceModel>> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
         {
-            CubeCoords a = start.GetCubeCoords();
-            CubeCoords b = end.GetCubeCoords();
+            CubeCoords aOne = start.GetCubeCoords();
+            CubeCoords aTwo = start.GetCubeCoords();
+
+            CubeCoords bOne = end.GetCubeCoords();
+            CubeCoords bTwo = end.GetCubeCoords();
+
+            float N = CubeDistance(aOne, bOne);
+
+            aOne.x += 0.1f;
+            aOne.y -= 0.1f;
+
+            aTwo.x -= 0.1f;
+            aTwo.y += 0.1f;
 
 
-            float N = CubeDistance(a, b);
+            bOne.x += 0.1f;
+            bOne.y -= 0.1f;
+            //coordOne.z -= 0.03f;
+
+            bTwo.x -= 0.1f;
+            bTwo.y += 0.1f;
+
+            
             List<Tuple<SpaceModel, SpaceModel>> results = new List<Tuple<SpaceModel, SpaceModel>>();
 
             if (Math.Abs(N) > float.Epsilon)
             {
                 for (int i = 0; i <= N; i++)
                 {
-                    CubeCoords coordOne = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
-                    CubeCoords coordTwo = RoundCubeCoords(CubeLerp(a, b, 1 / N * i));
-
-                    coordOne.x += 0.0001f;
-                    coordOne.y += 0.0002f;
-                    coordOne.z -= 0.0003f;
-
-                    coordTwo.x -= 0.0001f;
-                    coordTwo.y -= 0.0002f;
-                    coordTwo.z += 0.0003f;
+                    CubeCoords coordOne = RoundCubeCoords(CubeLerp(aOne, bOne, 1 / N * i));
+                    CubeCoords coordTwo = RoundCubeCoords(CubeLerp(aTwo, bTwo, 1 / N * i));
 
                     DoubledCoords normalCoordOne = CubeCoordsToCoordinates(coordOne);
                     DoubledCoords normalCoordTwo = CubeCoordsToCoordinates(coordTwo);
 
+                    //normalCoordOne.col
 
                     SpaceModel newSpaceOne;
                     newSpaceOne = map.GetSpace(normalCoordOne);
