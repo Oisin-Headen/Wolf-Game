@@ -18,6 +18,7 @@ namespace Model
         public UnitModel OccupingUnit { get; internal set; }
         public SpaceTerrain Terrain { get; private set; }
         public bool Explored { get; private set; }
+        public bool Ocean { get; internal set; }
 
         public void Explore()
         {

@@ -94,4 +94,16 @@ namespace Pathfinding
             return 1 * PathfindingDijkstras.ONE_SPACE;
         }
     }
+
+    public class OneCostWaterMovement : IMovementCost
+    {
+        public int GetMovementCost(SpaceModel space)
+        {
+            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water)
+            {
+                return PathfindingDijkstras.ONE_SPACE;
+            }
+            return -1;
+        }
+    }
 }

@@ -29,39 +29,39 @@ namespace Model
                 //units.Add(UnitFactory.CreateWolf(deepForests[1], this, gameModel));
                 //units.Add(UnitFactory.CreateWolf(deepForests[2], this, gameModel));
 
-                var impassibleChecker = new OrdinaryMovementCost();
-                for (int i = 0; i < 3; i++)
-                {
-                    var space = deepForests[i];
-                    if (!space.Occupied())
-                    {
-                        units.Add(UnitFactory.CreateWorkerSpider(space, this, gameModel));
-                    }
-                    int besideNum = 0;
-                    foreach (var besideSpace in space.GetAdjacentSpaces())
-                    {
-                        if ((!besideSpace.Occupied()) && impassibleChecker.GetMovementCost(besideSpace) != -1)
-                        {
-                            if (besideNum < 2)
-                            {
-                                units.Add(UnitFactory.CreateBattleSpider(besideSpace, this, gameModel));
-                            }
-                            else
-                            {
-                                units.Add(UnitFactory.CreateWolf(besideSpace, this, gameModel));
-                            }
-                            besideNum++;
-                        }
-                    }
-                }
+                //var impassibleChecker = new OrdinaryMovementCost();
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    var space = deepForests[i];
+                //    if (!space.Occupied())
+                //    {
+                //        units.Add(UnitFactory.CreateWorkerSpider(space, this, gameModel));
+                //    }
+                //    int besideNum = 0;
+                //    foreach (var besideSpace in space.GetAdjacentSpaces())
+                //    {
+                //        if ((!besideSpace.Occupied()) && impassibleChecker.GetMovementCost(besideSpace) != -1)
+                //        {
+                //            if (besideNum < 2)
+                //            {
+                //                units.Add(UnitFactory.CreateBattleSpider(besideSpace, this, gameModel));
+                //            }
+                //            else
+                //            {
+                //                units.Add(UnitFactory.CreateWolf(besideSpace, this, gameModel));
+                //            }
+                //            besideNum++;
+                //        }
+                //    }
+                //}
 
-                foreach (var space in deepForests[3].GetAdjacentSpaces())
-                {
-                    if ((!space.Occupied()))
-                    {
-                        units.Add(UnitFactory.CreateScoutEagle(space, this, gameModel));
-                    }
-                }
+                //foreach (var space in deepForests[3].GetAdjacentSpaces())
+                //{
+                //    if ((!space.Occupied()))
+                //    {
+                //        units.Add(UnitFactory.CreateScoutEagle(space, this, gameModel));
+                //    }
+                //}
 
                 foreach (var unit in units)
                 {

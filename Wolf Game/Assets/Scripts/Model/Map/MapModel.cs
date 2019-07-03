@@ -8,9 +8,11 @@ namespace Model
     {
         // Indexes must add to an even number
         readonly SpaceModel[][] map;
+        readonly List<SpaceModel> allSpaces;
 
         public MapModel(GameModel gameModel)
         {
+            allSpaces = new List<SpaceModel>();
             map = new SpaceModel[Utilities.MAP_HEIGHT][];
             for (int row = 0; row < Utilities.MAP_HEIGHT; ++row)
             {
@@ -24,6 +26,7 @@ namespace Model
                 for (; col < Utilities.MAP_WIDTH * 2; col += 2)
                 {
                     map[row][col] = new SpaceModel(row, col, gameModel, this);
+                    allSpaces.Add(map[row][col]);
                 }
             }
 
@@ -38,19 +41,28 @@ namespace Model
                 }
             }
 
+
+            var ocean = GetOceanSpaces();
+
+            foreach(var space in ocean)
+            {
+                space.Ocean = true;
+            }
+
+            // River Generation
             var rand = new System.Random();
-            for (int i = 0; i < 21; i++)
+            for (int i = 0; i < 10; i++)
             {
                 
                 int fifthHeight, fifthWidth, randHeight, randWidth;
-                fifthHeight = Utilities.MAP_HEIGHT / 5;
-                fifthWidth = Utilities.MAP_WIDTH * 2 / 5;
+                fifthHeight = Utilities.MAP_HEIGHT / 3;
+                fifthWidth = Utilities.MAP_WIDTH * 2 / 3;
 
                 randHeight = rand.Next(fifthHeight);
                 randWidth = rand.Next(fifthWidth);
 
-                randHeight += (2 * fifthHeight);
-                randWidth += (2 * fifthWidth);
+                randHeight += (fifthHeight);
+                randWidth +=  (fifthWidth);
 
                 if ((randHeight + randWidth) % 2 != 0)
                 {
@@ -64,37 +76,60 @@ namespace Model
                     SpaceTerrain.SpaceBaseTerrain.None,
                     SpaceTerrain.SpaceFeature.Frosted));
 
-                SpaceModel next = null;
-                foreach (var space in origin.GetAdjacentSpaces())
+
+
+                RiverDirection direction = null;
+                var adjSpaces = origin.GetAdjacentSpaces();
+                for(int index = 0; index < adjSpaces.Length; index++)
                 {
-                    if (next == null)
+                    if(direction == null)
                     {
-                        next = space;
+                        direction = new RiverDirection(index);
                     }
-                    else
+                    else if(adjSpaces[direction.GetDirectionIndex()].DistCenter() < adjSpaces[index].DistCenter())
                     {
-                        if (space.DistCenter() > next.DistCenter())
-                        {
-                            next = space;
-                        }
+                        direction = new RiverDirection(index);
                     }
                 }
-                while (next.Terrain.elevation != SpaceTerrain.SpaceElevation.Water)
+
+                SpaceModel next = adjSpaces[direction.GetDirectionIndex()];
+
+                bool done = false;
+                while (!next.Ocean)
                 {
                     river.Add(next);
-                    foreach (var space in next.GetAdjacentSpaces())
+                    var nextSpaces = next.GetAdjacentSpaces();
+
+                    int directionChangeChance = rand.Next(100);
+
+                    int changeThreshold = 20;
+                    try
                     {
-                        if (next == null)
+                        if (nextSpaces[direction.GetDirectionIndex()].Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain ||
+                           nextSpaces[direction.GetDirectionIndex()].Terrain.elevation == SpaceTerrain.SpaceElevation.Hill)
                         {
-                            next = space;
+                            changeThreshold = 50;
                         }
-                        else
+
+                        // Could randomly change direction if the side spaces aren't mountains or hills.
+                        if (directionChangeChance <= changeThreshold && (
+                            nextSpaces[direction.GetAbove()].Terrain.elevation != SpaceTerrain.SpaceElevation.Hill ||
+                            nextSpaces[direction.GetAbove()].Terrain.elevation != SpaceTerrain.SpaceElevation.Mountain))
                         {
-                            if (space.DistCenter()+(rand.Next(4)/10f) > next.DistCenter() + (rand.Next(4) / 10f))
-                            {
-                                next = space;
-                            }
+                            direction.Increase();
                         }
+                        else if (directionChangeChance <= changeThreshold * 2 && (
+                            nextSpaces[direction.GetBelow()].Terrain.elevation != SpaceTerrain.SpaceElevation.Hill ||
+                            nextSpaces[direction.GetBelow()].Terrain.elevation != SpaceTerrain.SpaceElevation.Mountain))
+                        {
+                            direction.Decrease();
+                        }
+
+                        next = nextSpaces[direction.GetDirectionIndex()];
+                    }
+                    catch(IndexOutOfRangeException)
+                    {
+                        done = true;
                     }
                 }
 
@@ -110,20 +145,43 @@ namespace Model
         public List<SpaceModel> GetDeepForests()
         {
             List<SpaceModel> deepforests = new List<SpaceModel>();
-            foreach (var row in map)
-            {
-                foreach (var space in row)
+            foreach (var space in allSpaces)
+            { 
+                if (space != null)
                 {
-                    if (space != null)
+                    if (space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
                     {
-                        if (space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
-                        {
-                            deepforests.Add(space);
-                        }
+                        deepforests.Add(space);
                     }
                 }
             }
             return deepforests;
+        }
+
+        public List<SpaceModel> GetWaterSpaces()
+        {
+            List<SpaceModel> waterSpaces = new List<SpaceModel>();
+            foreach(var space in allSpaces)
+            {
+                if (space != null)
+                {
+                    if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water)
+                    {
+                        waterSpaces.Add(space);
+                    }
+                }
+            }
+            return waterSpaces;
+        }
+
+        public List<SpaceModel> GetOceanSpaces()
+        {
+            var origin = map[0][0];
+            if(origin.Terrain.elevation != SpaceTerrain.SpaceElevation.Water)
+            {
+                return null;
+            }
+            return Pathfinding.PathfindingDijkstras.GetWaterBody(origin);
         }
 
         // Movement Methods. Only used in Space generation.

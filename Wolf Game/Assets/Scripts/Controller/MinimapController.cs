@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 
 public class MinimapController : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class MinimapController : MonoBehaviour
 
     public void MiniMapClick()
     {
+        EventSystem.current.SetSelectedGameObject(null);
         // Find position in rect, send that to camera.
         var miniMapRect = gameObject.GetComponent<RectTransform>().rect;
 

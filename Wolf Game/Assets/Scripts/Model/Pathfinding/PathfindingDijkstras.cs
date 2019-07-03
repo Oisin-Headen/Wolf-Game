@@ -21,7 +21,7 @@ namespace Pathfinding
 
         // this uses Dijkstra's Algorithm to get all the spaces a player can visit.
         public static List<PathfindingNode> Dijkstras(SpaceModel startSpace, int maxCost,
-            IMovementCost costDeterminer, IIsOfType isOfType)
+            IMovementCost costDeterminer, IIsOfType isOfType, int noOfType)
         {
             Dictionary<SpaceModel, PathfindingNode> allNodes = new Dictionary<SpaceModel, PathfindingNode>();
 
@@ -73,7 +73,7 @@ namespace Pathfinding
                                 && newNodeCost != -1)
                             {
                                 // Can move to a space when you don't have enough movement left
-                                if (currentnode.Cost < maxCost)
+                                if (currentnode.Cost < maxCost || maxCost == -1)
                                 {
                                     PathfindingNode newNode = new PathfindingNode(adjacentSpace,
                                         currentnode, newNodeCost, false, null);
@@ -121,12 +121,12 @@ namespace Pathfinding
         public static List<PathfindingNode> GetSpacesForMovementDijkstras(SpaceModel startSpace, 
             int maxCost, IMovementCost costDeterminer)
         {
-            return Dijkstras(startSpace, maxCost, costDeterminer, null);
+            return Dijkstras(startSpace, maxCost, costDeterminer, null, -1);
         }
 
         public static SpaceModel GetClosestUnexplored(SpaceModel startSpace, IMovementCost costDeterminer)
         {
-            var space =  Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType())[0].Space;
+            var space =  Dijkstras(startSpace, 1000 * ONE_SPACE, costDeterminer, new UnexploredType(), 1)[0].Space;
             if (space.Explored)
             {
                 return null;
@@ -140,7 +140,7 @@ namespace Pathfinding
             MapModel map, IBlockLOS blockLOS)
         {
             List<PathfindingNode> nodes = Dijkstras(startSpace, maxSpaces * ONE_SPACE, 
-                new OneCostMovement(), null);
+                new OneCostMovement(), null, -1);
             List<PathfindingNode> results = new List<PathfindingNode>();
             foreach (PathfindingNode node in nodes)
             {
@@ -173,6 +173,16 @@ namespace Pathfinding
                 }
             }
             return results;
+        }
+
+        internal static List<SpaceModel> GetWaterBody(SpaceModel origin)
+        {
+            List<SpaceModel> spaceModels = new List<SpaceModel>();
+            foreach(var node in Dijkstras(origin, -1, new OneCostWaterMovement(), null, -1))
+            {
+                spaceModels.Add(node.Space);
+            }
+            return spaceModels;
         }
 
         // Helper algorithims
