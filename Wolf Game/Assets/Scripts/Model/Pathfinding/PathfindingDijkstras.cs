@@ -243,7 +243,7 @@ namespace Pathfinding
                                  Lerp(a.z, b.z, t));
         }
 
-        private static List<Tuple<SpaceModel, SpaceModel>> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
+        public static List<Tuple<SpaceModel, SpaceModel>> MapLinedraw(SpaceModel start, SpaceModel end, MapModel map)
         {
             CubeCoords aOne = start.GetCubeCoords();
             CubeCoords aTwo = start.GetCubeCoords();
@@ -253,21 +253,23 @@ namespace Pathfinding
 
             float N = CubeDistance(aOne, bOne);
 
-            aOne.x += 0.1f;
-            aOne.y -= 0.1f;
+            aOne.x += 10f;
+            aOne.y += 20f;
+            aOne.z -= 30f;
 
-            aTwo.x -= 0.1f;
-            aTwo.y += 0.1f;
+            aTwo.x -= 10f;
+            aTwo.y -= 20f;
+            aTwo.z += 30f;
+
+            bOne.x += 10f;
+            bOne.y += 20f;
+            bOne.z -= 30f;
+
+            bTwo.x -= 10f;
+            bTwo.y -= 20f;
+            bTwo.z += 30f;
 
 
-            bOne.x += 0.1f;
-            bOne.y -= 0.1f;
-            //coordOne.z -= 0.03f;
-
-            bTwo.x -= 0.1f;
-            bTwo.y += 0.1f;
-
-            
             List<Tuple<SpaceModel, SpaceModel>> results = new List<Tuple<SpaceModel, SpaceModel>>();
 
             if (Math.Abs(N) > float.Epsilon)

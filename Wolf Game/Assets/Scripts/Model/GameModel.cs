@@ -22,6 +22,9 @@ namespace Model
 
         public int TurnNumber = 0;
 
+        private bool ranged;
+        private List<SpaceModel> rangedSpaces = new List<SpaceModel>();
+
         //private List<SpaceModel> currentlyDispayedPath;
         public GameModel(GameController gameController)
         {
@@ -73,6 +76,7 @@ namespace Model
                 }
             }
         }
+
         public void EndTurn()
         {
             gameController.SetMainButton("Please Wait...", false);
@@ -107,7 +111,11 @@ namespace Model
                 }
             }
         }
-        internal void EndTurnUnitMoving() { ++movingUnits; }
+
+        internal void EndTurnUnitMoving()
+        {
+            ++movingUnits;
+        }
 
         internal void Clicked(SpaceModel spaceModel)
         {
@@ -129,7 +137,30 @@ namespace Model
                 }
             }
         }
-        internal void HoverOverSpace(SpaceModel spaceModel) { CurrentMousePosition = spaceModel; if (SelectedUnit != null) { SelectedUnit.MovementOverseer.HoverSpace(spaceModel); } }
+
+        internal void HoverOverSpace(SpaceModel spaceModel) {
+            CurrentMousePosition = spaceModel;
+            if(ranged)
+            {
+                foreach(var space in rangedSpaces)
+                {
+                    space.controller.Deselect();
+                }
+
+                rangedSpaces = new List<SpaceModel>();
+                foreach(var thing in PathfindingDijkstras.MapLinedraw(SelectedUnit.Space, spaceModel, map))
+                {
+                    thing.Item1.controller.SetAttackable();
+                    thing.Item2.controller.SetAttackable();
+                    rangedSpaces.Add(thing.Item1);
+                    rangedSpaces.Add(thing.Item2);
+                }
+            }
+            if (SelectedUnit != null)
+            {
+                SelectedUnit.MovementOverseer.HoverSpace(spaceModel);
+            }
+        }
 
         public void Move()
         {
@@ -161,6 +192,14 @@ namespace Model
                 {
                     SelectedUnit.MovementOverseer.Explore();
                 }
+            }
+        }
+
+        public void RangedAttack()
+        {
+            if(SelectedUnit.GetPlayer() == currentPlayer)
+            {
+                ranged = !ranged;
             }
         }
 

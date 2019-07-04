@@ -56,6 +56,7 @@ namespace Model
             }
         }
 
+
         public void StartTurn()
         {
             // If the unit didn't move last turn, and it is damaged, heals a bit.

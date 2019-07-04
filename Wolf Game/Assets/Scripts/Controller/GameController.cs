@@ -52,6 +52,10 @@ public class GameController : MonoBehaviour
             {
                 Explore();
             }
+            else if(Input.GetKeyUp(KeyCode.R))
+            {
+                RangedAttack();
+            }
 
             // todo if getkeyup 'a'
             // if a unit with attacks is selected, call attack on it.
@@ -80,6 +84,10 @@ public class GameController : MonoBehaviour
     public void Explore()
     {
         gameModel.Explore();
+    }
+    public void RangedAttack()
+    {
+        gameModel.RangedAttack();
     }
 
 
