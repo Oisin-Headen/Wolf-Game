@@ -55,13 +55,13 @@ namespace Model
                     }
                 }
 
-                //foreach (var space in deepForests[3].GetAdjacentSpaces())
-                //{
-                //    if ((!space.Occupied()))
-                //    {
-                //        units.Add(UnitFactory.CreateScoutEagle(space, this, gameModel));
-                //    }
-                //}
+                foreach (var space in deepForests[3].GetAdjacentSpaces())
+                {
+                    if ((!space.Occupied()))
+                    {
+                        units.Add(UnitFactory.CreateScoutEagle(space, this, gameModel));
+                    }
+                }
 
                 foreach (var unit in units)
                 {
@@ -73,7 +73,7 @@ namespace Model
         //// At the start of the wolf player's turn.
         //public override void StartTurn()
         //{
-        //    foreach(var unit in units)
+        //    foreach (var unit in units)
         //    {
         //        unit.StartTurn();
         //    }
