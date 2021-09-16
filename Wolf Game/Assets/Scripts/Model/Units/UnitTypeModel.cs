@@ -23,7 +23,12 @@ namespace Model
             Attack = attack;
             Defence = defence;
             MaxHP = maxHP;
-            Movement = movementNumSpaces * PathfindingDijkstras.ONE_SPACE; BaseHealAmount = healAmount; VisionRange = visionRange; BlockLOS = blockLOS; MovementCostDeterminer = movementCostDeterminer;
+            // Movement cost is expressed in pathfinding by numbers much greater than one, so multiply by the number for one space.
+            Movement = movementNumSpaces * PathfindingDijkstras.ONE_SPACE;
+            BaseHealAmount = healAmount;
+            VisionRange = visionRange;
+            BlockLOS = blockLOS;
+            MovementCostDeterminer = movementCostDeterminer;
             Description = desc;
         }
         public enum UnitTypes

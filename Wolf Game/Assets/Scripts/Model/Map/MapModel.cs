@@ -94,7 +94,7 @@ namespace Model
 
                 SpaceModel next = adjSpaces[direction.GetDirectionIndex()];
 
-                bool done = false;
+                //bool done = false;
                 while (!next.Ocean)
                 {
                     river.Add(next);
@@ -129,7 +129,7 @@ namespace Model
                     }
                     catch(IndexOutOfRangeException)
                     {
-                        done = true;
+                        //done = true;
                     }
                 }
 

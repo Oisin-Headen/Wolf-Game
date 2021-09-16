@@ -203,7 +203,7 @@ public class SpaceTerrain
     }
     public enum SpaceBaseTerrain
     {
-        Grassland, Plain, Desert, Tundra, Snow, None
+        None, Grassland, Plain, Desert, Tundra, Snow
 
     }
     public enum SpaceFeature
@@ -215,9 +215,7 @@ public class SpaceTerrain
     public SpaceBaseTerrain baseTerrain;
     public SpaceFeature feature;
 
-    //Map generation debug purposes
-    // public Color color;
-
+    
     public SpaceTerrain(SpaceElevation elevation, SpaceBaseTerrain baseTerrain, SpaceFeature feature)
     {
         this.elevation = elevation;
@@ -225,13 +223,17 @@ public class SpaceTerrain
         this.feature = feature;
     }
 
-    // public SpaceTerrain(SpaceElevation elevation, SpaceBaseTerrain baseTerrain, SpaceFeature feature, Color color)
-    // {
-    //     this.elevation = elevation;
-    //     this.baseTerrain = baseTerrain;
-    //     this.feature = feature;
-    //     this.color = color;
-    // }
+
+    //// Map generation debug purposes
+    //public Color color;
+
+    //public SpaceTerrain(SpaceElevation elevation, SpaceBaseTerrain baseTerrain, SpaceFeature feature, Color color)
+    //{
+    //    this.elevation = elevation;
+    //    this.baseTerrain = baseTerrain;
+    //    this.feature = feature;
+    //    this.color = color;
+    //}
 }
 
 public enum PlayerType

@@ -140,15 +140,15 @@ namespace Model
 
         internal void HoverOverSpace(SpaceModel spaceModel) {
             CurrentMousePosition = spaceModel;
-            if(ranged)
+            if (ranged)
             {
-                foreach(var space in rangedSpaces)
+                foreach (var space in rangedSpaces)
                 {
                     space.controller.Deselect();
                 }
 
                 rangedSpaces = new List<SpaceModel>();
-                foreach(var thing in PathfindingDijkstras.MapLinedraw(SelectedUnit.Space, spaceModel, map))
+                foreach (var thing in PathfindingDijkstras.MapLinedraw(SelectedUnit.Space, spaceModel, map))
                 {
                     thing.Item1.controller.SetAttackable();
                     thing.Item2.controller.SetAttackable();
@@ -195,13 +195,14 @@ namespace Model
             }
         }
 
-        public void RangedAttack()
-        {
-            if(SelectedUnit.GetPlayer() == currentPlayer)
-            {
-                ranged = !ranged;
-            }
-        }
+        // TODO: probably have a 
+        //public void RangedAttack()
+        //{
+        //    if(SelectedUnit.GetPlayer() == currentPlayer)
+        //    {
+        //        ranged = !ranged;
+        //    }
+        //}
 
 
         // Methods for creating new gameobjects for unity, and linking them all together.

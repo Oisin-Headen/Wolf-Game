@@ -52,10 +52,11 @@ public class GameController : MonoBehaviour
             {
                 Explore();
             }
-            else if(Input.GetKeyUp(KeyCode.R))
-            {
-                RangedAttack();
-            }
+            // TODO: looks like a job for an attack method
+            //else if(Input.GetKeyUp(KeyCode.R))
+            //{
+            //    RangedAttack();
+            //}
 
             // todo if getkeyup 'a'
             // if a unit with attacks is selected, call attack on it.
@@ -85,10 +86,11 @@ public class GameController : MonoBehaviour
     {
         gameModel.Explore();
     }
-    public void RangedAttack()
-    {
-        gameModel.RangedAttack();
-    }
+    // TODO: back from hiatus, looks like this should be part of an attack method.
+    //public void RangedAttack()
+    //{
+    //    gameModel.RangedAttack();
+    //}
 
 
     // TODO Test Method

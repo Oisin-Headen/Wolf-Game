@@ -41,32 +41,34 @@ namespace Pathfinding
         }
     }
 
-    public class DeepForestAtHalfMovementCost : IMovementCost
-    {
-        public int GetMovementCost(SpaceModel space)
-        {
-            if (!space.Explored)
-            {
-                return 2 * PathfindingDijkstras.ONE_SPACE;
-            }
-            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
-                space.Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
-            {
-                // Impassable
-                return -1;
-            }
-            if (space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
-            {
-                return PathfindingDijkstras.HALF_SPACE;
-            }
-            if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
-                space.Terrain.feature == SpaceTerrain.SpaceFeature.Forest)
-            {
-                return 2 * PathfindingDijkstras.ONE_SPACE;
-            }
-            return 1 * PathfindingDijkstras.ONE_SPACE;
-        }
-    }
+    // TODO: I'm pretty sure this is totally redundant, anything that can go through Deep forest at half
+    // can go through forest at one as well.
+    //public class DeepForestAtHalfMovementCost : IMovementCost
+    //{
+    //    public int GetMovementCost(SpaceModel space)
+    //    {
+    //        if (!space.Explored)
+    //        {
+    //            return 2 * PathfindingDijkstras.ONE_SPACE;
+    //        }
+    //        if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Water ||
+    //            space.Terrain.elevation == SpaceTerrain.SpaceElevation.Mountain)
+    //        {
+    //            // Impassable
+    //            return -1;
+    //        }
+    //        if (space.Terrain.feature == SpaceTerrain.SpaceFeature.Deep_Forest)
+    //        {
+    //            return PathfindingDijkstras.HALF_SPACE;
+    //        }
+    //        if (space.Terrain.elevation == SpaceTerrain.SpaceElevation.Hill ||
+    //            space.Terrain.feature == SpaceTerrain.SpaceFeature.Forest)
+    //        {
+    //            return 2 * PathfindingDijkstras.ONE_SPACE;
+    //        }
+    //        return 1 * PathfindingDijkstras.ONE_SPACE;
+    //    }
+    //}
 
 
     public class DeepForestAtHalfMovementCostForestAtOne : IMovementCost

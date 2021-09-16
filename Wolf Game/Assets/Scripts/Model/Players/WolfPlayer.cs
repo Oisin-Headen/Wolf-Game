@@ -25,10 +25,6 @@ namespace Model
             // TODO Remove Test Unit
             if (deepForests.Count > 4)
             {
-                //units.Add(UnitFactory.CreateWolf(deepForests[0], this, gameModel));
-                //units.Add(UnitFactory.CreateWolf(deepForests[1], this, gameModel));
-                //units.Add(UnitFactory.CreateWolf(deepForests[2], this, gameModel));
-
                 var impassibleChecker = new OrdinaryMovementCost();
                 for (int i = 0; i < 3; i++)
                 {

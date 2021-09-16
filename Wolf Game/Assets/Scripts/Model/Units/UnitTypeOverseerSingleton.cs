@@ -45,7 +45,7 @@ namespace Model
                 2, // Vision range
                 "Worker Spider",
                 new NormalLOS(),
-                new DeepForestAtHalfMovementCost()
+                new DeepForestAtHalfMovementCostForestAtOne()
                 );
 
             ScoutEagle = new UnitTypeModel(
@@ -61,6 +61,22 @@ namespace Model
                 new NormalLOS(),
                 new OneCostMovement()
                 );
+
+
+            // TODO test unit I'm going to leave around the map.
+            Juggernaut = new UnitTypeModel(
+                UnitTypeModel.UnitTypes.ScoutEagle,
+                UnitTypeModel.UnitKind.Normal,
+                10, // attack
+                10, // defence
+                30, // Max HP
+                0, // movement
+                3, // heal amount
+                2, // Vision range
+                "Juggernaut",
+                new IgnoreForestLOS(),
+                new OrdinaryMovementCost()
+                );
         }
 
         // Unit Types
@@ -68,6 +84,9 @@ namespace Model
         public readonly UnitTypeModel BattleSpider;
         public readonly UnitTypeModel WorkerSpider;
         public readonly UnitTypeModel ScoutEagle;
+
+        //TODO: test target. 
+        public readonly UnitTypeModel Juggernaut;
 
         public static UnitTypeOverseerSingleton GetInstance()
         {
